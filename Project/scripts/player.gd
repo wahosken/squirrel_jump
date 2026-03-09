@@ -2,6 +2,10 @@ extends CharacterBody2D
 
 const SPEED = 200.0
 const JUMP_VELOCITY = -380.0
+const GROUND_ACCEL = 2000.0
+const AIR_ACCEL = 700.0
+const TURN_ACCEL = 2200.0
+const FRICTION = 4000.0
 
 const COYOTE_TIME = 0.12
 var coyote_timer = 0.0
@@ -16,6 +20,8 @@ const GLIDE_GRAVITY_MULTIPLIER = 0.3
 const FAST_FALL_DURATION = 0.85
 var fall_timer = 0.0
 
+
+
 enum PlayerState {
 	IDLE,
 	RUN,
@@ -26,7 +32,9 @@ enum PlayerState {
 
 var state = PlayerState.IDLE
 
-@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var animated_sprite_2d: AnimatedSprite2D = $Visuals/AnimatedSprite2D
+
+@onready var visuals: Node2D = $Visuals
 
 func play_anim(anim_name):
 	if animated_sprite_2d.animation != anim_name:
@@ -96,11 +104,22 @@ func _physics_process(delta: float) -> void:
 	# Gets input direction: -1, 0, 1
 	var direction := Input.get_axis("move_left", "move_right")
 	
+	var accel = GROUND_ACCEL if is_on_floor() else AIR_ACCEL
+
+	# Detect direction change
+	if direction != 0 and sign(direction) != sign(velocity.x):
+		accel = TURN_ACCEL
+
+	if direction != 0:
+		velocity.x = move_toward(velocity.x, direction * SPEED, accel * delta)
+	else:
+		velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
+
 	# Flip the Sprite
 	if direction > 0:
-		animated_sprite_2d.flip_h = false
+		visuals.scale.x = 1
 	elif direction < 0:
-		animated_sprite_2d.flip_h = true
+		visuals.scale.x = -1
 		
 	# Play animations
 	if is_on_floor():
@@ -113,13 +132,7 @@ func _physics_process(delta: float) -> void:
 			change_state(PlayerState.JUMP)
 		elif Input.is_action_pressed("jump"):
 			change_state(PlayerState.GLIDE)
-		else:
+		elif is_on_floor() and velocity.y > 0:
 			change_state(PlayerState.FALL)
-	
-	# Apply movement
-	if direction:
-		velocity.x = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
 
 	move_and_slide()

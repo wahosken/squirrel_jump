@@ -1,11 +1,17 @@
 [gd_scene format=3 uid="uid://dlcdc4mkobg10"]
 
 [ext_resource type="Script" uid="uid://b07c68xctjies" path="res://scripts/player.gd" id="1_3vyb7"]
-[ext_resource type="Texture2D" uid="uid://d0fg1wee276jb" path="res://assets/squirrel.png" id="2_g2els"]
+[ext_resource type="Texture2D" uid="uid://dpe8ua81qjdj1" path="res://assets/squirrel.png" id="2_g2els"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
+size = Vector2(22, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qhqgy"]
+size = Vector2(13, 27)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d2wvv"]
 atlas = ExtResource("2_g2els")
-region = Rect2(128, 32, 64, 32)
+region = Rect2(0, 64, 64, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tuyoq"]
 atlas = ExtResource("2_g2els")
@@ -101,18 +107,23 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
-size = Vector2(21, 13)
-
 [node name="player" type="CharacterBody2D" unique_id=131994215]
 script = ExtResource("1_3vyb7")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=203799251]
-position = Vector2(-10, -16)
-sprite_frames = SubResource("SpriteFrames_dqkch")
-animation = &"glide"
-autoplay = "idle"
+[node name="CollisionIdle" type="CollisionShape2D" parent="." unique_id=1692399753]
+position = Vector2(1, -8)
+shape = SubResource("RectangleShape2D_g2els")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1692399753]
-position = Vector2(-2.5, -7.5)
-shape = SubResource("RectangleShape2D_qlg0r")
+[node name="CollisionHorizontal" type="CollisionShape2D" parent="." unique_id=44967688]
+visible = false
+position = Vector2(1.5, -6.5)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_qhqgy")
+
+[node name="Visuals" type="Node2D" parent="." unique_id=417112224]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals" unique_id=203799251]
+position = Vector2(-5, -16)
+sprite_frames = SubResource("SpriteFrames_dqkch")
+animation = &"idle"
+autoplay = "idle"
