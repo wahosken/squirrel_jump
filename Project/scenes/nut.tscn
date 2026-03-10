@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://cowlcymhjuwxc"]
 
 [ext_resource type="Script" uid="uid://6nu2dmhr2c45" path="res://scripts/nut.gd" id="1_1t6dd"]
-[ext_resource type="Texture2D" uid="uid://dp6p1ta8xdbm8" path="res://assets/nut.png" id="1_e8gc1"]
+[ext_resource type="Texture2D" uid="uid://b2uv88omyhq7f" path="res://assets/nut.png" id="1_e8gc1"]
+[ext_resource type="AudioStream" uid="uid://bclhbuckevyhy" path="res://audio/squirrel_audio_crunch.wav" id="3_5cbsx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1t6dd"]
 atlas = ExtResource("1_e8gc1")
@@ -45,3 +46,7 @@ frame_progress = 0.77492434
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1767519260]
 position = Vector2(0, 1)
 shape = SubResource("CircleShape2D_ifhf5")
+
+[node name="NutSound" type="AudioStreamPlayer2D" parent="." unique_id=1187201319]
+stream = ExtResource("3_5cbsx")
+volume_db = -24.388

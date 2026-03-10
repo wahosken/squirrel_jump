@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://b07c68xctjies" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Texture2D" uid="uid://dpe8ua81qjdj1" path="res://assets/squirrel.png" id="2_g2els"]
+[ext_resource type="AudioStream" uid="uid://btdyctkkj7jng" path="res://audio/squirrel_audio_jump.wav" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://cjblfalroo32l" path="res://audio/squirrel_audio_land.wav" id="4_dqkch"]
+[ext_resource type="AudioStream" uid="uid://chpd4n5fwd7od" path="res://audio/squirrel_audio_footsteps.wav" id="5_qlg0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
 size = Vector2(22, 16)
@@ -127,3 +130,17 @@ position = Vector2(-5, -16)
 sprite_frames = SubResource("SpriteFrames_dqkch")
 animation = &"idle"
 autoplay = "idle"
+
+[node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1443708414]
+stream = ExtResource("3_qhqgy")
+
+[node name="LandSound" type="AudioStreamPlayer2D" parent="." unique_id=1288737444]
+stream = ExtResource("4_dqkch")
+
+[node name="RunSoundTimer" type="Timer" parent="." unique_id=1348403583]
+wait_time = 0.15
+
+[node name="RunSound" type="AudioStreamPlayer2D" parent="." unique_id=801814761]
+stream = ExtResource("5_qlg0r")
+
+[connection signal="timeout" from="RunSoundTimer" to="." method="_on_run_sound_timer_timeout"]

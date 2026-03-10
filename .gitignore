@@ -1,0 +1,23 @@
+# Godot cache/editor files
+.godot/
+.import/
+.godot/shader_cache/
+
+# Imported assets
+*.import
+
+# Export builds
+*.pck
+*.exe
+*.zip
+
+# Temporary files
+*.log
+*.tmp
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# VSCode (optional)
+.vscode/

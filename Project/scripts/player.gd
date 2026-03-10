@@ -4,7 +4,7 @@ const SPEED = 200.0
 const JUMP_VELOCITY = -380.0
 const GROUND_ACCEL = 2000.0
 const AIR_ACCEL = 700.0
-const TURN_ACCEL = 2200.0
+const TURN_ACCEL = 2600.0
 const FRICTION = 4000.0
 
 const COYOTE_TIME = 0.12
@@ -20,8 +20,6 @@ const GLIDE_GRAVITY_MULTIPLIER = 0.3
 const FAST_FALL_DURATION = 0.85
 var fall_timer = 0.0
 
-
-
 enum PlayerState {
 	IDLE,
 	RUN,
@@ -32,7 +30,14 @@ enum PlayerState {
 
 var state = PlayerState.IDLE
 
+var was_on_floor = false
+
 @onready var animated_sprite_2d: AnimatedSprite2D = $Visuals/AnimatedSprite2D
+
+@onready var jump_sound: AudioStreamPlayer2D = $JumpSound
+@onready var land_sound: AudioStreamPlayer2D = $LandSound
+@onready var run_sound: AudioStreamPlayer2D = $RunSound
+@onready var run_sound_timer: Timer = $RunSoundTimer
 
 @onready var visuals: Node2D = $Visuals
 
@@ -61,8 +66,16 @@ func change_state(new_state):
 			
 		PlayerState.GLIDE:
 			play_anim("glide")
-
+			
+			
 func _physics_process(delta: float) -> void:
+	
+	var just_landed = is_on_floor() and not was_on_floor
+	
+	if just_landed and fall_timer > 0.25:
+		land_sound.pitch_scale = randf_range(1, 1.5)
+		land_sound.play()
+	
 	# Add the gravity.
 	if not is_on_floor():
 		
@@ -100,6 +113,8 @@ func _physics_process(delta: float) -> void:
 		coyote_timer = 0
 		jump_buffer_timer = 0
 		
+		jump_sound.pitch_scale = randf_range(1, 1.5)
+		jump_sound.play()
 
 	# Gets input direction: -1, 0, 1
 	var direction := Input.get_axis("move_left", "move_right")
@@ -132,7 +147,21 @@ func _physics_process(delta: float) -> void:
 			change_state(PlayerState.JUMP)
 		elif Input.is_action_pressed("jump"):
 			change_state(PlayerState.GLIDE)
-		elif is_on_floor() and velocity.y > 0:
+		elif velocity.y > 0:
 			change_state(PlayerState.FALL)
-
+			
+	was_on_floor = is_on_floor()
+	
+	if is_on_floor() and abs(velocity.x) > 20:
+		if run_sound_timer.is_stopped():
+			run_sound_timer.start()
+	else:
+		run_sound_timer.stop()
+			
+		
 	move_and_slide()
+	
+func _on_run_sound_timer_timeout() -> void:
+	run_sound.pitch_scale = randf_range(1, 1.5)
+	run_sound.play()
+	
