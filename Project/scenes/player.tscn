@@ -9,8 +9,17 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
 size = Vector2(22, 16)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qhqgy"]
-size = Vector2(13, 27)
+[sub_resource type="AtlasTexture" id="AtlasTexture_3v2ag"]
+atlas = ExtResource("2_g2els")
+region = Rect2(0, 96, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jej6c"]
+atlas = ExtResource("2_g2els")
+region = Rect2(64, 96, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1ej7"]
+atlas = ExtResource("2_g2els")
+region = Rect2(128, 96, 64, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d2wvv"]
 atlas = ExtResource("2_g2els")
@@ -54,6 +63,20 @@ region = Rect2(128, 32, 64, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_dqkch"]
 animations = [{
+"frames": [{
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_3v2ag")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jej6c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1ej7")
+}],
+"loop": true,
+"name": &"crouch",
+"speed": 10.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_d2wvv")
@@ -113,15 +136,9 @@ animations = [{
 [node name="player" type="CharacterBody2D" unique_id=131994215]
 script = ExtResource("1_3vyb7")
 
-[node name="CollisionIdle" type="CollisionShape2D" parent="." unique_id=1692399753]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1692399753]
 position = Vector2(1, -8)
 shape = SubResource("RectangleShape2D_g2els")
-
-[node name="CollisionHorizontal" type="CollisionShape2D" parent="." unique_id=44967688]
-visible = false
-position = Vector2(1.5, -6.5)
-rotation = 1.5707964
-shape = SubResource("RectangleShape2D_qhqgy")
 
 [node name="Visuals" type="Node2D" parent="." unique_id=417112224]
 
@@ -133,6 +150,7 @@ autoplay = "idle"
 
 [node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1443708414]
 stream = ExtResource("3_qhqgy")
+volume_db = -6.0
 
 [node name="LandSound" type="AudioStreamPlayer2D" parent="." unique_id=1288737444]
 stream = ExtResource("4_dqkch")
