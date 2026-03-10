@@ -40,23 +40,45 @@ var state = PlayerState.IDLE
 @onready var land_sound: AudioStreamPlayer2D = $LandSound
 @onready var run_sound: AudioStreamPlayer2D = $RunSound
 @onready var run_sound_timer: Timer = $RunSoundTimer
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 # --- Animation Helpers ---
 func play_anim(anim_name):
 	if animated_sprite_2d.animation != anim_name:
 		animated_sprite_2d.play(anim_name)
-
+		
+# --- Colllision Functions ---
+func set_verticle_collision():
+		collision_shape_2d.set_deferred("rotation_degrees", -90)
+		collision_shape_2d.set_deferred("position.y", -13)
+	
+func set_horizontal_collision():
+	collision_shape_2d.set_deferred("rotation_degrees", 0)
+	collision_shape_2d.set_deferred("position.y", -7)
+	
 func change_state(new_state):
 	if state == new_state:
 		return
 	state = new_state
 	match state:
-		PlayerState.IDLE:  play_anim("idle")
-		PlayerState.RUN:   play_anim("run")
-		PlayerState.JUMP:  play_anim("jump")
-		PlayerState.FALL:  play_anim("fall")
-		PlayerState.GLIDE: play_anim("glide")
-		PlayerState.CROUCH: play_anim("crouch")
+		PlayerState.IDLE:
+			play_anim("idle")
+			set_verticle_collision()
+		PlayerState.RUN:
+			play_anim("run")
+			set_horizontal_collision()
+		PlayerState.JUMP:
+			play_anim("jump")
+			set_horizontal_collision()
+		PlayerState.FALL:
+			play_anim("fall")
+			set_horizontal_collision()
+		PlayerState.GLIDE:
+			play_anim("glide")
+			set_horizontal_collision()
+		PlayerState.CROUCH:
+			play_anim("crouch")
+			set_horizontal_collision()
 
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
@@ -130,7 +152,7 @@ func _physics_process(delta: float) -> void:
 			elif velocity.y > 0:
 				change_state(PlayerState.FALL)
 				
-		# Horizontal Movement
+		# --- Horizontal Movement ---
 		if direction != 0:
 			velocity.x = move_toward(velocity.x, direction * SPEED, accel * delta)
 		else:
@@ -142,7 +164,7 @@ func _physics_process(delta: float) -> void:
 		visuals.scale.x = 1
 	elif direction < 0:
 		visuals.scale.x = -1
-
+		
 	# --- Landing/Running Sounds ---
 	was_on_floor = is_on_floor()
 	if is_on_floor() and abs(velocity.x) > 180:

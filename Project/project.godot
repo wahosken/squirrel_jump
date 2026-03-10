@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [audio]
 
 buses/default_bus_layout="uid://cv7j83ogkl82c"
+driver/mix_rate=48000
 
 [input]
 

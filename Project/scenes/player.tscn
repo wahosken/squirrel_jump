@@ -7,7 +7,10 @@
 [ext_resource type="AudioStream" uid="uid://chpd4n5fwd7od" path="res://audio/squirrel_audio_footsteps.wav" id="5_qlg0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
-size = Vector2(22, 16)
+size = Vector2(25.75, 14)
+
+[sub_resource type="SeparationRayShape2D" id="SeparationRayShape2D_qlg0r"]
+slide_on_slope = true
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3v2ag"]
 atlas = ExtResource("2_g2els")
@@ -137,8 +140,13 @@ animations = [{
 script = ExtResource("1_3vyb7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1692399753]
-position = Vector2(1, -8)
+position = Vector2(1, -13)
+rotation = -1.5707964
 shape = SubResource("RectangleShape2D_g2els")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=302388939]
+position = Vector2(0, -20)
+shape = SubResource("SeparationRayShape2D_qlg0r")
 
 [node name="Visuals" type="Node2D" parent="." unique_id=417112224]
 
@@ -149,6 +157,7 @@ animation = &"idle"
 autoplay = "idle"
 
 [node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1443708414]
+position = Vector2(2, -1)
 stream = ExtResource("3_qhqgy")
 volume_db = -6.0
 
