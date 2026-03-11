@@ -49,7 +49,7 @@ func rotate_right():
 	sections.append(first)
 	
 	var last = sections[-2]
-	first.position.x = last.position.x + SECTION_WIDTH
+	first.set_deferred("position:x", last.position.x + SECTION_WIDTH)
 	
 	print_sections()
 	
@@ -59,6 +59,6 @@ func rotate_left():
 	sections.insert(0, last)
 	
 	var first = sections[1]
-	last.position.x = first.position.x - SECTION_WIDTH
+	last.set_deferred("position:x", first.position.x + SECTION_WIDTH)
 	
 	print_sections()
