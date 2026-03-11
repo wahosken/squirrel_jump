@@ -17,6 +17,9 @@ const FAST_FALL_MULTIPLIER = 1.5
 const GLIDE_GRAVITY_MULTIPLIER = 0.3
 const FAST_FALL_DURATION = 0.85
 
+const APEX_THRESHOLD = 60.0
+const APEX_ACCEL_MULTIPLIER = 1.8
+
 # --- Variables ---
 var coyote_timer = 0.0
 var jump_buffer_timer = 0.0
@@ -41,20 +44,13 @@ var state = PlayerState.IDLE
 @onready var run_sound: AudioStreamPlayer2D = $RunSound
 @onready var run_sound_timer: Timer = $RunSoundTimer
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var collision_shape = $CollisionShape2D.shape
 
 # --- Animation Helpers ---
 func play_anim(anim_name):
 	if animated_sprite_2d.animation != anim_name:
 		animated_sprite_2d.play(anim_name)
 		
-# --- Colllision Functions ---
-func set_verticle_collision():
-		collision_shape_2d.set_deferred("rotation_degrees", -90)
-		collision_shape_2d.set_deferred("position.y", -13)
-	
-func set_horizontal_collision():
-	collision_shape_2d.set_deferred("rotation_degrees", 0)
-	collision_shape_2d.set_deferred("position.y", -7)
 	
 func change_state(new_state):
 	if state == new_state:
@@ -63,34 +59,30 @@ func change_state(new_state):
 	match state:
 		PlayerState.IDLE:
 			play_anim("idle")
-			set_verticle_collision()
 		PlayerState.RUN:
 			play_anim("run")
-			set_horizontal_collision()
 		PlayerState.JUMP:
 			play_anim("jump")
-			set_horizontal_collision()
 		PlayerState.FALL:
 			play_anim("fall")
-			set_horizontal_collision()
 		PlayerState.GLIDE:
 			play_anim("glide")
-			set_horizontal_collision()
 		PlayerState.CROUCH:
 			play_anim("crouch")
-			set_horizontal_collision()
 
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
-
+	
+	var on_floor = is_on_floor()
+	
 	# --- Landing Sound ---
-	var just_landed = is_on_floor() and not was_on_floor
+	var just_landed = on_floor and not was_on_floor
 	if just_landed and fall_timer > 0.25:
 		land_sound.pitch_scale = randf_range(1, 1.5)
 		land_sound.play()
-
+	
 	# --- Gravity ---
-	if not is_on_floor():
+	if not on_floor:
 		if velocity.y < 0:
 			velocity += get_gravity() * delta
 			fall_timer = 0
@@ -104,7 +96,7 @@ func _physics_process(delta: float) -> void:
 		fall_timer = 0
 
 	# --- Coyote Timer ---
-	coyote_timer = COYOTE_TIME if is_on_floor() else coyote_timer - delta
+	coyote_timer = COYOTE_TIME if on_floor else coyote_timer - delta
 
 	# --- Jump Buffer ---
 	if Input.is_action_just_pressed("jump"):
@@ -122,15 +114,22 @@ func _physics_process(delta: float) -> void:
 		jump_buffer_timer = 0
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
+		
+	var apex_factor = 0.0
+	
+	if abs(velocity.y) < APEX_THRESHOLD:
+		apex_factor = 1.0 - (abs(velocity.y) / APEX_THRESHOLD)
 
 	# --- Get Horizontal Input ---
 	var direction := Input.get_axis("move_left", "move_right")
-	var accel = GROUND_ACCEL if is_on_floor() else AIR_ACCEL
+	var accel = GROUND_ACCEL if on_floor else AIR_ACCEL
+	if not is_on_floor():
+		accel += AIR_ACCEL * APEX_ACCEL_MULTIPLIER * apex_factor
 	if direction != 0 and sign(direction) != sign(velocity.x):
 		accel = TURN_ACCEL
 
 	# --- Crouch (Priority over movement) ---
-	if is_on_floor() and Input.is_action_pressed("move_down"):
+	if on_floor and Input.is_action_pressed("move_down"):
 		change_state(PlayerState.CROUCH)
 		velocity.x = move_toward(
 			velocity.x,
@@ -139,8 +138,9 @@ func _physics_process(delta: float) -> void:
 		)
 	else:
 		# --- State Machine ---
-		if is_on_floor():
-			if direction == 0:
+		var grounded = is_on_floor() or coyote_timer > 0
+		if grounded:
+			if abs(velocity.x) < 5:
 				change_state(PlayerState.IDLE)
 			else:
 				change_state(PlayerState.RUN)
@@ -166,8 +166,8 @@ func _physics_process(delta: float) -> void:
 		visuals.scale.x = -1
 		
 	# --- Landing/Running Sounds ---
-	was_on_floor = is_on_floor()
-	if is_on_floor() and abs(velocity.x) > 0 and not Input.is_action_pressed("move_down"):
+	was_on_floor = on_floor
+	if on_floor and abs(velocity.x) > 0 and not Input.is_action_pressed("move_down"):
 		if run_sound_timer.is_stopped():
 			run_sound_timer.start()
 	else:

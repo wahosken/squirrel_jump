@@ -6,11 +6,8 @@
 [ext_resource type="AudioStream" uid="uid://cjblfalroo32l" path="res://audio/squirrel_audio_land.wav" id="4_dqkch"]
 [ext_resource type="AudioStream" uid="uid://chpd4n5fwd7od" path="res://audio/squirrel_audio_footsteps.wav" id="5_qlg0r"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
-size = Vector2(25.75, 14)
-
-[sub_resource type="SeparationRayShape2D" id="SeparationRayShape2D_qlg0r"]
-slide_on_slope = true
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
+size = Vector2(13, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3v2ag"]
 atlas = ExtResource("2_g2els")
@@ -140,18 +137,14 @@ animations = [{
 script = ExtResource("1_3vyb7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1692399753]
-position = Vector2(1, -13)
+position = Vector2(-2, -7.5)
 rotation = -1.5707964
-shape = SubResource("RectangleShape2D_g2els")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=302388939]
-position = Vector2(0, -20)
-shape = SubResource("SeparationRayShape2D_qlg0r")
+shape = SubResource("RectangleShape2D_qlg0r")
 
 [node name="Visuals" type="Node2D" parent="." unique_id=417112224]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals" unique_id=203799251]
-position = Vector2(-5, -16)
+position = Vector2(-11, -16)
 sprite_frames = SubResource("SpriteFrames_dqkch")
 animation = &"idle"
 autoplay = "idle"
