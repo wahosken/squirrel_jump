@@ -8,11 +8,19 @@ const SECTION_WIDTH = 1024
 @onready var section_1b: Node2D = $section_1b
 @onready var section_1c: Node2D = $section_1c
 @onready var section_1d: Node2D = $section_1d
+@onready var nut_counter_label: Label = $"../player/NutCounterLabel"
+
 
 var sections = []
 var rotation_cooldown = false
+var nuts_collected: int = 0
 
 func _ready():
+	
+	for nut in get_tree().get_nodes_in_group("nuts"):
+		var callback = Callable(self, "_on_nut_collected")
+		if not nut.is_connected("collected", callback):
+			nut.connect("collected", callback)
 	
 	sections = [
 		section_1d,
@@ -20,16 +28,20 @@ func _ready():
 		section_1b,
 		section_1c
 	]
+	
+func _on_nut_collected(nut):
+	nuts_collected += 1
+	nut_counter_label.text = "Nuts: %d" % nuts_collected
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	
 	var middle = sections[1]
 	
-	if not rotation_cooldown and player.global_position.x > middle.position.x + SECTION_WIDTH:
+	while not rotation_cooldown and player.global_position.x > middle.position.x + SECTION_WIDTH:
 		rotation_cooldown = true
 		rotate_right()
 		
-	elif not rotation_cooldown and player.global_position.x < middle.position.x:
+	while not rotation_cooldown and player.global_position.x < middle.position.x:
 		rotation_cooldown = true
 		rotate_left()
 		
