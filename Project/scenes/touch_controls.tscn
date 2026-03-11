@@ -15,28 +15,28 @@ script = ExtResource("1_lkmae")
 
 [node name="Left" type="TouchScreenButton" parent="." unique_id=393390933]
 position = Vector2(53, 500)
-scale = Vector2(2, 2)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("1_i7au1")
 texture_pressed = ExtResource("2_lkmae")
 action = "move_left"
 
 [node name="Right" type="TouchScreenButton" parent="." unique_id=1017852773]
 position = Vector2(283, 500)
-scale = Vector2(2, 2)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("3_j2vku")
 texture_pressed = ExtResource("4_4wk4v")
 action = "move_right"
 
 [node name="Up" type="TouchScreenButton" parent="." unique_id=1563786086]
-position = Vector2(1000, 475)
-scale = Vector2(2, 2)
+position = Vector2(1000, 425)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("5_tve8x")
 texture_pressed = ExtResource("6_j3oes")
 action = "jump"
 
 [node name="Down" type="TouchScreenButton" parent="." unique_id=1692259278]
-position = Vector2(1000, 552)
-scale = Vector2(2, 2)
+position = Vector2(1000, 537)
+scale = Vector2(3, 3)
 texture_normal = ExtResource("7_pvbyl")
 texture_pressed = ExtResource("8_4wpbc")
 action = "move_down"

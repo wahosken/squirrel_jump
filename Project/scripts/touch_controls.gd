@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 func _ready():
-	if DisplayServer.is_touchscreen_available():
+	if OS.has_feature("web") and DisplayServer.is_touchscreen_available():
 		show()
 	else:
 		hide()
