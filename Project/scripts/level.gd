@@ -37,12 +37,12 @@ func _process(_delta):
 	
 	var middle = sections[1]
 	
-	while not rotation_cooldown and player.global_position.x > middle.global_position.x + SECTION_WIDTH:
+	if not rotation_cooldown and player.global_position.x > middle.global_position.x + SECTION_WIDTH:
 		rotation_cooldown = true
 		rotate_right()
 		middle = sections[1]
 		
-	while not rotation_cooldown and player.global_position.x < middle.global_position.x:
+	elif not rotation_cooldown and player.global_position.x < middle.global_position.x:
 		rotation_cooldown = true
 		rotate_left()
 		middle = sections[1]
