@@ -17,8 +17,9 @@ const FAST_FALL_MULTIPLIER = 1.5
 const GLIDE_GRAVITY_MULTIPLIER = 0.3
 const FAST_FALL_DURATION = 0.85
 
-const APEX_THRESHOLD = 60.0
-const APEX_ACCEL_MULTIPLIER = 1.8
+const APEX_THRESHOLD = 40.0
+const APEX_ACCEL_MULTIPLIER = 2.2
+const APEX_GRAVITY_MULTIPLIER = 0.6
 
 # --- Variables ---
 var coyote_timer = 0.0
@@ -115,10 +116,12 @@ func _physics_process(delta: float) -> void:
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
 		
+	# --- Apex jump slowing ---
 	var apex_factor = 0.0
 	
-	if abs(velocity.y) < APEX_THRESHOLD:
+	if velocity.y < 0 and abs(velocity.y) < APEX_THRESHOLD:
 		apex_factor = 1.0 - (abs(velocity.y) / APEX_THRESHOLD)
+		velocity += get_gravity() * APEX_GRAVITY_MULTIPLIER * delta
 
 	# --- Get Horizontal Input ---
 	var direction := Input.get_axis("move_left", "move_right")
