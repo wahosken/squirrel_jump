@@ -8,6 +8,7 @@ const SECTION_WIDTH = 1024
 @onready var section_1b: Node2D = $section_1b
 @onready var section_1c: Node2D = $section_1c
 @onready var section_1d: Node2D = $section_1d
+@onready var section_1e: Node2D = $section_1e
 @onready var nut_counter_label: Label = $"../UI/NutCounterLabel"
 
 
@@ -24,6 +25,7 @@ func _ready():
 	
 	sections = [
 		section_1d,
+		section_1e,
 		section_1a,
 		section_1b,
 		section_1c
@@ -35,17 +37,15 @@ func _on_nut_collected(_nut):
 
 func _process(_delta):
 	
-	var middle = sections[1]
+	var middle = sections[2]
 	
 	if not rotation_cooldown and player.global_position.x > middle.global_position.x + SECTION_WIDTH:
 		rotation_cooldown = true
 		rotate_right()
-		middle = sections[1]
-		
+
 	elif not rotation_cooldown and player.global_position.x < middle.global_position.x:
 		rotation_cooldown = true
 		rotate_left()
-		middle = sections[1]
 		
 	if player.global_position.x > middle.global_position.x and player.global_position.x < middle.global_position.x + SECTION_WIDTH:
 		rotation_cooldown = false
@@ -56,6 +56,16 @@ func print_sections():
 	for s in sections:
 		names.append(s.name)
 	print(names)
+	
+func update_section_visibility():
+
+	for i in range(sections.size()):
+		
+		# hide first and last sections
+		if i == 0 or i == sections.size() - 1:
+			sections[i].visible = false
+		else:
+			sections[i].visible = true
 		
 func rotate_right():
 
@@ -64,6 +74,8 @@ func rotate_right():
 
 	var last = sections[-2]
 	first.global_position.x = last.global_position.x + SECTION_WIDTH
+
+	update_section_visibility()
 
 	print_sections()
 
@@ -75,5 +87,7 @@ func rotate_left():
 
 	var first = sections[1]
 	last.global_position.x = first.global_position.x - SECTION_WIDTH
+
+	update_section_visibility()
 
 	print_sections()

@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://coywjsf3roitn" path="res://scenes/section_1c.tscn" id="3_p57ef"]
 [ext_resource type="PackedScene" uid="uid://284ow4xrh6lj" path="res://scenes/section_1d.tscn" id="4_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://84m1e17ihhte" path="res://scenes/touch_controls.tscn" id="5_iywne"]
+[ext_resource type="PackedScene" uid="uid://p54eo75n40ks" path="res://scenes/section_1e.tscn" id="7_0tnpc"]
 
 [node name="Game" type="Node2D" unique_id=1617569227]
 
@@ -87,7 +88,7 @@ position = Vector2(751, -86)
 collision_mask = 2
 
 [node name="section_1d" parent="Level" unique_id=1780093662 instance=ExtResource("4_u5sy4")]
-position = Vector2(-1024, 0)
+position = Vector2(-2048, 0)
 
 [node name="nut" parent="Level/section_1d" unique_id=6382164 groups=["nuts"] instance=ExtResource("3_gee14")]
 position = Vector2(48, -86)
@@ -107,6 +108,21 @@ collision_mask = 2
 
 [node name="nut5" parent="Level/section_1d" unique_id=2094530204 groups=["nuts"] instance=ExtResource("3_gee14")]
 position = Vector2(657, -379)
+collision_mask = 2
+
+[node name="section_1e" parent="Level" unique_id=259630230 instance=ExtResource("7_0tnpc")]
+position = Vector2(-1024, 0)
+
+[node name="nut" parent="Level/section_1e" unique_id=890088723 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(240, 13)
+collision_mask = 2
+
+[node name="nut2" parent="Level/section_1e" unique_id=1174346206 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(16, -179)
+collision_mask = 2
+
+[node name="nut3" parent="Level/section_1e" unique_id=2097746103 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(241, -373)
 collision_mask = 2
 
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
@@ -162,3 +178,6 @@ text = "Nuts: 0"
 [connection signal="body_entered" from="Level/section_1d/nut3" to="Level/section_1d/nut3" method="_on_body_entered"]
 [connection signal="body_entered" from="Level/section_1d/nut4" to="Level/section_1d/nut4" method="_on_body_entered"]
 [connection signal="body_entered" from="Level/section_1d/nut5" to="Level/section_1d/nut5" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1e/nut" to="Level/section_1e/nut" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1e/nut2" to="Level/section_1e/nut2" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1e/nut3" to="Level/section_1e/nut3" method="_on_body_entered"]
