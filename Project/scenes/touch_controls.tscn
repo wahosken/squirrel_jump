@@ -14,6 +14,7 @@
 script = ExtResource("1_lkmae")
 
 [node name="Left" type="TouchScreenButton" parent="." unique_id=393390933]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(66, 502)
 scale = Vector2(3, 3)
 texture_normal = ExtResource("1_i7au1")
@@ -21,6 +22,7 @@ texture_pressed = ExtResource("2_lkmae")
 action = "move_left"
 
 [node name="Right" type="TouchScreenButton" parent="." unique_id=1017852773]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(222, 502)
 scale = Vector2(3, 3)
 texture_normal = ExtResource("3_j2vku")
@@ -28,6 +30,7 @@ texture_pressed = ExtResource("4_4wk4v")
 action = "move_right"
 
 [node name="Up" type="TouchScreenButton" parent="." unique_id=1563786086]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(992, 381)
 scale = Vector2(3, 3)
 texture_normal = ExtResource("5_tve8x")
@@ -35,8 +38,18 @@ texture_pressed = ExtResource("6_j3oes")
 action = "jump"
 
 [node name="Down" type="TouchScreenButton" parent="." unique_id=1692259278]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(992, 495)
 scale = Vector2(3, 3)
 texture_normal = ExtResource("7_pvbyl")
 texture_pressed = ExtResource("8_4wpbc")
 action = "move_down"
+
+[connection signal="pressed" from="Left" to="." method="_on_left_pressed"]
+[connection signal="released" from="Left" to="." method="_on_left_released"]
+[connection signal="pressed" from="Right" to="." method="_on_right_pressed"]
+[connection signal="released" from="Right" to="." method="_on_right_released"]
+[connection signal="pressed" from="Up" to="." method="_on_up_pressed"]
+[connection signal="released" from="Up" to="." method="_on_up_released"]
+[connection signal="pressed" from="Down" to="." method="_on_down_pressed"]
+[connection signal="released" from="Down" to="." method="_on_down_released"]

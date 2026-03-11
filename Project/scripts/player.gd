@@ -167,7 +167,7 @@ func _physics_process(delta: float) -> void:
 		
 	# --- Landing/Running Sounds ---
 	was_on_floor = is_on_floor()
-	if is_on_floor() and abs(velocity.x) > 180:
+	if is_on_floor() and abs(velocity.x) > 0 and not Input.is_action_pressed("move_down"):
 		if run_sound_timer.is_stopped():
 			run_sound_timer.start()
 	else:
