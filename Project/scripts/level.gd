@@ -8,7 +8,7 @@ const SECTION_WIDTH = 1024
 @onready var section_1b: Node2D = $section_1b
 @onready var section_1c: Node2D = $section_1c
 @onready var section_1d: Node2D = $section_1d
-@onready var nut_counter_label: Label = $"../player/NutCounterLabel"
+@onready var nut_counter_label: Label = $"../UI/NutCounterLabel"
 
 
 var sections = []
@@ -29,23 +29,25 @@ func _ready():
 		section_1c
 	]
 	
-func _on_nut_collected(nut):
+func _on_nut_collected(_nut):
 	nuts_collected += 1
 	nut_counter_label.text = "Nuts: %d" % nuts_collected
 
-func _physics_process(_delta):
+func _process(_delta):
 	
 	var middle = sections[1]
 	
-	while not rotation_cooldown and player.global_position.x > middle.position.x + SECTION_WIDTH:
+	while not rotation_cooldown and player.global_position.x > middle.global_position.x + SECTION_WIDTH:
 		rotation_cooldown = true
 		rotate_right()
+		middle = sections[1]
 		
-	while not rotation_cooldown and player.global_position.x < middle.position.x:
+	while not rotation_cooldown and player.global_position.x < middle.global_position.x:
 		rotation_cooldown = true
 		rotate_left()
+		middle = sections[1]
 		
-	if player.global_position.x > middle.position.x and player.global_position.x < middle.position.x + SECTION_WIDTH:
+	if player.global_position.x > middle.global_position.x and player.global_position.x < middle.global_position.x + SECTION_WIDTH:
 		rotation_cooldown = false
 	
 		
@@ -56,21 +58,22 @@ func print_sections():
 	print(names)
 		
 func rotate_right():
-	
+
 	var first = sections.pop_front()
 	sections.append(first)
-	
+
 	var last = sections[-2]
-	first.set_deferred("position:x", last.position.x + SECTION_WIDTH)
-	
+	first.global_position.x = last.global_position.x + SECTION_WIDTH
+
 	print_sections()
-	
+
+
 func rotate_left():
-	
+
 	var last = sections.pop_back()
 	sections.insert(0, last)
-	
+
 	var first = sections[1]
-	last.set_deferred("position:x", first.position.x + SECTION_WIDTH)
-	
+	last.global_position.x = first.global_position.x - SECTION_WIDTH
+
 	print_sections()

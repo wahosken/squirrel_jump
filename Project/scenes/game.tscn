@@ -16,105 +16,97 @@ script = ExtResource("1_u5sy4")
 
 [node name="section_1a" parent="Level" unique_id=548850363 instance=ExtResource("1_lnu2h")]
 
-[node name="Collectables" type="Node" parent="Level/section_1a" unique_id=631871333]
-
-[node name="nut" parent="Level/section_1a/Collectables" unique_id=1734965692 groups=["nuts"] instance=ExtResource("3_gee14")]
+[node name="nut" parent="Level/section_1a" unique_id=1734965692 groups=["nuts"] instance=ExtResource("3_gee14")]
 position = Vector2(148, -49)
 collision_mask = 2
 
-[node name="nut2" parent="Level/section_1a/Collectables" unique_id=1861408933 groups=["nuts"] instance=ExtResource("3_gee14")]
+[node name="nut2" parent="Level/section_1a" unique_id=1861408933 groups=["nuts"] instance=ExtResource("3_gee14")]
 position = Vector2(400, -177)
 collision_mask = 2
 
-[node name="nut3" parent="Level/section_1a/Collectables" unique_id=2039718003 groups=["nuts"] instance=ExtResource("3_gee14")]
+[node name="nut3" parent="Level/section_1a" unique_id=2039718003 groups=["nuts"] instance=ExtResource("3_gee14")]
 position = Vector2(592, -178)
 collision_mask = 2
 
-[node name="nut4" parent="Level/section_1a/Collectables" unique_id=198753828 groups=["nuts"] instance=ExtResource("3_gee14")]
+[node name="nut4" parent="Level/section_1a" unique_id=198753828 groups=["nuts"] instance=ExtResource("3_gee14")]
 position = Vector2(63, -305)
 collision_mask = 2
 
-[node name="nut5" parent="Level/section_1a/Collectables" unique_id=908954424 groups=["nuts"] instance=ExtResource("3_gee14")]
+[node name="nut5" parent="Level/section_1a" unique_id=908954424 groups=["nuts"] instance=ExtResource("3_gee14")]
 position = Vector2(47, -434)
 collision_mask = 2
 
 [node name="section_1b" parent="Level" unique_id=1438765330 instance=ExtResource("2_lbhrr")]
 position = Vector2(1024, 0)
 
-[node name="Collectables" type="Node" parent="Level/section_1b" unique_id=489105190]
-
-[node name="nut" parent="Level/section_1b/Collectables" unique_id=305396237 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(1264, -51)
+[node name="nut" parent="Level/section_1b" unique_id=305396237 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(240, -51)
 collision_mask = 2
 
-[node name="nut2" parent="Level/section_1b/Collectables" unique_id=82763108 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(1391, -115)
+[node name="nut2" parent="Level/section_1b" unique_id=82763108 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(367, -115)
 collision_mask = 2
 
-[node name="nut3" parent="Level/section_1b/Collectables" unique_id=652199536 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(1296, -275)
+[node name="nut3" parent="Level/section_1b" unique_id=652199536 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(272, -275)
 collision_mask = 2
 
-[node name="nut4" parent="Level/section_1b/Collectables" unique_id=1671448463 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(1070, -435)
+[node name="nut4" parent="Level/section_1b" unique_id=1671448463 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(46, -435)
 collision_mask = 2
 
-[node name="nut5" parent="Level/section_1b/Collectables" unique_id=1838931629 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(1744, -180)
+[node name="nut5" parent="Level/section_1b" unique_id=1838931629 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(720, -180)
 collision_mask = 2
 
 [node name="section_1c" parent="Level" unique_id=2089322900 instance=ExtResource("3_p57ef")]
 position = Vector2(2048, 0)
 
-[node name="Collectables" type="Node" parent="Level/section_1c" unique_id=1629301907]
-
-[node name="nut" parent="Level/section_1c/Collectables" unique_id=1111139359 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(2193, 138)
+[node name="nut" parent="Level/section_1c" unique_id=1111139359 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(145, 138)
 collision_mask = 2
 
-[node name="nut2" parent="Level/section_1c/Collectables" unique_id=1093244205 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(2224, -54)
+[node name="nut2" parent="Level/section_1c" unique_id=1093244205 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(176, -54)
 collision_mask = 2
 
-[node name="nut3" parent="Level/section_1c/Collectables" unique_id=441009040 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(2319, -276)
+[node name="nut3" parent="Level/section_1c" unique_id=441009040 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(271, -276)
 collision_mask = 2
 
-[node name="nut4" parent="Level/section_1c/Collectables" unique_id=880059160 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(2128, -308)
+[node name="nut4" parent="Level/section_1c" unique_id=880059160 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(80, -308)
 collision_mask = 2
 
-[node name="nut5" parent="Level/section_1c/Collectables" unique_id=34352479 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(2094, -437)
+[node name="nut5" parent="Level/section_1c" unique_id=34352479 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(46, -437)
 collision_mask = 2
 
-[node name="nut6" parent="Level/section_1c/Collectables" unique_id=664679122 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(2799, -86)
+[node name="nut6" parent="Level/section_1c" unique_id=664679122 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(751, -86)
 collision_mask = 2
 
 [node name="section_1d" parent="Level" unique_id=1780093662 instance=ExtResource("4_u5sy4")]
 position = Vector2(-1024, 0)
 
-[node name="Collectables" type="Node" parent="Level/section_1d" unique_id=1988653664]
-
-[node name="nut" parent="Level/section_1d/Collectables" unique_id=6382164 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(-976, -86)
+[node name="nut" parent="Level/section_1d" unique_id=6382164 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(48, -86)
 collision_mask = 2
 
-[node name="nut2" parent="Level/section_1d/Collectables" unique_id=368891278 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(-849, 72)
+[node name="nut2" parent="Level/section_1d" unique_id=368891278 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(175, 72)
 collision_mask = 2
 
-[node name="nut3" parent="Level/section_1d/Collectables" unique_id=54220037 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(-1201, -470)
+[node name="nut3" parent="Level/section_1d" unique_id=54220037 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(-177, -470)
 collision_mask = 2
 
-[node name="nut4" parent="Level/section_1d/Collectables" unique_id=522946903 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(-718, -247)
+[node name="nut4" parent="Level/section_1d" unique_id=522946903 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(306, -247)
 collision_mask = 2
 
-[node name="nut5" parent="Level/section_1d/Collectables" unique_id=2094530204 groups=["nuts"] instance=ExtResource("3_gee14")]
-position = Vector2(-367, -379)
+[node name="nut5" parent="Level/section_1d" unique_id=2094530204 groups=["nuts"] instance=ExtResource("3_gee14")]
+position = Vector2(657, -379)
 collision_mask = 2
 
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
@@ -123,19 +115,13 @@ position = Vector2(-19, 32)
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -40)
 zoom = Vector2(2, 2)
+process_callback = 0
 limit_bottom = 300
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 drag_top_margin = 0.3
 drag_bottom_margin = 0.6
-
-[node name="NutCounterLabel" type="Label" parent="player" unique_id=224231220]
-offset_left = -263.0
-offset_top = -182.0
-offset_right = -208.0
-offset_bottom = -159.0
-text = "Nuts: 0"
 
 [node name="Control" type="Control" parent="." unique_id=2080510068]
 layout_mode = 3
@@ -145,24 +131,34 @@ offset_bottom = 40.0
 
 [node name="TouchControls" parent="Control" unique_id=1553114562 instance=ExtResource("5_iywne")]
 
-[connection signal="body_entered" from="Level/section_1a/Collectables/nut" to="Level/section_1a/Collectables/nut" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1a/Collectables/nut2" to="Level/section_1a/Collectables/nut2" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1a/Collectables/nut3" to="Level/section_1a/Collectables/nut3" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1a/Collectables/nut4" to="Level/section_1a/Collectables/nut4" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1a/Collectables/nut5" to="Level/section_1a/Collectables/nut5" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1b/Collectables/nut" to="Level/section_1b/Collectables/nut" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1b/Collectables/nut2" to="Level/section_1b/Collectables/nut2" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1b/Collectables/nut3" to="Level/section_1b/Collectables/nut3" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1b/Collectables/nut4" to="Level/section_1b/Collectables/nut4" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1b/Collectables/nut5" to="Level/section_1b/Collectables/nut5" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1c/Collectables/nut" to="Level/section_1c/Collectables/nut" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1c/Collectables/nut2" to="Level/section_1c/Collectables/nut2" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1c/Collectables/nut3" to="Level/section_1c/Collectables/nut3" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1c/Collectables/nut4" to="Level/section_1c/Collectables/nut4" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1c/Collectables/nut5" to="Level/section_1c/Collectables/nut5" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1c/Collectables/nut6" to="Level/section_1c/Collectables/nut6" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1d/Collectables/nut" to="Level/section_1d/Collectables/nut" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1d/Collectables/nut2" to="Level/section_1d/Collectables/nut2" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1d/Collectables/nut3" to="Level/section_1d/Collectables/nut3" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1d/Collectables/nut4" to="Level/section_1d/Collectables/nut4" method="_on_body_entered"]
-[connection signal="body_entered" from="Level/section_1d/Collectables/nut5" to="Level/section_1d/Collectables/nut5" method="_on_body_entered"]
+[node name="UI" type="CanvasLayer" parent="." unique_id=798985209]
+
+[node name="NutCounterLabel" type="Label" parent="UI" unique_id=224231220]
+offset_left = 22.0
+offset_top = 19.0
+offset_right = 77.0
+offset_bottom = 42.0
+scale = Vector2(1.25, 1.25)
+text = "Nuts: 0"
+
+[connection signal="body_entered" from="Level/section_1a/nut" to="Level/section_1a/nut" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1a/nut2" to="Level/section_1a/nut2" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1a/nut3" to="Level/section_1a/nut3" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1a/nut4" to="Level/section_1a/nut4" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1a/nut5" to="Level/section_1a/nut5" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1b/nut" to="Level/section_1b/nut" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1b/nut2" to="Level/section_1b/nut2" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1b/nut3" to="Level/section_1b/nut3" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1b/nut4" to="Level/section_1b/nut4" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1b/nut5" to="Level/section_1b/nut5" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1c/nut" to="Level/section_1c/nut" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1c/nut2" to="Level/section_1c/nut2" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1c/nut3" to="Level/section_1c/nut3" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1c/nut4" to="Level/section_1c/nut4" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1c/nut5" to="Level/section_1c/nut5" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1c/nut6" to="Level/section_1c/nut6" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1d/nut" to="Level/section_1d/nut" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1d/nut2" to="Level/section_1d/nut2" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1d/nut3" to="Level/section_1d/nut3" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1d/nut4" to="Level/section_1d/nut4" method="_on_body_entered"]
+[connection signal="body_entered" from="Level/section_1d/nut5" to="Level/section_1d/nut5" method="_on_body_entered"]
