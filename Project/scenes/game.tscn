@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cowlcymhjuwxc" path="res://scenes/nut.tscn" id="2_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://cjsobt6r1anvt" path="res://assets/tree_textures.png" id="2_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://cb2ed31ur3cn4" path="res://scenes/killzone.tscn" id="4_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://1jrsofotunv8" path="res://scenes/touch_controls.tscn" id="5_iywne"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnu2h"]
 texture = ExtResource("2_yqjtg")
@@ -122,6 +123,14 @@ position = Vector2(43, 171)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="killzone" unique_id=1282085519]
 position = Vector2(221, 225)
 shape = SubResource("WorldBoundaryShape2D_iywne")
+
+[node name="Control" type="Control" parent="." unique_id=2080510068]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TouchControls" parent="Control" unique_id=1553114562 instance=ExtResource("5_iywne")]
 
 [connection signal="body_entered" from="nuts/nut" to="nuts/nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nuts/nut2" to="nuts/nut2" method="_on_body_entered"]
