@@ -66,7 +66,7 @@ func player_jump():
 		swing.release_swing()
 
 		# Launch along tangent
-		var launch_speed = 450
+		var launch_speed = 500
 		var launch_direction = Vector2(-sin(swing.swing_angle), cos(swing.swing_angle))
 
 		# Set vertical velocity to match normal jump height
