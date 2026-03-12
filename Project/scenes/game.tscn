@@ -19,36 +19,41 @@
 [node name="Level" type="Node2D" parent="." unique_id=2019382659]
 script = ExtResource("1_u5sy4")
 
-[node name="section_1a" parent="Level" unique_id=548850363 instance=ExtResource("1_lnu2h")]
+[node name="row1" type="Node" parent="Level" unique_id=1077442483]
 
-[node name="section_1b" parent="Level" unique_id=1438765330 instance=ExtResource("2_lbhrr")]
+[node name="section_1a" parent="Level/row1" unique_id=548850363 instance=ExtResource("1_lnu2h")]
+
+[node name="section_1b" parent="Level/row1" unique_id=1438765330 instance=ExtResource("2_lbhrr")]
 position = Vector2(1024, 0)
 
-[node name="section_1c" parent="Level" unique_id=2089322900 instance=ExtResource("3_p57ef")]
+[node name="section_1c" parent="Level/row1" unique_id=2089322900 instance=ExtResource("3_p57ef")]
 position = Vector2(2048, 0)
 
-[node name="section_1d" parent="Level" unique_id=1780093662 instance=ExtResource("4_u5sy4")]
+[node name="section_1d" parent="Level/row1" unique_id=1780093662 instance=ExtResource("4_u5sy4")]
 position = Vector2(-2048, 0)
 
-[node name="section_1e" parent="Level" unique_id=259630230 instance=ExtResource("7_0tnpc")]
+[node name="section_1e" parent="Level/row1" unique_id=259630230 instance=ExtResource("7_0tnpc")]
 position = Vector2(-1024, 0)
 
-[node name="section_2a" parent="Level" unique_id=1735897428 instance=ExtResource("7_vtaks")]
+[node name="row2" type="Node" parent="Level" unique_id=1021061550]
+
+[node name="section_2a" parent="Level/row2" unique_id=1735897428 instance=ExtResource("7_vtaks")]
 position = Vector2(0, -2016)
 
-[node name="section_2b" parent="Level" unique_id=1797745642 instance=ExtResource("8_vtaks")]
+[node name="section_2b" parent="Level/row2" unique_id=1797745642 instance=ExtResource("8_vtaks")]
 position = Vector2(1024, -2016)
 
-[node name="section_2c" parent="Level" unique_id=1684302707 instance=ExtResource("9_kvuet")]
+[node name="section_2c" parent="Level/row2" unique_id=1684302707 instance=ExtResource("9_kvuet")]
 position = Vector2(2048, -2016)
 
-[node name="section_2d" parent="Level" unique_id=1271155868 instance=ExtResource("10_trtic")]
+[node name="section_2d" parent="Level/row2" unique_id=1271155868 instance=ExtResource("10_trtic")]
 position = Vector2(-2048, -2016)
 
-[node name="section_2e" parent="Level" unique_id=704546187 instance=ExtResource("11_ir15t")]
+[node name="section_2e" parent="Level/row2" unique_id=704546187 instance=ExtResource("11_ir15t")]
 position = Vector2(-1024, -2016)
 
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
+z_index = 5
 position = Vector2(-19, 32)
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]

@@ -1,146 +1,146 @@
 extends Node2D
 
-
+# --- CONFIG ---
 const SECTION_WIDTH = 1024
 const SECTION_HEIGHT = 2016
 const ACTIVE_ROW_RANGE = 1
+const LOOP_BUFFER = 200
 
+# --- NODES ---
 @onready var player: CharacterBody2D = $"../player"
-@onready var section_1a: Node2D = $section_1a
-@onready var section_1b: Node2D = $section_1b
-@onready var section_1c: Node2D = $section_1c
-@onready var section_1d: Node2D = $section_1d
-@onready var section_1e: Node2D = $section_1e
-@onready var section_2a: Node2D = $section_2a
-@onready var section_2b: Node2D = $section_2b
-@onready var section_2c: Node2D = $section_2c
-@onready var section_2d: Node2D = $section_2d
-@onready var section_2e: Node2D = $section_2e
 @onready var nut_counter_label: Label = $"../UI/NutCounterLabel"
 
-
-var sections = []
-var rotation_cooldown = false
+# --- DATA ---
+var rows: Array = []          # Rows of sections
+var columns: Array = []       # Columns of sections
+var current_row: int = -1
 var nuts_collected: int = 0
-var rows = []
-var current_row := -1
 
+# --- READY ---
 func _ready():
-	
+	_setup_rows_and_columns()
+	_initialize_column_positions()
+	update_horizontal_visibility()
+	_connect_nuts()
+
+# --- NUTS ---
+func _connect_nuts():
 	for nut in get_tree().get_nodes_in_group("nuts"):
 		var callback = Callable(self, "_on_nut_collected")
 		if not nut.is_connected("collected", callback):
 			nut.connect("collected", callback)
-	
-	sections = [
-		section_1d,
-		section_1e,
-		section_1a,
-		section_1b,
-		section_1c
-	]
-	
-	rows = [
-		[section_1d,
-		section_1e,
-		section_1a,
-		section_1b,
-		section_1c],
-		[section_2d,
-		section_2e, 
-		section_2a, 
-		section_2b,
-		section_2c]
-	]
-	
-	update_horizontal_visibility()
-	
+
 func _on_nut_collected(_nut):
 	nuts_collected += 1
 	nut_counter_label.text = "Nuts: %d" % nuts_collected
 
+# --- PROCESS ---
 func _process(_delta):
-	
 	update_vertical_sections()
 	update_horizontal_loop()
-	
-		
-func print_sections():
-	var names = []
-	for s in sections:
-		names.append(s.name)
-	print(names)
-	
-		
+
+# --- SETUP ROWS & COLUMNS ---
+func _setup_rows_and_columns():
+	# Build rows
+	for row_node in get_children():
+		rows.append(row_node.get_children())
+
+	current_row = 0  # start at first row
+
+	# Build columns
+	var col_count = rows[0].size()
+	for i in range(col_count):
+		var column = []
+		for r in rows:
+			column.append(r[i])
+		columns.append(column)
+
+func _initialize_column_positions():
+	for i in range(columns.size()):
+		for section in columns[i]:
+			section.global_position.x = i * SECTION_WIDTH
+
+# --- HORIZONTAL LOOP ---
 func rotate_right():
+	if columns.size() < 2:
+		return
 
-	var first = sections.pop_front()
-	sections.append(first)
+	var first = columns.pop_front()
+	columns.append(first)
 
-	var last = sections[-2]
-	first.global_position.x = last.global_position.x + SECTION_WIDTH
-	
-	update_horizontal_visibility()
+	var rightmost = columns[columns.size() - 2]
+	for i in range(first.size()):
+		first[i].global_position.x = rightmost[i].global_position.x + SECTION_WIDTH
 
-	print_sections()
-
+	call_deferred("update_horizontal_visibility")
 
 func rotate_left():
+	if columns.size() < 2:
+		return
 
-	var last = sections.pop_back()
-	sections.insert(0, last)
+	var last = columns.pop_back()
+	columns.insert(0, last)
 
-	var first = sections[1]
-	last.global_position.x = first.global_position.x - SECTION_WIDTH
-	
-	update_horizontal_visibility()
+	var leftmost = columns[1]
+	for i in range(last.size()):
+		last[i].global_position.x = leftmost[i].global_position.x - SECTION_WIDTH
 
-	print_sections()
-	
+	call_deferred("update_horizontal_visibility")
+
+# --- VISIBILITY ---
 func update_horizontal_visibility():
+	if columns.size() == 0:
+		return
 
-	var middle_index = 1
+	# Show 3 columns: middle + left + right
+	var middle_index = int(columns.size() / 2)
+	for i in range(columns.size()):
+		var should_be_visible = abs(i - middle_index) <= 1
+		for section in columns[i]:
+			section.visible = should_be_visible
 
-	for i in range(sections.size()):
-
-		if abs(i - middle_index) <= 1:
-			sections[i].visible = true
-		else:
-			sections[i].visible = false
-	
+# --- VERTICAL ROW ACTIVATION ---
 func set_section_active(section: Node2D, active: bool):
-	
-	if active:
-		section.process_mode = Node.PROCESS_MODE_INHERIT
-	else:
-		section.process_mode = Node.PROCESS_MODE_DISABLED
-		
-func get_player_row():
-	
-	return int(player.global_position.y / SECTION_HEIGHT)
-	
-func update_vertical_sections():
+	section.process_mode = Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
 
+func get_player_row() -> int:
+	return int(player.global_position.y / SECTION_HEIGHT)
+
+func update_vertical_sections():
 	var player_row = clamp(get_player_row(), 0, rows.size() - 1)
 
 	if player_row != current_row:
 		current_row = player_row
-		sections = rows[current_row]
 
 	for i in range(rows.size()):
-
 		var active = abs(i - player_row) <= ACTIVE_ROW_RANGE
-
 		for section in rows[i]:
 			set_section_active(section, active)
 
-			
+# --- HORIZONTAL LOOP CHECK ---
 func update_horizontal_loop():
+	if columns.size() < 2:
+		return
 
-	var middle = sections[1]
+	var safe_row = clamp(current_row, 0, rows.size() - 1)
+	var middle_index = int(columns.size() / 2)
+	var middle = columns[middle_index][safe_row]
 
-	if player.global_position.x > middle.global_position.x + SECTION_WIDTH:
+	if player.global_position.x > middle.global_position.x + SECTION_WIDTH + LOOP_BUFFER:
 		rotate_right()
-
-	elif player.global_position.x < middle.global_position.x:
+		print("rotate right")
+		print_column_layout()
+	elif player.global_position.x < middle.global_position.x - LOOP_BUFFER:
 		rotate_left()
+		print("rotate left")
+		print_column_layout()
+
+# --- DEBUG LAYOUT ---
+func print_column_layout():
+	print("---- COLUMN LAYOUT ----")
+	for r in range(rows.size()):
+		var row_names = []
+		for c in range(columns.size()):
+			row_names.append(columns[c][r].name)
+		print(row_names)
+	print("-----------------------")
