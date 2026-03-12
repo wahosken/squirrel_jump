@@ -33,6 +33,7 @@ func _process(delta):
 	debug_timer += delta
 	if debug_timer >= DEBUG_PRINT_INTERVAL:
 		print_column_layout()
+		print_visible_rows()
 		print_active_sections()
 		print_active_nuts()
 		debug_timer = 0
@@ -156,6 +157,16 @@ func print_column_layout():
 		var letter = name.substr(name.length() - 1, 1)
 		layout += "[" + letter + "]"
 	print(layout)
+	
+func print_visible_rows():
+	var visible_rows := []
+	for r in range(rows.size()):
+		# A row is visible if any section in that row is active
+		for c in columns:
+			if c[r].visible:
+				visible_rows.append(r)
+				break
+	print("Visible rows:", visible_rows)
 
 func print_active_sections():
 	var active_sections := 0
