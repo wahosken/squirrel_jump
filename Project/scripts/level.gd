@@ -17,6 +17,7 @@ var current_row: int = -1
 var nuts_collected: int = 0
 var debug_timer := 0.0
 
+
 # --- READY ---
 func _ready():
 	_setup_rows_and_columns()
@@ -30,8 +31,11 @@ func _process(delta):
 	update_horizontal_loop()
 
 	# Debug printing
+	var time = Time.get_time_dict_from_system()
 	debug_timer += delta
 	if debug_timer >= DEBUG_PRINT_INTERVAL:
+		print("--------")
+		print(time)
 		print_column_layout()
 		print_visible_rows()
 		print_active_sections()

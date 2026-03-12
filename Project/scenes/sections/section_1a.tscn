@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cjsobt6r1anvt" path="res://assets/tree_textures.png" id="1_wwbim"]
 [ext_resource type="PackedScene" uid="uid://cowlcymhjuwxc" path="res://scenes/nut.tscn" id="2_wwbim"]
+[ext_resource type="PackedScene" uid="uid://b0mudofjv6wtb" path="res://scenes/branch.tscn" id="3_nxisb"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wwbim"]
 texture = ExtResource("1_wwbim")
@@ -90,6 +91,18 @@ collision_mask = 2
 [node name="nut5" parent="." unique_id=69812037 groups=["nuts"] instance=ExtResource("2_wwbim")]
 position = Vector2(47, -434)
 collision_mask = 2
+
+[node name="Branch" parent="." unique_id=327421520 instance=ExtResource("3_nxisb")]
+position = Vector2(25, -53)
+
+[node name="Branch2" parent="." unique_id=1689976413 instance=ExtResource("3_nxisb")]
+position = Vector2(-156, 79)
+
+[node name="Branch3" parent="." unique_id=776119234 instance=ExtResource("3_nxisb")]
+position = Vector2(-56, 174)
+
+[node name="Branch4" parent="." unique_id=635936216 instance=ExtResource("3_nxisb")]
+position = Vector2(45, 109)
 
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nut2" to="nut2" method="_on_body_entered"]

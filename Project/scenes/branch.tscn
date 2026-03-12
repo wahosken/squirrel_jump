@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://b0mudofjv6wtb"]
+
+[ext_resource type="Script" uid="uid://c3boe57htp4d5" path="res://scripts/branch.gd" id="1_i083o"]
+[ext_resource type="Texture2D" uid="uid://0pfcxtugrcnh" path="res://assets/branch.png" id="2_daurq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kkb3n"]
+radius = 11.0
+
+[node name="Branch" type="Node2D" unique_id=327421520]
+script = ExtResource("1_i083o")
+
+[node name="SwingPoint" type="Marker2D" parent="." unique_id=2077245437]
+
+[node name="GrabArea" type="Area2D" parent="." unique_id=2074685663]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GrabArea" unique_id=1288126211]
+shape = SubResource("CircleShape2D_kkb3n")
+
+[node name="Branch" type="Sprite2D" parent="." unique_id=382076723]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_daurq")
+
+[connection signal="body_entered" from="GrabArea" to="." method="_on_grab_area_body_entered"]
