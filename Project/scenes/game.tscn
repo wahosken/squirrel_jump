@@ -13,6 +13,11 @@
 [ext_resource type="PackedScene" uid="uid://c43fpqveleqlm" path="res://scenes/section_2c.tscn" id="9_kvuet"]
 [ext_resource type="PackedScene" uid="uid://bt0a5i57qd4aa" path="res://scenes/section_2d.tscn" id="10_trtic"]
 [ext_resource type="PackedScene" uid="uid://b5xvnaht01thw" path="res://scenes/section_2e.tscn" id="11_ir15t"]
+[ext_resource type="PackedScene" uid="uid://cmrujrtlsxy8h" path="res://scenes/section_3a.tscn" id="12_ssvqc"]
+[ext_resource type="PackedScene" uid="uid://c65gxdt43f8oj" path="res://scenes/section_3b.tscn" id="13_264po"]
+[ext_resource type="PackedScene" uid="uid://mt5ljnrfgcvb" path="res://scenes/section_3c.tscn" id="14_1kice"]
+[ext_resource type="PackedScene" uid="uid://44o8lfenmr3c" path="res://scenes/section_3d.tscn" id="15_5newe"]
+[ext_resource type="PackedScene" uid="uid://81tpxc44mhlt" path="res://scenes/section_3e.tscn" id="16_37s47"]
 
 [node name="Game" type="Node2D" unique_id=1617569227]
 
@@ -51,6 +56,23 @@ position = Vector2(-2048, -2016)
 
 [node name="section_2e" parent="Level/row2" unique_id=704546187 instance=ExtResource("11_ir15t")]
 position = Vector2(-1024, -2016)
+
+[node name="row3" type="Node" parent="Level" unique_id=685363304]
+
+[node name="section_3a" parent="Level/row3" unique_id=413466946 instance=ExtResource("12_ssvqc")]
+position = Vector2(0, -4032)
+
+[node name="section_3b" parent="Level/row3" unique_id=1852754864 instance=ExtResource("13_264po")]
+position = Vector2(1024, -4032)
+
+[node name="section_3c" parent="Level/row3" unique_id=1013247224 instance=ExtResource("14_1kice")]
+position = Vector2(2048, -4032)
+
+[node name="section_3d" parent="Level/row3" unique_id=99097940 instance=ExtResource("15_5newe")]
+position = Vector2(-2048, -4032)
+
+[node name="section_3e" parent="Level/row3" unique_id=585049405 instance=ExtResource("16_37s47")]
+position = Vector2(-1024, -4032)
 
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
 z_index = 5

@@ -3,7 +3,6 @@ extends Node2D
 # --- CONFIG ---
 const SECTION_WIDTH = 1024
 const SECTION_HEIGHT = 2016
-const ACTIVE_ROW_RANGE = 1
 const LOOP_BUFFER = 200
 
 # --- NODES ---
@@ -20,7 +19,7 @@ var nuts_collected: int = 0
 func _ready():
 	_setup_rows_and_columns()
 	_initialize_column_positions()
-	update_horizontal_visibility()
+	update_section_visibility()
 	_connect_nuts()
 
 # --- NUTS ---
@@ -38,14 +37,13 @@ func _on_nut_collected(_nut):
 func _process(_delta):
 	update_vertical_sections()
 	update_horizontal_loop()
+	
 
 # --- SETUP ROWS & COLUMNS ---
 func _setup_rows_and_columns():
 	# Build rows
 	for row_node in get_children():
 		rows.append(row_node.get_children())
-
-	current_row = 0  # start at first row
 
 	# Build columns
 	var col_count = rows[0].size()
@@ -72,7 +70,7 @@ func rotate_right():
 	for i in range(first.size()):
 		first[i].global_position.x = rightmost[i].global_position.x + SECTION_WIDTH
 
-	call_deferred("update_horizontal_visibility")
+	call_deferred("update_section_visibility")
 
 func rotate_left():
 	if columns.size() < 2:
@@ -85,37 +83,47 @@ func rotate_left():
 	for i in range(last.size()):
 		last[i].global_position.x = leftmost[i].global_position.x - SECTION_WIDTH
 
-	call_deferred("update_horizontal_visibility")
+	call_deferred("update_section_visibility")
 
 # --- VISIBILITY ---
-func update_horizontal_visibility():
+func update_section_visibility():
 	if columns.size() == 0:
 		return
 
-	# Show 3 columns: middle + left + right
 	var middle_index = int(columns.size() / 2)
-	for i in range(columns.size()):
-		var should_be_visible = abs(i - middle_index) <= 1
-		for section in columns[i]:
-			section.visible = should_be_visible
+
+	for c in range(columns.size()):
+		var column_visible = abs(c - middle_index) <= 1
+
+		for r in range(rows.size()):
+			var section = columns[c][r]
+
+			var row_visible = (r == current_row or r == current_row - 1)
+
+			section.visible = column_visible and row_visible
 
 # --- VERTICAL ROW ACTIVATION ---
 func set_section_active(section: Node2D, active: bool):
 	section.process_mode = Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
 
 func get_player_row() -> int:
-	return int(player.global_position.y / SECTION_HEIGHT)
+	return int((-player.global_position.y + SECTION_HEIGHT / 2) / SECTION_HEIGHT)
 
 func update_vertical_sections():
 	var player_row = clamp(get_player_row(), 0, rows.size() - 1)
 
-	if player_row != current_row:
-		current_row = player_row
+	if player_row == current_row:
+		return
+
+	current_row = player_row
 
 	for i in range(rows.size()):
-		var active = abs(i - player_row) <= ACTIVE_ROW_RANGE
+		var active = (i == player_row)
 		for section in rows[i]:
 			set_section_active(section, active)
+
+	update_section_visibility()
+
 
 # --- HORIZONTAL LOOP CHECK ---
 func update_horizontal_loop():
