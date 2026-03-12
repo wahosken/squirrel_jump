@@ -25,6 +25,10 @@ driver/mix_rate=48000
 window/stretch/mode="canvas_items"
 window/handheld/orientation=4
 
+[global_group]
+
+nuts=""
+
 [input]
 
 jump={
