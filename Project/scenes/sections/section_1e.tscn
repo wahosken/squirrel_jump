@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cjsobt6r1anvt" path="res://assets/tree_textures.png" id="1_kkvqq"]
 [ext_resource type="PackedScene" uid="uid://cowlcymhjuwxc" path="res://scenes/nut.tscn" id="2_wfh23"]
+[ext_resource type="PackedScene" uid="uid://b0mudofjv6wtb" path="res://scenes/branch.tscn" id="3_p6lov"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wfh23"]
 texture = ExtResource("1_kkvqq")
@@ -82,6 +83,24 @@ collision_mask = 2
 [node name="nut3" parent="." unique_id=1653699892 groups=["nuts"] instance=ExtResource("2_wfh23")]
 position = Vector2(241, -373)
 collision_mask = 2
+
+[node name="Branch" parent="." unique_id=327421520 instance=ExtResource("3_p6lov")]
+position = Vector2(761, 154)
+
+[node name="Branch2" parent="." unique_id=1310869499 instance=ExtResource("3_p6lov")]
+position = Vector2(685, 117)
+
+[node name="Branch3" parent="." unique_id=1563232607 instance=ExtResource("3_p6lov")]
+position = Vector2(616, 165)
+
+[node name="Branch4" parent="." unique_id=2106281419 instance=ExtResource("3_p6lov")]
+position = Vector2(542, 111)
+
+[node name="Branch5" parent="." unique_id=1942973338 instance=ExtResource("3_p6lov")]
+position = Vector2(466, 166)
+
+[node name="Branch6" parent="." unique_id=1643955415 instance=ExtResource("3_p6lov")]
+position = Vector2(401, 112)
 
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nut2" to="nut2" method="_on_body_entered"]
