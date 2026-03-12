@@ -93,7 +93,7 @@ func update_section_visibility():
 	if columns.size() == 0:
 		return
 
-	var middle_index = int(columns.size() / 2)
+	var middle_index = int(columns.size() / 2.0)
 
 	for c in range(columns.size()):
 		var column_active = abs(c - middle_index) <= 1
@@ -125,7 +125,7 @@ func set_section_active(section: Node, active: bool):
 
 # --- VERTICAL ROW UPDATE ---
 func get_player_row() -> int:
-	return int((-player.global_position.y + SECTION_HEIGHT / 2) / SECTION_HEIGHT)
+	return int((-player.global_position.y + SECTION_HEIGHT / 2.0) / SECTION_HEIGHT)
 
 func update_vertical_sections():
 	var player_row = clamp(get_player_row(), 0, rows.size() - 1)
@@ -139,7 +139,7 @@ func update_horizontal_loop():
 		return
 
 	var safe_row = clamp(current_row, 0, rows.size() - 1)
-	var middle_index = int(columns.size() / 2)
+	var middle_index = int(columns.size() / 2.0)
 	var middle = columns[middle_index][safe_row]
 
 	if player.global_position.x > middle.global_position.x + SECTION_WIDTH + LOOP_BUFFER:
@@ -153,8 +153,8 @@ func update_horizontal_loop():
 func print_column_layout():
 	var layout := ""
 	for c in range(columns.size()):
-		var name = columns[c][0].name
-		var letter = name.substr(name.length() - 1, 1)
+		var column_name = columns[c][0].name
+		var letter = column_name.substr(column_name.length() - 1, 1)
 		layout += "[" + letter + "]"
 	print(layout)
 	
