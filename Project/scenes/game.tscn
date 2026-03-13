@@ -123,16 +123,13 @@ script = ExtResource("20_5newe")
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.034
-anchor_top = 0.8
-anchor_right = 0.231
-anchor_bottom = 0.94600004
-offset_left = 0.5200043
-offset_top = 0.23999023
-offset_right = -106.360016
-offset_bottom = -52.50006
-grow_horizontal = 2
-grow_vertical = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -119.0
+offset_right = 128.5
+offset_bottom = -69.0
+grow_vertical = 0
 scale = Vector2(2, 2)
 
 [node name="Left" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=419540657]
@@ -151,24 +148,26 @@ texture_pressed = ExtResource("22_suyxu")
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.776
-anchor_top = 0.81100005
-anchor_right = 0.96900004
-anchor_bottom = 0.94900006
-offset_left = -0.08001709
-offset_top = -0.32006836
-offset_right = -104.52002
-offset_bottom = -99.28003
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -135.0
+offset_top = -243.0
+offset_right = -75.5
+offset_bottom = -134.0
+grow_horizontal = 0
+grow_vertical = 0
 scale = Vector2(2, 2)
 
 [node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
-position = Vector2(53.5, -2.7999878)
+position = Vector2(6, 59)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("25_wljb1")
 texture_pressed = ExtResource("26_v2yb1")
 
 [node name="Up" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=907483779]
-position = Vector2(53, -54.799988)
+position = Vector2(5.5, 7)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("23_sgl2t")
 texture_pressed = ExtResource("24_qouja")
