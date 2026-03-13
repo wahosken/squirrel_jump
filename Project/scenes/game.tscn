@@ -130,19 +130,17 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
 
-[node name="Left" type="TextureButton" parent="Overlay/UI/HBoxContainer" unique_id=96213620]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
+[node name="Left" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=419540657]
+position = Vector2(1.3799973, 4.880005)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("19_bhx41")
 texture_pressed = ExtResource("20_qnb83")
-stretch_mode = 5
 
-[node name="Right" type="TextureButton" parent="Overlay/UI/HBoxContainer" unique_id=2146933823]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
+[node name="Right" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=2090334822]
+position = Vector2(55.379997, 3.880005)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("21_sww3w")
 texture_pressed = ExtResource("22_suyxu")
-stretch_mode = 5
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Overlay/UI" unique_id=401112681]
 custom_minimum_size = Vector2(50, 50)
@@ -158,19 +156,17 @@ offset_right = -104.52002
 offset_bottom = -99.28003
 scale = Vector2(2, 2)
 
-[node name="Down" type="TextureButton" parent="Overlay/UI/HBoxContainer2" unique_id=1196680201]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
+[node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
+position = Vector2(60, 7.700012)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("25_wljb1")
 texture_pressed = ExtResource("26_v2yb1")
-stretch_mode = 5
 
-[node name="Up" type="TextureButton" parent="Overlay/UI/HBoxContainer2" unique_id=1411314697]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
+[node name="Up" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=907483779]
+position = Vector2(59.5, -44.299988)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("23_sgl2t")
 texture_pressed = ExtResource("24_qouja")
-stretch_mode = 5
 
 [node name="NutCounterLabel" type="Label" parent="Overlay" unique_id=1285863482]
 unique_name_in_owner = true
@@ -186,11 +182,11 @@ offset_bottom = 0.11999512
 theme_override_font_sizes/font_size = 32
 text = "Nuts: 0"
 
-[connection signal="button_down" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_button_down"]
-[connection signal="button_up" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_button_up"]
-[connection signal="button_down" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_button_down"]
-[connection signal="button_up" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_button_up"]
-[connection signal="button_down" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_button_down"]
-[connection signal="button_up" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_button_up"]
-[connection signal="button_down" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_button_down"]
-[connection signal="button_up" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_button_up"]
+[connection signal="pressed" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_pressed"]
+[connection signal="released" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_released"]
+[connection signal="pressed" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_pressed"]
+[connection signal="released" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_released"]
+[connection signal="pressed" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_pressed"]
+[connection signal="released" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_released"]
+[connection signal="pressed" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_pressed"]
+[connection signal="released" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_released"]
