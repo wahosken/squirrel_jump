@@ -107,7 +107,6 @@ script = ExtResource("18_264po")
 
 [node name="UI" type="Control" parent="Overlay" unique_id=1387734739]
 z_index = 1
-custom_minimum_size = Vector2(1080, 720)
 layout_mode = 3
 anchors_preset = 7
 anchor_left = 0.5
