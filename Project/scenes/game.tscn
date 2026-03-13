@@ -133,7 +133,6 @@ scale = Vector2(2, 2)
 [node name="Left" type="TextureButton" parent="Overlay/UI/HBoxContainer" unique_id=96213620]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-mouse_filter = 1
 texture_normal = ExtResource("19_bhx41")
 texture_pressed = ExtResource("20_qnb83")
 stretch_mode = 5
@@ -141,7 +140,6 @@ stretch_mode = 5
 [node name="Right" type="TextureButton" parent="Overlay/UI/HBoxContainer" unique_id=2146933823]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-mouse_filter = 1
 texture_normal = ExtResource("21_sww3w")
 texture_pressed = ExtResource("22_suyxu")
 stretch_mode = 5
@@ -163,7 +161,6 @@ scale = Vector2(2, 2)
 [node name="Down" type="TextureButton" parent="Overlay/UI/HBoxContainer2" unique_id=1196680201]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-mouse_filter = 1
 texture_normal = ExtResource("25_wljb1")
 texture_pressed = ExtResource("26_v2yb1")
 stretch_mode = 5
@@ -171,7 +168,6 @@ stretch_mode = 5
 [node name="Up" type="TextureButton" parent="Overlay/UI/HBoxContainer2" unique_id=1411314697]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-mouse_filter = 1
 texture_normal = ExtResource("23_sgl2t")
 texture_pressed = ExtResource("24_qouja")
 stretch_mode = 5
