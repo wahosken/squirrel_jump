@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://b0i8sfkf1l8tv" path="res://scenes/sections/section_1b.tscn" id="3_264po"]
 [ext_resource type="PackedScene" uid="uid://coywjsf3roitn" path="res://scenes/sections/section_1c.tscn" id="4_1kice"]
 [ext_resource type="PackedScene" uid="uid://284ow4xrh6lj" path="res://scenes/sections/section_1d.tscn" id="5_5newe"]
-[ext_resource type="PackedScene" uid="uid://84m1e17ihhte" path="res://scenes/touch_controls.tscn" id="5_iywne"]
 [ext_resource type="PackedScene" uid="uid://p54eo75n40ks" path="res://scenes/sections/section_1e.tscn" id="6_37s47"]
 [ext_resource type="PackedScene" uid="uid://dppkvg140eavc" path="res://scenes/sections/section_2a.tscn" id="7_bt5mj"]
 [ext_resource type="PackedScene" uid="uid://dhuet7jx8h4lu" path="res://scenes/sections/section_2b.tscn" id="8_e1j6l"]
@@ -19,6 +18,15 @@
 [ext_resource type="PackedScene" uid="uid://44o8lfenmr3c" path="res://scenes/sections/section_3d.tscn" id="15_qouja"]
 [ext_resource type="PackedScene" uid="uid://81tpxc44mhlt" path="res://scenes/sections/section_3e.tscn" id="16_wljb1"]
 [ext_resource type="Script" uid="uid://bslbo67tno0pw" path="res://scripts/swing_component.gd" id="18_264po"]
+[ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/buttons7.png" id="19_bhx41"]
+[ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
+[ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/buttons8.png" id="20_qnb83"]
+[ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/buttons3.png" id="21_sww3w"]
+[ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/buttons4.png" id="22_suyxu"]
+[ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/buttons1.png" id="23_sgl2t"]
+[ext_resource type="Texture2D" uid="uid://cbpce4bcqgnrw" path="res://assets/buttons2.png" id="24_qouja"]
+[ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/buttons5.png" id="25_wljb1"]
+[ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/buttons6.png" id="26_v2yb1"]
 
 [node name="Game" type="Node2D" unique_id=1617569227]
 
@@ -93,28 +101,96 @@ drag_bottom_margin = 0.6
 [node name="SwingComponent" type="Node" parent="player" unique_id=1649209229]
 script = ExtResource("18_264po")
 
-[node name="Control" type="Control" parent="." unique_id=2080510068]
+[node name="Overlay" type="CanvasLayer" parent="." unique_id=1855333385]
+
+[node name="UI" type="Control" parent="Overlay" unique_id=1387734739]
+z_index = 1
+custom_minimum_size = Vector2(1080, 720)
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("20_5newe")
 
-[node name="TouchControls" parent="Control" unique_id=1553114562 instance=ExtResource("5_iywne")]
+[node name="HBoxContainer" type="HBoxContainer" parent="Overlay/UI" unique_id=529509077]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.034
+anchor_top = 0.8
+anchor_right = 0.231
+anchor_bottom = 0.94600004
+offset_left = 0.5200043
+offset_top = 0.23999023
+offset_right = -106.360016
+offset_bottom = -52.50006
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
 
-[node name="UI" type="CanvasLayer" parent="." unique_id=798985209]
+[node name="Left" type="TextureButton" parent="Overlay/UI/HBoxContainer" unique_id=96213620]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = ExtResource("19_bhx41")
+texture_pressed = ExtResource("20_qnb83")
+stretch_mode = 5
 
-[node name="NutCounterLabel" type="Label" parent="UI" unique_id=224231220]
-offset_left = 22.0
-offset_top = 19.0
-offset_right = 77.0
-offset_bottom = 42.0
-scale = Vector2(1.25, 1.25)
+[node name="Right" type="TextureButton" parent="Overlay/UI/HBoxContainer" unique_id=2146933823]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = ExtResource("21_sww3w")
+texture_pressed = ExtResource("22_suyxu")
+stretch_mode = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Overlay/UI" unique_id=401112681]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.776
+anchor_top = 0.81100005
+anchor_right = 0.96900004
+anchor_bottom = 0.94900006
+offset_left = -0.08001709
+offset_top = -0.32006836
+offset_right = -104.52002
+offset_bottom = -99.28003
+scale = Vector2(2, 2)
+
+[node name="Down" type="TextureButton" parent="Overlay/UI/HBoxContainer2" unique_id=1196680201]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = ExtResource("25_wljb1")
+texture_pressed = ExtResource("26_v2yb1")
+stretch_mode = 5
+
+[node name="Up" type="TextureButton" parent="Overlay/UI/HBoxContainer2" unique_id=1411314697]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = ExtResource("23_sgl2t")
+texture_pressed = ExtResource("24_qouja")
+stretch_mode = 5
+
+[node name="NutCounterLabel" type="Label" parent="Overlay" unique_id=1285863482]
+unique_name_in_owner = true
+anchors_preset = -1
+anchor_left = 0.044000003
+anchor_top = 0.042000003
+anchor_right = 0.14500001
+anchor_bottom = 0.104
+offset_left = 0.47999573
+offset_top = -0.24000168
+offset_right = 0.3999939
+offset_bottom = 0.11999512
+theme_override_font_sizes/font_size = 32
 text = "Nuts: 0"
+
+[connection signal="button_down" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_button_down"]
+[connection signal="button_up" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_button_up"]
+[connection signal="button_down" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_button_down"]
+[connection signal="button_up" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_button_up"]
+[connection signal="button_down" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_button_down"]
+[connection signal="button_up" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_button_up"]
+[connection signal="button_down" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_button_down"]
+[connection signal="button_up" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_button_up"]

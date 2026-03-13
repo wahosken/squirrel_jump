@@ -8,7 +8,7 @@ const DEBUG_PRINT_INTERVAL = 6.0  # seconds
 
 # --- NODES ---
 @onready var player: CharacterBody2D = $"../player"
-@onready var nut_counter_label: Label = $"../UI/NutCounterLabel"
+@onready var nut_counter_label: Label = %NutCounterLabel
 
 # --- DATA / STATE ---
 var rows: Array = []          # rows of sections
