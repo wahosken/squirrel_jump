@@ -18,9 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://mt5ljnrfgcvb" path="res://scenes/sections/section_3c.tscn" id="14_sgl2t"]
 [ext_resource type="PackedScene" uid="uid://44o8lfenmr3c" path="res://scenes/sections/section_3d.tscn" id="15_qouja"]
 [ext_resource type="PackedScene" uid="uid://81tpxc44mhlt" path="res://scenes/sections/section_3e.tscn" id="16_wljb1"]
-[ext_resource type="Script" uid="uid://dkx8yc0kw6yep" path="res://scripts/camera.gd" id="18_1kice"]
 [ext_resource type="Script" uid="uid://bslbo67tno0pw" path="res://scripts/swing_component.gd" id="18_264po"]
-[ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
 
 [node name="Game" type="Node2D" unique_id=1617569227]
 
@@ -91,7 +89,6 @@ position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 drag_top_margin = 0.3
 drag_bottom_margin = 0.6
-script = ExtResource("18_1kice")
 
 [node name="SwingComponent" type="Node" parent="player" unique_id=1649209229]
 script = ExtResource("18_264po")
@@ -109,7 +106,6 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("20_5newe")
 
 [node name="TouchControls" parent="Control" unique_id=1553114562 instance=ExtResource("5_iywne")]
 
