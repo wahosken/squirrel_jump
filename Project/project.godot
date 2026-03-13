@@ -25,6 +25,7 @@ driver/mix_rate=48000
 window/size/viewport_width=1080
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/handheld/orientation=6
 
 [global_group]
