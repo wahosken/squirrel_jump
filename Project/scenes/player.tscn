@@ -66,6 +66,10 @@ region = Rect2(128, 32, 64, 32)
 atlas = ExtResource("2_g2els")
 region = Rect2(0, 128, 64, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_a8ls1"]
+atlas = ExtResource("2_g2els")
+region = Rect2(128, 96, 64, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_dqkch"]
 animations = [{
 "frames": [{
@@ -144,6 +148,14 @@ animations = [{
 "loop": true,
 "name": &"swing",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a8ls1")
+}],
+"loop": true,
+"name": &"wall_cling",
+"speed": 5.0
 }]
 
 [node name="player" type="CharacterBody2D" unique_id=131994215]
@@ -160,7 +172,7 @@ shape = SubResource("RectangleShape2D_qlg0r")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals" unique_id=203799251]
 position = Vector2(-11, -16)
 sprite_frames = SubResource("SpriteFrames_dqkch")
-animation = &"idle"
+animation = &"wall_cling"
 autoplay = "idle"
 
 [node name="GrabPoint" type="Marker2D" parent="Visuals" unique_id=990645229]

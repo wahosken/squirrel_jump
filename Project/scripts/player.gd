@@ -30,8 +30,13 @@ var facing_right: bool = true
 var camera_normal_position := Vector2.ZERO
 var camera_swing_offset := Vector2(8, -5)
 
-enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING }
+enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING, WALL_CLING }
 var state = PlayerState.IDLE
+
+@export var wall_cling_slide_speed: float = 30.0
+
+var is_wall_clinging: bool = false
+var wall_dir: int = 0
 
 # --- Nodes ---
 @onready var visuals: Node2D = $Visuals
@@ -67,6 +72,33 @@ func change_state(new_state):
 		PlayerState.GLIDE: play_anim("glide")
 		PlayerState.CROUCH: play_anim("crouch")
 		PlayerState.SWING: play_anim("swing")
+		PlayerState.WALL_CLING: play_anim("wall_cling")
+		
+func check_wall_cling(input_dir: float) -> void:
+	is_wall_clinging = false
+	wall_dir = 0
+
+	if is_on_floor():
+		return
+
+	if swing.is_swinging:
+		return
+
+	if velocity.y < 0:
+		return
+
+	if not is_on_wall():
+		return
+
+	var wall_normal := get_wall_normal()
+
+	if wall_normal.x > 0:
+		wall_dir = -1
+	elif wall_normal.x < 0:
+		wall_dir = 1
+
+	if wall_dir != 0 and input_dir == wall_dir:
+		is_wall_clinging = true
 
 # --- Swinging Jump Function ---
 func player_jump():
@@ -185,6 +217,9 @@ func _physics_process(delta: float) -> void:
 		accel += AIR_ACCEL * APEX_ACCEL_MULTIPLIER * apex_factor
 	if direction != 0 and sign(direction) != sign(velocity.x):
 		accel = TURN_ACCEL
+		
+	var input_dir := Input.get_axis("move_left", "move_right")
+	check_wall_cling(input_dir)
 
 	# --- Crouch (Priority over movement) ---
 	if on_floor and Input.is_action_pressed("move_down"):
@@ -195,26 +230,31 @@ func _physics_process(delta: float) -> void:
 			GROUND_ACCEL * delta
 		)
 	else:
-		# --- State Machine ---
-		var grounded = is_on_floor() or coyote_timer > 0
-		if grounded:
-			if abs(velocity.x) < 5:
-				change_state(PlayerState.IDLE)
+		if is_wall_clinging:
+			change_state(PlayerState.WALL_CLING)
+			velocity.x = 0.0
+			velocity.y = min(velocity.y, wall_cling_slide_speed)
+		else:
+			# --- State Machine ---
+			var grounded = is_on_floor() or coyote_timer > 0
+			if grounded:
+				if abs(velocity.x) < 5:
+					change_state(PlayerState.IDLE)
+				else:
+					change_state(PlayerState.RUN)
 			else:
-				change_state(PlayerState.RUN)
-		else:
-			if velocity.y < 0:
-				change_state(PlayerState.JUMP)
-			elif Input.is_action_pressed("jump"):
-				change_state(PlayerState.GLIDE)
-			elif velocity.y > 0:
-				change_state(PlayerState.FALL)
-				
-		# --- Horizontal Movement ---
-		if direction != 0:
-			velocity.x = move_toward(velocity.x, direction * SPEED, accel * delta)
-		else:
-			velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
+				if velocity.y < 0:
+					change_state(PlayerState.JUMP)
+				elif Input.is_action_pressed("jump"):
+					change_state(PlayerState.GLIDE)
+				elif velocity.y > 0:
+					change_state(PlayerState.FALL)
+
+			# --- Horizontal Movement ---
+			if direction != 0:
+				velocity.x = move_toward(velocity.x, direction * SPEED, accel * delta)
+			else:
+				velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
 
 	# --- Flip Sprite ---
 	if direction > 0:

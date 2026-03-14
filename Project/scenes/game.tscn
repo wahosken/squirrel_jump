@@ -86,6 +86,7 @@ position = Vector2(-1024, -4032)
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
 z_index = 5
 position = Vector2(-19, 32)
+wall_cling_slide_speed = null
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -40)
@@ -122,23 +123,22 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = -173.0
-offset_right = 146.5
-offset_bottom = -98.70001
+offset_left = 63.0
+offset_top = -176.99994
+offset_right = 173.0
+offset_bottom = -126.99994
 grow_vertical = 0
 scale = Vector2(2.5, 2.5)
 
 [node name="Left" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=419540657]
 modulate = Color(1, 1, 1, 0.8)
-position = Vector2(23.5, 0)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("19_bhx41")
 texture_pressed = ExtResource("20_qnb83")
 
 [node name="Right" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=2090334822]
 modulate = Color(1, 1, 1, 0.8)
-position = Vector2(86, -0.6199951)
+position = Vector2(55, 0)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("21_sww3w")
 texture_pressed = ExtResource("22_suyxu")
@@ -151,27 +151,26 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -152.0
-offset_top = -297.0
-offset_right = -92.900024
-offset_bottom = -180.0
+offset_left = -179.0
+offset_top = -312.99997
+offset_right = -129.0
+offset_bottom = -209.4
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(2.5, 2.5)
 
-[node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
-modulate = Color(1, 1, 1, 0.8)
-position = Vector2(-4.5, 51.5)
-scale = Vector2(1.5, 1.5)
-texture_normal = ExtResource("25_wljb1")
-texture_pressed = ExtResource("26_v2yb1")
-
 [node name="Up" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=907483779]
 modulate = Color(1, 1, 1, 0.8)
-position = Vector2(-5, -9)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("23_sgl2t")
 texture_pressed = ExtResource("24_qouja")
+
+[node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
+modulate = Color(1, 1, 1, 0.8)
+position = Vector2(0, 55)
+scale = Vector2(1.4999999, 1.4999999)
+texture_normal = ExtResource("25_wljb1")
+texture_pressed = ExtResource("26_v2yb1")
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Overlay/UI" unique_id=1100490631]
 custom_minimum_size = Vector2(50, 50)
@@ -207,8 +206,8 @@ text = "Nuts: 0"
 [connection signal="released" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_released"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_pressed"]
 [connection signal="released" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_released"]
-[connection signal="pressed" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_pressed"]
-[connection signal="released" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_released"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_pressed"]
 [connection signal="released" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_released"]
+[connection signal="pressed" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_pressed"]
+[connection signal="released" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_released"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer3/FullscreenButton" to="Overlay/UI" method="_on_fullscreen_button_pressed"]
