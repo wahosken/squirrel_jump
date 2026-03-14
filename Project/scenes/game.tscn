@@ -28,6 +28,7 @@
 [ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/buttons6.png" id="26_v2yb1"]
 [ext_resource type="Texture2D" uid="uid://c271nhurg3ydt" path="res://assets/fullscreen_button.png" id="27_sww3w"]
 [ext_resource type="Texture2D" uid="uid://ck7nx0btiasnc" path="res://assets/fullscreen_button_pressed.png" id="28_suyxu"]
+[ext_resource type="Script" uid="uid://ll5uxqeykemq" path="res://scripts/fullscreen_button.gd" id="29_suyxu"]
 
 [node name="Game" type="Node2D" unique_id=1617569227]
 
@@ -115,8 +116,6 @@ offset_right = 640.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("20_5newe")
-windowed_texture = ExtResource("27_sww3w")
-fullscreen_texture = ExtResource("28_suyxu")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Overlay/UI" unique_id=529509077]
 custom_minimum_size = Vector2(50, 50)
@@ -184,6 +183,14 @@ grow_horizontal = 0
 [node name="FullscreenButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer3" unique_id=1880833291]
 position = Vector2(-91, 24)
 scale = Vector2(3, 3)
+
+[node name="Texture" type="TextureRect" parent="Overlay/UI/HBoxContainer3/FullscreenButton" unique_id=1924406563]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("27_sww3w")
+script = ExtResource("29_suyxu")
+windowed_texture = ExtResource("27_sww3w")
+fullscreen_texture = ExtResource("28_suyxu")
 
 [node name="NutCounterLabel" type="Label" parent="Overlay" unique_id=1285863482]
 unique_name_in_owner = true
