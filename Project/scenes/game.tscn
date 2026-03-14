@@ -26,6 +26,8 @@
 [ext_resource type="Texture2D" uid="uid://cbpce4bcqgnrw" path="res://assets/buttons2.png" id="24_qouja"]
 [ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/buttons5.png" id="25_wljb1"]
 [ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/buttons6.png" id="26_v2yb1"]
+[ext_resource type="Texture2D" uid="uid://c271nhurg3ydt" path="res://assets/fullscreen_button.png" id="27_sww3w"]
+[ext_resource type="Texture2D" uid="uid://ck7nx0btiasnc" path="res://assets/fullscreen_button_pressed.png" id="28_suyxu"]
 
 [node name="Game" type="Node2D" unique_id=1617569227]
 
@@ -113,6 +115,8 @@ offset_right = 640.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("20_5newe")
+windowed_texture = ExtResource("27_sww3w")
+fullscreen_texture = ExtResource("28_suyxu")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Overlay/UI" unique_id=529509077]
 custom_minimum_size = Vector2(50, 50)
@@ -167,6 +171,20 @@ scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("23_sgl2t")
 texture_pressed = ExtResource("24_qouja")
 
+[node name="HBoxContainer3" type="HBoxContainer" parent="Overlay/UI" unique_id=1100490631]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -50.0
+offset_bottom = 50.0
+grow_horizontal = 0
+
+[node name="FullscreenButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer3" unique_id=1880833291]
+position = Vector2(-91, 24)
+scale = Vector2(3, 3)
+
 [node name="NutCounterLabel" type="Label" parent="Overlay" unique_id=1285863482]
 unique_name_in_owner = true
 anchors_preset = -1
@@ -189,3 +207,4 @@ text = "Nuts: 0"
 [connection signal="released" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_released"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_pressed"]
 [connection signal="released" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_released"]
+[connection signal="pressed" from="Overlay/UI/HBoxContainer3/FullscreenButton" to="Overlay/UI" method="_on_fullscreen_button_pressed"]
