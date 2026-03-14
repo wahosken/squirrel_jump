@@ -102,7 +102,7 @@ drag_bottom_margin = 0.6
 
 [node name="Overlay" type="CanvasLayer" parent="." unique_id=1855333385]
 
-[node name="UI" type="Control" parent="Overlay" unique_id=1387734739]
+[node name="UI" type="Control" parent="Overlay" unique_id=1387734739 node_paths=PackedStringArray("fullscreen_button")]
 z_index = 1
 layout_mode = 3
 anchors_preset = 7
@@ -116,6 +116,9 @@ offset_right = 640.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("20_5newe")
+fullscreen_button = NodePath("HBoxContainer3/FullscreenButton/Texture")
+windowed_texture = ExtResource("27_sww3w")
+fullscreen_texture = ExtResource("28_suyxu")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Overlay/UI" unique_id=529509077]
 custom_minimum_size = Vector2(50, 50)
@@ -187,10 +190,7 @@ scale = Vector2(3, 3)
 [node name="Texture" type="TextureRect" parent="Overlay/UI/HBoxContainer3/FullscreenButton" unique_id=1924406563]
 offset_right = 40.0
 offset_bottom = 40.0
-texture = ExtResource("27_sww3w")
 script = ExtResource("29_suyxu")
-windowed_texture = ExtResource("27_sww3w")
-fullscreen_texture = ExtResource("28_suyxu")
 
 [node name="NutCounterLabel" type="Label" parent="Overlay" unique_id=1285863482]
 unique_name_in_owner = true
