@@ -1,36 +1,20 @@
 extends Control
 
 @export var fullscreen_button: TextureRect
-@export var windowed_texture: Texture2D
-@export var fullscreen_texture: Texture2D
-
-var last_window_mode: int
+@export var button_texture: Texture2D
 
 func _ready():
 	hide()
-	update_button_texture()
+	if fullscreen_button:
+		fullscreen_button.texture = button_texture
 	
-@export var _fullscreen_change_callback_name := "on_fullscreen_change"
-	
-func on_fullscreen_change() -> void:
-	# Update the icon based on the actual display mode
-	update_button_texture()
-
+# Connected to the button’s pressed signal
 func _on_fullscreen_button_pressed() -> void:
-	# Trigger fullscreen request
+	# Toggle fullscreen mode
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-
-func update_button_texture() -> void:
-	if fullscreen_button == null:
-		return
-
-	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
-		fullscreen_button.texture = fullscreen_texture
-	else:
-		fullscreen_button.texture = windowed_texture
 
 func _input(event):
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
