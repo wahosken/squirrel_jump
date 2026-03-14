@@ -8,30 +8,25 @@ var last_window_mode: int
 
 func _ready():
 	hide()
-	last_window_mode = DisplayServer.window_get_mode()
 	update_button_texture()
 	
-func _process(delta: float) -> void:
-	var current_mode = DisplayServer.window_get_mode()
-	if current_mode != last_window_mode:
-		last_window_mode = current_mode
-		update_button_texture()
+@export var _fullscreen_change_callback_name := "on_fullscreen_change"
+	
+func on_fullscreen_change() -> void:
+	# Update the icon based on the actual display mode
+	update_button_texture()
 
 func _on_fullscreen_button_pressed() -> void:
-	# Toggle icon immediately
-	if fullscreen_button.texture == windowed_texture:
-		fullscreen_button.texture = fullscreen_texture
-	else:
-		fullscreen_button.texture = windowed_texture
-
-	# Request fullscreen
+	# Trigger fullscreen request
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	update_button_texture()
 
 func update_button_texture() -> void:
+	if fullscreen_button == null:
+		return
+
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 		fullscreen_button.texture = fullscreen_texture
 	else:
