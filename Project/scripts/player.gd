@@ -27,6 +27,8 @@ var jump_buffer_timer = 0.0
 var fall_timer = 0.0
 var was_on_floor = false
 var facing_right: bool = true
+var camera_normal_position := Vector2.ZERO
+var camera_swing_offset := Vector2(8, -5)
 
 enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING }
 var state = PlayerState.IDLE
@@ -42,9 +44,11 @@ var state = PlayerState.IDLE
 @onready var collision_shape = $CollisionShape2D.shape
 @onready var swing: Node = $SwingComponent
 @onready var grab_point: Marker2D = $Visuals/GrabPoint
+@onready var camera: Camera2D = $Camera2D
 
 func _ready():
 	swing.grab_point = grab_point
+	camera_normal_position = camera.position
 
 # --- Animation Helpers ---
 func play_anim(anim_name):
@@ -85,6 +89,7 @@ func player_jump():
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
 		
+		
 	elif is_on_floor():
 		# Normal ground jump
 		velocity.y = JUMP_VELOCITY
@@ -102,6 +107,15 @@ func _physics_process(delta: float) -> void:
 		facing_right = true
 	elif Input.is_action_pressed("move_left"):
 		facing_right = false
+		
+	# --- Swing Camera Position ---
+	var target_camera_pos = camera_normal_position
+
+	if swing.is_swinging:
+		var swing_x = camera_swing_offset.x if facing_right else -camera_swing_offset.x
+		target_camera_pos = Vector2(swing_x, camera_swing_offset.y)
+
+	camera.position = camera.position.lerp(target_camera_pos, 10.0 * delta)
 
 	# --- Swing Release ---
 	if swing.is_swinging and Input.is_action_just_pressed("move_down"):

@@ -12,8 +12,8 @@ var swing_cooldown = 0.1
 var cooldown_timer = 0.0
 
 var swing_direction = 1
-var min_angle = -1.2
-var max_angle = 1.2
+var min_angle = -1.5
+var max_angle = 1.5
 var base_angle = PI/2
 var base_angle_right = PI / 2
 var base_angle_left  = -PI / 2

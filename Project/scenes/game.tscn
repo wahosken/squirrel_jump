@@ -17,7 +17,6 @@
 [ext_resource type="PackedScene" uid="uid://mt5ljnrfgcvb" path="res://scenes/sections/section_3c.tscn" id="14_sgl2t"]
 [ext_resource type="PackedScene" uid="uid://44o8lfenmr3c" path="res://scenes/sections/section_3d.tscn" id="15_qouja"]
 [ext_resource type="PackedScene" uid="uid://81tpxc44mhlt" path="res://scenes/sections/section_3e.tscn" id="16_wljb1"]
-[ext_resource type="Script" uid="uid://bslbo67tno0pw" path="res://scripts/swing_component.gd" id="18_264po"]
 [ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/buttons7.png" id="19_bhx41"]
 [ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
 [ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/buttons8.png" id="20_qnb83"]
@@ -89,7 +88,7 @@ position = Vector2(-19, 32)
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -40)
-zoom = Vector2(2, 2)
+zoom = Vector2(2.5, 2.5)
 process_callback = 0
 limit_bottom = 300
 limit_smoothed = true
@@ -97,9 +96,6 @@ position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 drag_top_margin = 0.3
 drag_bottom_margin = 0.6
-
-[node name="SwingComponent2" type="Node" parent="player" unique_id=1649209229]
-script = ExtResource("18_264po")
 
 [node name="Overlay" type="CanvasLayer" parent="." unique_id=1855333385]
 
@@ -125,20 +121,20 @@ anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -119.0
-offset_right = 128.5
-offset_bottom = -69.0
+offset_top = -146.0
+offset_right = 146.5
+offset_bottom = -82.5
 grow_vertical = 0
 scale = Vector2(2, 2)
 
 [node name="Left" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=419540657]
-position = Vector2(12.879997, 0.38000488)
+position = Vector2(23.5, 0)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("19_bhx41")
 texture_pressed = ExtResource("20_qnb83")
 
 [node name="Right" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=2090334822]
-position = Vector2(66.88, -0.6199951)
+position = Vector2(86, -0.6199951)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("21_sww3w")
 texture_pressed = ExtResource("22_suyxu")
@@ -160,13 +156,13 @@ grow_vertical = 0
 scale = Vector2(2, 2)
 
 [node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
-position = Vector2(6, 59)
+position = Vector2(-4.5, 51.5)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("25_wljb1")
 texture_pressed = ExtResource("26_v2yb1")
 
 [node name="Up" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=907483779]
-position = Vector2(5.5, 7)
+position = Vector2(-5, -9)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("23_sgl2t")
 texture_pressed = ExtResource("24_qouja")
