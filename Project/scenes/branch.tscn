@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c3boe57htp4d5" path="res://scripts/branch.gd" id="1_i083o"]
 [ext_resource type="Texture2D" uid="uid://0pfcxtugrcnh" path="res://assets/branch.png" id="2_daurq"]
+[ext_resource type="Texture2D" uid="uid://bjxrhod5ow7f2" path="res://assets/branch_end.png" id="3_daurq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kkb3n"]
 radius = 11.0
@@ -20,5 +21,10 @@ shape = SubResource("CircleShape2D_kkb3n")
 [node name="Branch" type="Sprite2D" parent="." unique_id=382076723]
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_daurq")
+
+[node name="BranchEnd" type="Sprite2D" parent="." unique_id=1117400704]
+z_index = 10
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_daurq")
 
 [connection signal="body_entered" from="GrabArea" to="." method="_on_grab_area_body_entered"]

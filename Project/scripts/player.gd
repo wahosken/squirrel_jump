@@ -28,7 +28,7 @@ var fall_timer = 0.0
 var was_on_floor = false
 var facing_right: bool = true
 
-enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH }
+enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING }
 var state = PlayerState.IDLE
 
 # --- Nodes ---
@@ -41,6 +41,10 @@ var state = PlayerState.IDLE
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var collision_shape = $CollisionShape2D.shape
 @onready var swing: Node = $SwingComponent
+@onready var grab_point: Marker2D = $Visuals/GrabPoint
+
+func _ready():
+	swing.grab_point = grab_point
 
 # --- Animation Helpers ---
 func play_anim(anim_name):
@@ -58,6 +62,7 @@ func change_state(new_state):
 		PlayerState.FALL: play_anim("fall")
 		PlayerState.GLIDE: play_anim("glide")
 		PlayerState.CROUCH: play_anim("crouch")
+		PlayerState.SWING: play_anim("swing")
 
 # --- Swinging Jump Function ---
 func player_jump():
@@ -85,6 +90,10 @@ func player_jump():
 		velocity.y = JUMP_VELOCITY
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
+		
+func snap_to_grab(pivot_position: Vector2):
+	var offset = grab_point.global_position - global_position
+	global_position = pivot_position - offset
 
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
@@ -104,6 +113,7 @@ func _physics_process(delta: float) -> void:
 	
 	# --- If swinging, skip normal movement ---
 	if swing.is_swinging:
+		change_state(PlayerState.SWING)
 		return
 
 	var on_floor = is_on_floor()
