@@ -10,19 +10,12 @@ const DEBUG_PRINT_INTERVAL = 6.0  # seconds
 @onready var player: CharacterBody2D = $"../player"
 @onready var nut_counter_label: Label = %NutCounterLabel
 
-@export var ui_node: Control
-@export var camera: Camera2D
-@export var portrait_zoom: Vector2 = Vector2(3, 3)
-
 # --- DATA / STATE ---
 var rows: Array = []          # rows of sections
 var columns: Array = []       # columns of sections
 var current_row: int = -1
 var nuts_collected: int = 0
 var debug_timer := 0.0
-
-var base_ui_scale: Vector2
-var base_camera_zoom: Vector2
 
 
 # --- READY ---
@@ -32,33 +25,6 @@ func _ready():
 	update_section_visibility()
 	_connect_nuts()
 	
-	if ui_node:
-		base_ui_scale = ui_node.scale
-	if camera:
-		base_camera_zoom = camera.zoom
-	
-	update_layout()
-	
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_SIZE_CHANGED:
-		update_layout()
-
-func update_layout() -> void:
-	var viewport_size := get_viewport().get_visible_rect().size
-	var is_portrait := viewport_size.y > viewport_size.x
-
-	if ui_node:
-		if is_portrait:
-			ui_node.scale = Vector2(base_ui_scale.y, base_ui_scale.x)
-		else:
-			ui_node.scale = base_ui_scale
-
-	if camera:
-		if is_portrait:
-			camera.zoom = portrait_zoom
-		else:
-			camera.zoom = base_camera_zoom
-
 
 # --- PROCESS ---
 func _process(delta):
