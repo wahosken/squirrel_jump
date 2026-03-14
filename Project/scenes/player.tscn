@@ -68,7 +68,7 @@ region = Rect2(0, 128, 64, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a8ls1"]
 atlas = ExtResource("2_g2els")
-region = Rect2(128, 96, 64, 32)
+region = Rect2(128, 128, 64, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_dqkch"]
 animations = [{

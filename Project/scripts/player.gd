@@ -29,14 +29,19 @@ var was_on_floor = false
 var facing_right: bool = true
 var camera_normal_position := Vector2.ZERO
 var camera_swing_offset := Vector2(8, -5)
+var visuals_normal_position: Vector2
 
 enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING, WALL_CLING }
 var state = PlayerState.IDLE
 
-@export var wall_cling_slide_speed: float = 30.0
+@export var wall_cling_slide_speed: float = 40.0
+@export var wall_cling_left_offset: Vector2 = Vector2(7, 0)
+@export var wall_cling_right_offset: Vector2 = Vector2(-11, 0)
+@export var wall_cling_grace_time: float = 0.08
 
 var is_wall_clinging: bool = false
 var wall_dir: int = 0
+var wall_cling_grace_timer: float = 0.0
 
 # --- Nodes ---
 @onready var visuals: Node2D = $Visuals
@@ -54,6 +59,8 @@ var wall_dir: int = 0
 func _ready():
 	swing.grab_point = grab_point
 	camera_normal_position = camera.position
+	visuals_normal_position = visuals.position
+	
 
 # --- Animation Helpers ---
 func play_anim(anim_name):
@@ -74,31 +81,34 @@ func change_state(new_state):
 		PlayerState.SWING: play_anim("swing")
 		PlayerState.WALL_CLING: play_anim("wall_cling")
 		
-func check_wall_cling(input_dir: float) -> void:
-	is_wall_clinging = false
-	wall_dir = 0
+func check_wall_cling(input_dir: float, delta: float) -> void:
+	var can_cling := false
+	var detected_wall_dir := 0
 
-	if is_on_floor():
-		return
+	if not is_on_floor() and not swing.is_swinging and velocity.y >= 0 and is_on_wall():
+		var wall_normal := get_wall_normal()
 
-	if swing.is_swinging:
-		return
+		if wall_normal.x > 0:
+			detected_wall_dir = -1
+		elif wall_normal.x < 0:
+			detected_wall_dir = 1
 
-	if velocity.y < 0:
-		return
+		if detected_wall_dir != 0 and input_dir == detected_wall_dir:
+			can_cling = true
+			
 
-	if not is_on_wall():
-		return
-
-	var wall_normal := get_wall_normal()
-
-	if wall_normal.x > 0:
-		wall_dir = -1
-	elif wall_normal.x < 0:
-		wall_dir = 1
-
-	if wall_dir != 0 and input_dir == wall_dir:
+	if can_cling:
 		is_wall_clinging = true
+		wall_dir = detected_wall_dir
+		wall_cling_grace_timer = wall_cling_grace_time
+	else:
+		if wall_cling_grace_timer > 0.0:
+			wall_cling_grace_timer -= delta
+		else:
+			is_wall_clinging = false
+			wall_dir = 0
+			
+	
 
 # --- Swinging Jump Function ---
 func player_jump():
@@ -219,7 +229,7 @@ func _physics_process(delta: float) -> void:
 		accel = TURN_ACCEL
 		
 	var input_dir := Input.get_axis("move_left", "move_right")
-	check_wall_cling(input_dir)
+	check_wall_cling(input_dir, delta)
 
 	# --- Crouch (Priority over movement) ---
 	if on_floor and Input.is_action_pressed("move_down"):
@@ -232,7 +242,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		if is_wall_clinging:
 			change_state(PlayerState.WALL_CLING)
-			velocity.x = 0.0
+			velocity.x = wall_dir * 1.0
 			velocity.y = min(velocity.y, wall_cling_slide_speed)
 		else:
 			# --- State Machine ---
@@ -256,11 +266,28 @@ func _physics_process(delta: float) -> void:
 			else:
 				velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
 
-	# --- Flip Sprite ---
-	if direction > 0:
-		visuals.scale.x = 1
-	elif direction < 0:
-		visuals.scale.x = -1
+	# --- Flip Sprite / Wall Cling Rotation ---
+	if is_wall_clinging:
+		if wall_dir == -1:
+			visuals.rotation_degrees = -90
+			visuals.position = visuals_normal_position + wall_cling_left_offset
+			visuals.scale.x = 1
+			visuals.scale.y = 1
+		elif wall_dir == 1:
+			visuals.rotation_degrees = 90
+			visuals.position = visuals_normal_position + wall_cling_right_offset
+			visuals.scale.x = -1
+			visuals.scale.y = 1
+	else:
+		visuals.rotation_degrees = 0
+		visuals.position = visuals_normal_position
+		visuals.scale.y = 1
+
+		if direction > 0:
+			visuals.scale.x = 1
+		elif direction < 0:
+			visuals.scale.x = -1
+			
 
 	# --- Landing/Running Sounds ---
 	was_on_floor = on_floor
