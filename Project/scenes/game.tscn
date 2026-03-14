@@ -114,7 +114,7 @@ offset_right = 640.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("20_5newe")
-fullscreen_button = NodePath("")
+fullscreen_button = NodePath("HBoxContainer3/FullscreenButton")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Overlay/UI" unique_id=529509077]
 custom_minimum_size = Vector2(50, 50)
@@ -123,19 +123,21 @@ anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -146.0
+offset_top = -173.0
 offset_right = 146.5
-offset_bottom = -82.5
+offset_bottom = -98.70001
 grow_vertical = 0
-scale = Vector2(2, 2)
+scale = Vector2(2.5, 2.5)
 
 [node name="Left" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=419540657]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(23.5, 0)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("19_bhx41")
 texture_pressed = ExtResource("20_qnb83")
 
 [node name="Right" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=2090334822]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(86, -0.6199951)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("21_sww3w")
@@ -149,21 +151,23 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -135.0
-offset_top = -243.0
-offset_right = -75.5
-offset_bottom = -134.0
+offset_left = -152.0
+offset_top = -297.0
+offset_right = -92.900024
+offset_bottom = -180.0
 grow_horizontal = 0
 grow_vertical = 0
-scale = Vector2(2, 2)
+scale = Vector2(2.5, 2.5)
 
 [node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(-4.5, 51.5)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("25_wljb1")
 texture_pressed = ExtResource("26_v2yb1")
 
 [node name="Up" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=907483779]
+modulate = Color(1, 1, 1, 0.8)
 position = Vector2(-5, -9)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("23_sgl2t")
@@ -180,6 +184,7 @@ offset_bottom = 50.0
 grow_horizontal = 0
 
 [node name="FullscreenButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer3" unique_id=1880833291]
+modulate = Color(1, 1, 1, 0.6)
 position = Vector2(-91, 24)
 scale = Vector2(3, 3)
 texture_normal = ExtResource("27_sww3w")

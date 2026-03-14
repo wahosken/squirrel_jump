@@ -1,15 +1,18 @@
 extends Control
 
-@export var fullscreen_button: TextureRect
-@export var button_texture: Texture2D
+@export var fullscreen_button: TouchScreenButton
 
-func _ready():
+func _ready() -> void:
+	# Ensure the button has a texture
 	if fullscreen_button:
-		fullscreen_button.texture = button_texture
-	
-# Connected to the button’s pressed signal
+		fullscreen_button.texture_normal = preload("uid://b62nx1nn1u1t2")
+
+# Connect the button's pressed signal to this function
 func _on_fullscreen_button_pressed() -> void:
-	# Toggle fullscreen mode
+	if not fullscreen_button:
+		return
+
+	# Toggle fullscreen
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	else:
