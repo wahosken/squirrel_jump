@@ -86,7 +86,6 @@ position = Vector2(-1024, -4032)
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
 z_index = 5
 position = Vector2(-19, 32)
-wall_cling_slide_speed = null
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -40)

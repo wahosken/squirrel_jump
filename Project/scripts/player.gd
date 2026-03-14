@@ -34,10 +34,12 @@ var visuals_normal_position: Vector2
 enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING, WALL_CLING }
 var state = PlayerState.IDLE
 
-@export var wall_cling_slide_speed: float = 40.0
+@export var wall_cling_slide_speed: float = 0.0 # 40.0
 @export var wall_cling_left_offset: Vector2 = Vector2(7, 0)
 @export var wall_cling_right_offset: Vector2 = Vector2(-11, 0)
-@export var wall_cling_grace_time: float = 0.08
+@export var wall_cling_grace_time: float = 0.0
+@export var wall_jump_horizontal_speed: float = 340.0
+@export var wall_jump_vertical_speed: float = -340.0
 
 var is_wall_clinging: bool = false
 var wall_dir: int = 0
@@ -131,6 +133,14 @@ func player_jump():
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
 		
+	elif is_wall_clinging:
+		velocity.x = -wall_dir * wall_jump_horizontal_speed
+		velocity.y = wall_jump_vertical_speed
+		is_wall_clinging = false
+		wall_dir = 0
+
+		jump_sound.pitch_scale = randf_range(1, 1.5)
+		jump_sound.play()		
 		
 	elif is_on_floor():
 		# Normal ground jump
@@ -208,11 +218,9 @@ func _physics_process(delta: float) -> void:
 
 	# --- Ground Jump Check ---
 	if not swing.is_swinging and jump_buffer_timer > 0 and coyote_timer > 0:
-		velocity.y = JUMP_VELOCITY
+		player_jump()
 		coyote_timer = 0
 		jump_buffer_timer = 0
-		jump_sound.pitch_scale = randf_range(1, 1.5)
-		jump_sound.play()
 		
 	# --- Apex jump slowing ---
 	var apex_factor = 0.0
@@ -230,6 +238,9 @@ func _physics_process(delta: float) -> void:
 		
 	var input_dir := Input.get_axis("move_left", "move_right")
 	check_wall_cling(input_dir, delta)
+	
+	if is_wall_clinging and Input.is_action_just_pressed("jump"):
+		player_jump()
 
 	# --- Crouch (Priority over movement) ---
 	if on_floor and Input.is_action_pressed("move_down"):
