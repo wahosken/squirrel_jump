@@ -18,14 +18,17 @@ func _process(delta: float) -> void:
 		update_button_texture()
 
 func _on_fullscreen_button_pressed() -> void:
-	# Toggle the mode
+	# Toggle icon immediately
+	if fullscreen_button.texture == windowed_texture:
+		fullscreen_button.texture = fullscreen_texture
+	else:
+		fullscreen_button.texture = windowed_texture
+
+	# Request fullscreen
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	
-	# Immediately update the icon (optional, but safe)
-	last_window_mode = DisplayServer.window_get_mode()
 	update_button_texture()
 
 func update_button_texture() -> void:
