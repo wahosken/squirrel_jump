@@ -4,7 +4,6 @@ extends Control
 @export var button_texture: Texture2D
 
 func _ready():
-	hide()
 	if fullscreen_button:
 		fullscreen_button.texture = button_texture
 	
