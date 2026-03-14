@@ -12,7 +12,7 @@ const DEBUG_PRINT_INTERVAL = 6.0  # seconds
 
 @export var ui_node: Control
 @export var camera: Camera2D
-@export var portrait_zoom: Vector2 = Vector2(0.8, 0.8)
+@export var portrait_zoom: Vector2 = Vector2(3, 3)
 
 # --- DATA / STATE ---
 var rows: Array = []          # rows of sections
