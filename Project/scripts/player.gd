@@ -10,6 +10,7 @@ const FRICTION = 4000.0
 const CROUCH_SPEED_MULTIPLIER = 0.35
 
 const COYOTE_TIME = 0.12
+const WALL_COYOTE_TIME = 0.25
 const JUMP_BUFFER_TIME = 0.12
 const JUMP_CUT_MULTIPLIER = 0.5
 
@@ -30,6 +31,8 @@ var facing_right: bool = true
 var camera_normal_position := Vector2.ZERO
 var camera_swing_offset := Vector2(8, -5)
 var visuals_normal_position: Vector2
+var wall_coyote_timer = 0.0
+var last_wall_dir = 0
 
 enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING, WALL_CLING }
 var state = PlayerState.IDLE
@@ -37,7 +40,7 @@ var state = PlayerState.IDLE
 @export var wall_cling_slide_speed: float = 0.0 # 40.0
 @export var wall_cling_left_offset: Vector2 = Vector2(7, 0)
 @export var wall_cling_right_offset: Vector2 = Vector2(-11, 0)
-@export var wall_cling_grace_time: float = 0.0
+@export var wall_cling_grace_time: float = 0.13
 @export var wall_jump_horizontal_speed: float = 340.0
 @export var wall_jump_vertical_speed: float = -340.0
 
@@ -83,13 +86,14 @@ func change_state(new_state):
 		PlayerState.SWING: play_anim("swing")
 		PlayerState.WALL_CLING: play_anim("wall_cling")
 		
+# --- Wall Cling Check ---
 func check_wall_cling(input_dir: float, delta: float) -> void:
-	var can_cling := false
-	var detected_wall_dir := 0
+	var detected_wall_dir = 0
+	var can_cling = false
 
+	# Only try to cling if airborne, falling, and touching a wall
 	if not is_on_floor() and not swing.is_swinging and velocity.y >= 0 and is_on_wall():
-		var wall_normal := get_wall_normal()
-
+		var wall_normal = get_wall_normal()
 		if wall_normal.x > 0:
 			detected_wall_dir = -1
 		elif wall_normal.x < 0:
@@ -97,20 +101,18 @@ func check_wall_cling(input_dir: float, delta: float) -> void:
 
 		if detected_wall_dir != 0 and input_dir == detected_wall_dir:
 			can_cling = true
-			
 
+	# Strict cling state (for animation / rotation)
+	is_wall_clinging = can_cling
+	wall_dir = detected_wall_dir if can_cling else 0
+
+	# Wall coyote timer (grace) to allow jumps shortly after leaving wall
 	if can_cling:
-		is_wall_clinging = true
-		wall_dir = detected_wall_dir
-		wall_cling_grace_timer = wall_cling_grace_time
+		wall_coyote_timer = WALL_COYOTE_TIME
+		last_wall_dir = wall_dir
 	else:
-		if wall_cling_grace_timer > 0.0:
-			wall_cling_grace_timer -= delta
-		else:
-			is_wall_clinging = false
-			wall_dir = 0
-			
-	
+		wall_coyote_timer = max(wall_coyote_timer - delta, 0.0)
+
 
 # --- Swinging Jump Function ---
 func player_jump():
@@ -133,14 +135,19 @@ func player_jump():
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
 		
-	elif is_wall_clinging:
-		velocity.x = -wall_dir * wall_jump_horizontal_speed
+	elif wall_coyote_timer > 0.0:
+		# Wall jump (using last wall direction)
+		var jump_dir = last_wall_dir
+		velocity.x = -jump_dir * wall_jump_horizontal_speed
 		velocity.y = wall_jump_vertical_speed
+
+		# Reset grace
+		wall_coyote_timer = 0.0
 		is_wall_clinging = false
 		wall_dir = 0
 
 		jump_sound.pitch_scale = randf_range(1, 1.5)
-		jump_sound.play()		
+		jump_sound.play()
 		
 	elif is_on_floor():
 		# Normal ground jump
@@ -236,11 +243,20 @@ func _physics_process(delta: float) -> void:
 	if direction != 0 and sign(direction) != sign(velocity.x):
 		accel = TURN_ACCEL
 		
-	var input_dir := Input.get_axis("move_left", "move_right")
+	# --- Wall cling + jump logic ---
+	var input_dir = Input.get_axis("move_left", "move_right")
 	check_wall_cling(input_dir, delta)
-	
-	if is_wall_clinging and Input.is_action_just_pressed("jump"):
+
+	# Horizontal movement while clinging
+	if is_wall_clinging:
+		change_state(PlayerState.WALL_CLING)
+		velocity.x = wall_dir * 1.0  # tiny push to keep player against wall
+		velocity.y = min(velocity.y, wall_cling_slide_speed)
+
+	# Jump input handling (floor, wall, swing)
+	if Input.is_action_just_pressed("jump"):
 		player_jump()
+		
 
 	# --- Crouch (Priority over movement) ---
 	if on_floor and Input.is_action_pressed("move_down"):
@@ -249,7 +265,8 @@ func _physics_process(delta: float) -> void:
 			velocity.x,
 			direction * SPEED * CROUCH_SPEED_MULTIPLIER,
 			GROUND_ACCEL * delta
-		)
+			)
+				
 	else:
 		if is_wall_clinging:
 			change_state(PlayerState.WALL_CLING)
