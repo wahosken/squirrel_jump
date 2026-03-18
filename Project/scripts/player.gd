@@ -9,8 +9,8 @@ const TURN_ACCEL = 2600.0
 const FRICTION = 4000.0
 const CROUCH_SPEED_MULTIPLIER = 0.35
 
-const COYOTE_TIME = 0.12
-const WALL_COYOTE_TIME = 0.25
+const COYOTE_TIME = 0.20
+const WALL_COYOTE_TIME = 0.20
 const JUMP_BUFFER_TIME = 0.12
 const JUMP_CUT_MULTIPLIER = 0.5
 
@@ -33,11 +33,13 @@ var camera_swing_offset := Vector2(8, -5)
 var visuals_normal_position: Vector2
 var wall_coyote_timer = 0.0
 var last_wall_dir = 0
+var just_jumped = false
+var jump_cooldown = 0.0
 
 enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING, WALL_CLING }
 var state = PlayerState.IDLE
 
-@export var wall_cling_slide_speed: float = 0.0 # 40.0
+@export var wall_cling_slide_speed: float = 80.0
 @export var wall_cling_left_offset: Vector2 = Vector2(7, 0)
 @export var wall_cling_right_offset: Vector2 = Vector2(-11, 0)
 @export var wall_cling_grace_time: float = 0.13
@@ -47,6 +49,7 @@ var state = PlayerState.IDLE
 var is_wall_clinging: bool = false
 var wall_dir: int = 0
 var wall_cling_grace_timer: float = 0.0
+var was_wall_clinging = false
 
 # --- Nodes ---
 @onready var visuals: Node2D = $Visuals
@@ -65,7 +68,6 @@ func _ready():
 	swing.grab_point = grab_point
 	camera_normal_position = camera.position
 	visuals_normal_position = visuals.position
-	
 
 # --- Animation Helpers ---
 func play_anim(anim_name):
@@ -116,6 +118,8 @@ func check_wall_cling(input_dir: float, delta: float) -> void:
 
 # --- Swinging Jump Function ---
 func player_jump():
+	jump_cooldown = 0.25
+	just_jumped = true
 	if swing.is_swinging:
 		# Release swing
 		swing.release_swing()
@@ -136,7 +140,7 @@ func player_jump():
 		jump_sound.play()
 		
 	elif wall_coyote_timer > 0.0:
-		# Wall jump (using last wall direction)
+		# Wall jump
 		var jump_dir = last_wall_dir
 		velocity.x = -jump_dir * wall_jump_horizontal_speed
 		velocity.y = wall_jump_vertical_speed
@@ -149,9 +153,10 @@ func player_jump():
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
 		
-	elif is_on_floor():
+	elif is_on_floor() or coyote_timer > 0.0:
 		# Normal ground jump
 		velocity.y = JUMP_VELOCITY
+		coyote_timer = 0
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
 		
@@ -161,12 +166,14 @@ func snap_to_grab(pivot_position: Vector2):
 
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
+	jump_cooldown = max(jump_cooldown - delta, 0.0)
 	# --- Facing ---
-	if Input.is_action_pressed("move_right"):
-		facing_right = true
-	elif Input.is_action_pressed("move_left"):
-		facing_right = false
-		
+	if not swing.is_swinging:
+		if Input.is_action_pressed("move_right"):
+			facing_right = true
+		elif Input.is_action_pressed("move_left"):
+			facing_right = false
+
 	# --- Swing Camera Position ---
 	var target_camera_pos = camera_normal_position
 
@@ -186,6 +193,10 @@ func _physics_process(delta: float) -> void:
 	
 	# --- If swinging, skip normal movement ---
 	if swing.is_swinging:
+		visuals.rotation_degrees = 0
+		visuals.position = visuals_normal_position
+		visuals.scale.y = 1
+		visuals.scale.x = 1 if facing_right else -1
 		change_state(PlayerState.SWING)
 		return
 
@@ -211,24 +222,28 @@ func _physics_process(delta: float) -> void:
 	else:
 		fall_timer = 0
 
-	# --- Coyote Timer ---
-	coyote_timer = COYOTE_TIME if on_floor else coyote_timer - delta
-
 	# --- Jump Buffer ---
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer_timer = JUMP_BUFFER_TIME
-	jump_buffer_timer -= delta
 
 	# --- Variable Jump Height ---
 	if Input.is_action_just_released("jump") and velocity.y < 0:
 		velocity.y *= JUMP_CUT_MULTIPLIER
 
-	# --- Ground Jump Check ---
-	if not swing.is_swinging and jump_buffer_timer > 0 and coyote_timer > 0:
-		player_jump()
-		coyote_timer = 0
-		jump_buffer_timer = 0
-		
+	# --- Jump Check (Ground + Wall) ---
+	if not swing.is_swinging and jump_buffer_timer > 0 and jump_cooldown <= 0.0:
+		if coyote_timer > 0 or wall_coyote_timer > 0:
+			player_jump()
+			coyote_timer = 0
+			wall_coyote_timer = 0
+			jump_buffer_timer = 0
+			jump_cooldown = 0.25
+
+	# --- Timers ---
+	jump_buffer_timer -= delta
+	coyote_timer = COYOTE_TIME if on_floor else max(coyote_timer - delta, 0.0)
+	wall_coyote_timer = max(wall_coyote_timer - delta, 0)
+	
 	# --- Apex jump slowing ---
 	var apex_factor = 0.0
 	if velocity.y < 0 and abs(velocity.y) < APEX_THRESHOLD:
@@ -246,17 +261,29 @@ func _physics_process(delta: float) -> void:
 	# --- Wall cling + jump logic ---
 	var input_dir = Input.get_axis("move_left", "move_right")
 	check_wall_cling(input_dir, delta)
+	
+	# Detect leaving wall cling
+	if was_wall_clinging and not is_wall_clinging:
+		# Reset visuals immediately
+		visuals.rotation_degrees = 0
+		visuals.position = visuals_normal_position
+		visuals.scale = Vector2(1, 1)
+
+	was_wall_clinging = is_wall_clinging
+
 
 	# Horizontal movement while clinging
 	if is_wall_clinging:
 		change_state(PlayerState.WALL_CLING)
 		velocity.x = wall_dir * 1.0  # tiny push to keep player against wall
-		velocity.y = min(velocity.y, wall_cling_slide_speed)
-
-	# Jump input handling (floor, wall, swing)
-	if Input.is_action_just_pressed("jump"):
-		player_jump()
 		
+		if Input.is_action_pressed("move_down"):
+			# Player is intentionally sliding
+			velocity.y = min(velocity.y, wall_cling_slide_speed)
+		else:
+			# Player is holding onto the wall (no sliding)
+			velocity.y = min(velocity.y, 0.0)
+
 
 	# --- Crouch (Priority over movement) ---
 	if on_floor and Input.is_action_pressed("move_down"):
@@ -274,7 +301,7 @@ func _physics_process(delta: float) -> void:
 			velocity.y = min(velocity.y, wall_cling_slide_speed)
 		else:
 			# --- State Machine ---
-			var grounded = is_on_floor() or coyote_timer > 0
+			var grounded = (is_on_floor() or coyote_timer > 0.2) and not just_jumped
 			if grounded:
 				if abs(velocity.x) < 5:
 					change_state(PlayerState.IDLE)
@@ -327,6 +354,8 @@ func _physics_process(delta: float) -> void:
 
 	# --- Apply Movement ---
 	move_and_slide()
+	
+	just_jumped = false
 
 # --- Run Sound Timer Callback ---
 func _on_run_sound_timer_timeout() -> void:
