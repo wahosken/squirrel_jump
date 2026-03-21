@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cjsobt6r1anvt" path="res://assets/tree_textures.png" id="1_wwbim"]
 [ext_resource type="PackedScene" uid="uid://cowlcymhjuwxc" path="res://scenes/nut.tscn" id="2_wwbim"]
 [ext_resource type="PackedScene" uid="uid://b0mudofjv6wtb" path="res://scenes/branch.tscn" id="3_nxisb"]
+[ext_resource type="PackedScene" uid="uid://77h6h7ce6nrp" path="res://scenes/platform.tscn" id="4_gcfbr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wwbim"]
 resource_name = "Trees"
@@ -63,6 +64,44 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_wwbim")
 
+[sub_resource type="Animation" id="Animation_gcfbr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(672, -144)]
+}
+
+[sub_resource type="Animation" id="Animation_oh5es"]
+resource_name = "platform_move"
+length = 5.0
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(672, -144), Vector2(672, 240)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hbtch"]
+_data = {
+&"RESET": SubResource("Animation_gcfbr"),
+&"platform_move": SubResource("Animation_oh5es")
+}
+
 [node name="Section1A" type="Node2D" unique_id=548850363]
 
 [node name="TileMap" type="TileMap" parent="." unique_id=1250510581]
@@ -108,6 +147,13 @@ position = Vector2(25, 147)
 
 [node name="Branch5" parent="." unique_id=1681474695 instance=ExtResource("3_nxisb")]
 position = Vector2(92, 174)
+
+[node name="platform" parent="." unique_id=700560478 groups=["platforms"] instance=ExtResource("4_gcfbr")]
+position = Vector2(672, -144)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="platform" unique_id=1486676637]
+libraries/ = SubResource("AnimationLibrary_hbtch")
+autoplay = &"platform_move"
 
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nut2" to="nut2" method="_on_body_entered"]

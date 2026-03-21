@@ -41,6 +41,7 @@ func _process(delta):
 		print_visible_rows()
 		print_active_sections()
 		print_active_nuts()
+		print_active_platforms()
 		print("--------")
 		debug_timer = 0
 
@@ -112,22 +113,38 @@ func update_section_visibility():
 
 			set_section_active(section, active)
 
-func set_section_active(section: Node, active: bool):
+func set_section_active(section: Node, active: bool) -> void:
 	# Section processing & visibility
 	section.visible = active
 	section.process_mode = Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
 	section.set_physics_process(active)
 
-	# Child objects
+	# Child objects (recursive + scalable)
 	for child in section.get_children():
-		if child.is_in_group("nuts"):
-			child.visible = active
-			child.set_physics_process(active)
-			for c in child.get_children():
-				if c is CollisionShape2D:
-					c.disabled = not active
-		elif child is CollisionObject2D:
+		_activate_node(child, active)
+
+func _activate_node(node: Node, active: bool) -> void:
+	# --- If node has custom activation, let it handle itself ---
+	if node.has_method("set_active"):
+		node.set_active(active)
+		return
+
+	# --- Default behavior (fallback for everything else) ---
+	if node is CanvasItem:
+		node.visible = active
+
+	if node is CollisionObject2D:
+		node.set_physics_process(active)
+		node.set_process(active)
+
+	# Disable all collision shapes inside
+	for child in node.get_children():
+		if child is CollisionShape2D:
 			child.disabled = not active
+
+	# --- Recurse into children ---
+	for child in node.get_children():
+		_activate_node(child, active)
 
 # --- VERTICAL ROW UPDATE ---
 func get_player_row() -> int:
@@ -199,3 +216,28 @@ func print_active_nuts():
 			active_nuts += 1
 
 	print("Active nuts:", active_nuts)
+	
+func print_active_platforms():
+	var active_platforms := 0
+	
+	for platform in get_tree().get_nodes_in_group("platforms"):
+		if not platform.visible or platform.process_mode == Node.PROCESS_MODE_DISABLED:
+			continue
+
+		var has_enabled_collision := false
+		var stack := [platform]
+
+		while stack.size() > 0:
+			var node = stack.pop_back()
+
+			if node is CollisionShape2D and not node.disabled:
+				has_enabled_collision = true
+				break
+
+			for child in node.get_children():
+				stack.append(child)
+
+		if has_enabled_collision:
+			active_platforms += 1
+
+	print("Active platforms:", active_platforms)
