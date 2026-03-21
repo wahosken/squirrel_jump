@@ -83,7 +83,7 @@ position = Vector2(-2048, -4032)
 [node name="section_3e" parent="Level/row3" unique_id=585049405 instance=ExtResource("16_wljb1")]
 position = Vector2(-1024, -4032)
 
-[node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
+[node name="player" parent="." unique_id=131994215 groups=["player"] instance=ExtResource("1_uwrxv")]
 z_index = 5
 position = Vector2(-19, 32)
 
@@ -137,7 +137,7 @@ texture_pressed = ExtResource("20_qnb83")
 
 [node name="Right" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=2090334822]
 modulate = Color(1, 1, 1, 0.8)
-position = Vector2(55, 0)
+position = Vector2(59.2, 0)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("21_sww3w")
 texture_pressed = ExtResource("22_suyxu")
@@ -160,6 +160,7 @@ scale = Vector2(2.5, 2.5)
 
 [node name="Up" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=907483779]
 modulate = Color(1, 1, 1, 0.8)
+position = Vector2(0, -4.4000125)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("23_sgl2t")
 texture_pressed = ExtResource("24_qouja")

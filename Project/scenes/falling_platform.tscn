@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://kybrnnet87wt"]
+
+[ext_resource type="Script" uid="uid://cfpepvr8345so" path="res://scripts/falling_platform.gd" id="1_eyv7q"]
+[ext_resource type="Texture2D" uid="uid://bdkr3egw85ids" path="res://assets/breaking_platform.png" id="1_l3rcd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eyv7q"]
+size = Vector2(32, 4)
+
+[node name="falling_platform" type="AnimatableBody2D" unique_id=451588450]
+script = ExtResource("1_eyv7q")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=932224825]
+polygon = PackedVector2Array(-16, -8, -16, -16, 16, -16, 16, -7, 0, 6)
+
+[node name="Visuals" type="Node2D" parent="." unique_id=1557245955]
+
+[node name="Sprite2D" type="Sprite2D" parent="Visuals" unique_id=487774263]
+texture = ExtResource("1_l3rcd")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=71795806]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1522678324]
+position = Vector2(0, -15)
+shape = SubResource("RectangleShape2D_eyv7q")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

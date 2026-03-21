@@ -3,6 +3,7 @@ extends Control
 @export var fullscreen_button: TouchScreenButton
 
 func _ready() -> void:
+	hide()
 	# Ensure the button has a texture
 	if fullscreen_button:
 		fullscreen_button.texture_normal = preload("uid://b62nx1nn1u1t2")

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cowlcymhjuwxc" path="res://scenes/nut.tscn" id="2_wwbim"]
 [ext_resource type="PackedScene" uid="uid://b0mudofjv6wtb" path="res://scenes/branch.tscn" id="3_nxisb"]
 [ext_resource type="PackedScene" uid="uid://77h6h7ce6nrp" path="res://scenes/platform.tscn" id="4_gcfbr"]
+[ext_resource type="PackedScene" uid="uid://kybrnnet87wt" path="res://scenes/falling_platform.tscn" id="5_oh5es"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wwbim"]
 resource_name = "Trees"
@@ -154,6 +155,12 @@ position = Vector2(672, -144)
 [node name="AnimationPlayer" type="AnimationPlayer" parent="platform" unique_id=1486676637]
 libraries/ = SubResource("AnimationLibrary_hbtch")
 autoplay = &"platform_move"
+
+[node name="falling_platform" parent="." unique_id=451588450 instance=ExtResource("5_oh5es")]
+position = Vector2(336, -144)
+
+[node name="falling_platform2" parent="." unique_id=1817335623 instance=ExtResource("5_oh5es")]
+position = Vector2(368, -144)
 
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nut2" to="nut2" method="_on_body_entered"]
