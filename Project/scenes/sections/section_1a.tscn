@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://77h6h7ce6nrp" path="res://scenes/platform.tscn" id="4_gcfbr"]
 [ext_resource type="PackedScene" uid="uid://kybrnnet87wt" path="res://scenes/falling_platform.tscn" id="5_oh5es"]
 [ext_resource type="PackedScene" uid="uid://dxj7yyjye3ti5" path="res://scenes/falling_platform_leaf.tscn" id="6_hbtch"]
+[ext_resource type="PackedScene" uid="uid://fy1ryia7yph0" path="res://scenes/bouncy_platform.tscn" id="7_3vxlj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wwbim"]
 resource_name = "Trees"
@@ -198,6 +199,12 @@ position = Vector2(368, -16)
 
 [node name="falling_platform_leaf11" parent="." unique_id=2098657066 instance=ExtResource("6_hbtch")]
 position = Vector2(400, -16)
+
+[node name="bouncy_platform" parent="." unique_id=970677477 instance=ExtResource("7_3vxlj")]
+position = Vector2(590, 226)
+
+[node name="bouncy_platform2" parent="." unique_id=1024067019 instance=ExtResource("7_3vxlj")]
+position = Vector2(-97, 227)
 
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nut2" to="nut2" method="_on_body_entered"]

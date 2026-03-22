@@ -15,7 +15,7 @@ const JUMP_BUFFER_TIME = 0.12
 const JUMP_CUT_MULTIPLIER = 0.5
 
 const FAST_FALL_MULTIPLIER = 1.5
-const GLIDE_GRAVITY_MULTIPLIER = 0.3
+const GLIDE_GRAVITY_MULTIPLIER = 0.5
 const FAST_FALL_DURATION = 0.85
 
 const APEX_THRESHOLD = 40.0
@@ -215,8 +215,9 @@ func _physics_process(delta: float) -> void:
 			fall_timer = 0
 		else:
 			fall_timer += delta
-			if Input.is_action_pressed("jump"):
+			if Input.is_action_pressed("jump") and velocity.y > 100:
 				velocity += get_gravity() * GLIDE_GRAVITY_MULTIPLIER * delta
+				velocity.y = min(velocity.y, 120) # cap fall speed while gliding
 			else:
 				velocity += get_gravity() * FAST_FALL_MULTIPLIER * delta
 	else:
@@ -310,7 +311,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				if velocity.y < 0:
 					change_state(PlayerState.JUMP)
-				elif Input.is_action_pressed("jump"):
+				elif velocity.y > 100 and Input.is_action_pressed("jump"):
 					change_state(PlayerState.GLIDE)
 				elif velocity.y > 0:
 					change_state(PlayerState.FALL)

@@ -80,7 +80,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_wtp7b"]
 resource_name = "platform_move"
 length = 10.0
-loop_mode = 1
+loop_mode = 2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -118,17 +118,17 @@ position = Vector2(-128, 336)
 libraries/ = SubResource("AnimationLibrary_hd6v0")
 autoplay = &"platform_move"
 
-[node name="falling_platform" parent="." unique_id=451588450 groups=["platforms"] instance=ExtResource("3_lllj3")]
+[node name="falling_platform" parent="." unique_id=451588450 instance=ExtResource("3_lllj3")]
 position = Vector2(496, -1552)
 
-[node name="falling_platform2" parent="." unique_id=1927462071 groups=["platforms"] instance=ExtResource("3_lllj3")]
+[node name="falling_platform2" parent="." unique_id=1927462071 instance=ExtResource("3_lllj3")]
 position = Vector2(528, -1552)
 
-[node name="falling_platform3" parent="." unique_id=570376277 groups=["platforms"] instance=ExtResource("3_lllj3")]
+[node name="falling_platform3" parent="." unique_id=570376277 instance=ExtResource("3_lllj3")]
 position = Vector2(560, -1552)
 
-[node name="falling_platform4" parent="." unique_id=177272732 groups=["platforms"] instance=ExtResource("3_lllj3")]
+[node name="falling_platform4" parent="." unique_id=177272732 instance=ExtResource("3_lllj3")]
 position = Vector2(592, -1552)
 
-[node name="falling_platform5" parent="." unique_id=1331405211 groups=["platforms"] instance=ExtResource("3_lllj3")]
+[node name="falling_platform5" parent="." unique_id=1331405211 instance=ExtResource("3_lllj3")]
 position = Vector2(624, -1552)
