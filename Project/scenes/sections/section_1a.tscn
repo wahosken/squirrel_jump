@@ -156,10 +156,10 @@ position = Vector2(672, -144)
 libraries/ = SubResource("AnimationLibrary_hbtch")
 autoplay = &"platform_move"
 
-[node name="falling_platform" parent="." unique_id=451588450 instance=ExtResource("5_oh5es")]
+[node name="falling_platform" parent="." unique_id=451588450 groups=["platforms"] instance=ExtResource("5_oh5es")]
 position = Vector2(336, -144)
 
-[node name="falling_platform2" parent="." unique_id=1817335623 instance=ExtResource("5_oh5es")]
+[node name="falling_platform2" parent="." unique_id=1817335623 groups=["platforms"] instance=ExtResource("5_oh5es")]
 position = Vector2(368, -144)
 
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]

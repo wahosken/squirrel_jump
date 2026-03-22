@@ -10,7 +10,7 @@ func set_active(active: bool):
 
 @onready var visuals: Node2D = $Visuals
 
-@export var shake_time: float = 1.0
+@export var shake_time: float = 0.8
 @export var fall_time: float = 2.0
 @export var gravity: float = 900.0
 @export var shake_intensity: float = 2.0
@@ -31,12 +31,11 @@ func _physics_process(delta):
 	if shaking:
 		shake_timer -= delta
 
-		visuals.position = Vector2(
-			randf_range(-shake_intensity, shake_intensity),
-			randf_range(-shake_intensity, shake_intensity)
-		)
+		var shake_offset = sin(Time.get_ticks_msec() * 0.05) * shake_intensity
+		visuals.position.x = shake_offset
+		visuals.position.y = 0
 
-		visuals.rotation_degrees = randf_range(-5, 5)
+		visuals.rotation_degrees = shake_offset * 0.5
 
 		if shake_timer <= 0:
 			shaking = false
