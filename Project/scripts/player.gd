@@ -9,7 +9,7 @@ const TURN_ACCEL = 2600.0
 const FRICTION = 4000.0
 const CROUCH_SPEED_MULTIPLIER = 0.35
 
-const COYOTE_TIME = 0.20
+const COYOTE_TIME = 0.12
 const WALL_COYOTE_TIME = 0.20
 const JUMP_BUFFER_TIME = 0.12
 const JUMP_CUT_MULTIPLIER = 0.5
@@ -119,6 +119,7 @@ func check_wall_cling(input_dir: float, delta: float) -> void:
 
 # --- Swinging Jump Function ---
 func player_jump():
+	
 	jump_cooldown = 0.25
 	just_jumped = true
 	if swing.is_swinging:
@@ -155,8 +156,23 @@ func player_jump():
 		jump_sound.play()
 		
 	elif is_on_floor() or coyote_timer > 0.0:
-		# Normal ground jump
+		var platform_vel := Vector2.ZERO
+
+		# Try to read platform velocity from what we're standing on
+		for i in get_slide_collision_count():
+			var collision = get_slide_collision(i)
+			var collider = collision.get_collider()
+
+			if collider and collider.is_in_group("moving_platform"):
+				platform_vel = collider.platform_velocity
+				break
+
 		velocity.y = JUMP_VELOCITY
+
+		# Cancel downward platform motion (the real fix)
+		if platform_vel.y > 0:
+			velocity.y -= platform_vel.y
+
 		coyote_timer = 0
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()

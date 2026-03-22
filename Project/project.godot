@@ -32,6 +32,7 @@ nuts=""
 platforms=""
 player=""
 bouncy=""
+moving_platform=""
 
 [input]
 

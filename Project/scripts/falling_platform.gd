@@ -4,7 +4,7 @@ func set_active(active: bool):
 	set_physics_process(active)
 
 	for c in get_children():
-		if c is CollisionShape2D:
+		if c is CollisionShape2D or c is CollisionPolygon2D:
 			c.disabled = not active
 
 
@@ -43,6 +43,12 @@ func _physics_process(delta):
 		if shake_timer <= 0:
 			shaking = false
 			falling = true
+
+			# 🔥 Disable collision immediately when falling starts
+			for c in get_children():
+				if c is CollisionShape2D or c is CollisionPolygon2D:
+					c.disabled = true
+
 			visuals.position = Vector2.ZERO
 			visuals.rotation_degrees = 0
 
@@ -84,7 +90,7 @@ func start_respawn():
 
 	# Disable collisions
 	for c in get_children():
-		if c is CollisionShape2D:
+		if c is CollisionShape2D or c is CollisionPolygon2D:
 			c.disabled = true
 
 	# Reset physics state
@@ -106,7 +112,7 @@ func respawn():
 
 	# Re-enable collision
 	for c in get_children():
-		if c is CollisionShape2D:
+		if c is CollisionShape2D or c is CollisionPolygon2D:
 			c.disabled = false
 			
 	visuals.position = Vector2.ZERO

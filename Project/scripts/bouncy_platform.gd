@@ -5,7 +5,7 @@ func set_active(active: bool):
 	set_physics_process(active)
 
 	for c in get_children():
-		if c is CollisionShape2D:
+		if c is CollisionShape2D or c is CollisionPolygon2D:
 			c.disabled = not active
 
 # --- Bounce Settings ---
