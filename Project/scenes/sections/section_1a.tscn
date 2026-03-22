@@ -162,6 +162,9 @@ position = Vector2(336, -144)
 [node name="falling_platform2" parent="." unique_id=1817335623 groups=["platforms"] instance=ExtResource("5_oh5es")]
 position = Vector2(368, -144)
 
+[node name="falling_platform3" parent="." unique_id=121570739 groups=["platforms"] instance=ExtResource("5_oh5es")]
+position = Vector2(208, -16)
+
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nut2" to="nut2" method="_on_body_entered"]
 [connection signal="body_entered" from="nut3" to="nut3" method="_on_body_entered"]
