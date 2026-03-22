@@ -11,7 +11,7 @@ func set_active(active: bool):
 # --- Bounce Settings ---
 @export var bounce_force: float = -550.0
 @export var directional_boost: float = 120.0
-@export var min_fall_speed: float = 0.0
+@export var min_fall_speed: float = 50.0
 
 # --- Juice ---
 @export var squash_amount: float = 0.2
@@ -20,25 +20,6 @@ func set_active(active: bool):
 @onready var visuals: Sprite2D = $Sprite2D
 
 var tween: Tween
-
-func _on_area_2d_body_entered(body):
-	if not body.is_in_group("player"):
-		return
-	
-	# Only trigger if falling
-	if body.velocity.y < min_fall_speed:
-		return
-
-	# --- APPLY BOUNCE ---
-	body.velocity.y = bounce_force
-
-	# Optional horizontal influence
-	var input_dir = Input.get_axis("move_left", "move_right")
-	body.velocity.x += input_dir * directional_boost
-	
-
-	# --- JUICE (squash + stretch) ---
-	play_squash()
 
 func play_squash():
 	if tween:

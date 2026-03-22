@@ -50,6 +50,7 @@ var is_wall_clinging: bool = false
 var wall_dir: int = 0
 var wall_cling_grace_timer: float = 0.0
 var was_wall_clinging = false
+var last_fall_speed := 0.0
 
 # --- Nodes ---
 @onready var visuals: Node2D = $Visuals
@@ -167,6 +168,13 @@ func snap_to_grab(pivot_position: Vector2):
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
 	jump_cooldown = max(jump_cooldown - delta, 0.0)
+	
+	if velocity.y > 0:
+		last_fall_speed = velocity.y
+		
+	else: 
+		last_fall_speed = 0.0
+	
 	# --- Facing ---
 	if not swing.is_swinging:
 		if Input.is_action_pressed("move_right"):
@@ -357,6 +365,28 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	just_jumped = false
+	
+	# --- Bounce Check ---
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+
+		if collider and collider.is_in_group("bouncy"):
+			if last_fall_speed > 125:
+				var strength = clamp(last_fall_speed / 500.0, 0.8, 1.2)
+
+				velocity.y = min(velocity.y, 0) # cancel downward momentum
+				velocity.y = collider.bounce_force * strength
+
+				# Optional horizontal influence
+				var bounce_input_dir = Input.get_axis("move_left", "move_right")
+				velocity.x += bounce_input_dir * collider.directional_boost
+
+				# Optional: call juice on platform
+				if collider.has_method("play_squash"):
+					collider.play_squash()
+
+				break
 
 # --- Run Sound Timer Callback ---
 func _on_run_sound_timer_timeout() -> void:

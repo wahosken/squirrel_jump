@@ -31,6 +31,7 @@ window/stretch/mode="viewport"
 nuts=""
 platforms=""
 player=""
+bouncy=""
 
 [input]
 
