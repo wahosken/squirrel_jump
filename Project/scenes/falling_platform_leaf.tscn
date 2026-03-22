@@ -1,21 +1,22 @@
-[gd_scene format=3 uid="uid://kybrnnet87wt"]
+[gd_scene format=3 uid="uid://dxj7yyjye3ti5"]
 
-[ext_resource type="Script" uid="uid://cfpepvr8345so" path="res://scripts/falling_platform.gd" id="1_eyv7q"]
-[ext_resource type="Texture2D" uid="uid://bdkr3egw85ids" path="res://assets/breaking_platform.png" id="1_l3rcd"]
+[ext_resource type="Script" uid="uid://cfpepvr8345so" path="res://scripts/falling_platform.gd" id="1_tu0kr"]
+[ext_resource type="Texture2D" uid="uid://br4vntgvrcmd3" path="res://assets/breaking_platform2.png" id="2_84ni4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eyv7q"]
 size = Vector2(32, 4)
 
-[node name="falling_platform" type="AnimatableBody2D" unique_id=451588450 groups=["platforms"]]
-script = ExtResource("1_eyv7q")
+[node name="falling_platform_leaf" type="AnimatableBody2D" unique_id=451588450 groups=["platforms"]]
+script = ExtResource("1_tu0kr")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=932224825]
-polygon = PackedVector2Array(-16, -8, -16, -16, 16, -16, 16, -7, 0, 6)
+polygon = PackedVector2Array(-16, -8, -16, -16, 16, -16, 16, -8, -1, -8)
+one_way_collision = true
 
 [node name="Visuals" type="Node2D" parent="." unique_id=1557245955]
 
 [node name="Sprite2D" type="Sprite2D" parent="Visuals" unique_id=487774263]
-texture = ExtResource("1_l3rcd")
+texture = ExtResource("2_84ni4")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=71795806]
 collision_mask = 2

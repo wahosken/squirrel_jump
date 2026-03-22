@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://b0mudofjv6wtb" path="res://scenes/branch.tscn" id="3_nxisb"]
 [ext_resource type="PackedScene" uid="uid://77h6h7ce6nrp" path="res://scenes/platform.tscn" id="4_gcfbr"]
 [ext_resource type="PackedScene" uid="uid://kybrnnet87wt" path="res://scenes/falling_platform.tscn" id="5_oh5es"]
+[ext_resource type="PackedScene" uid="uid://dxj7yyjye3ti5" path="res://scenes/falling_platform_leaf.tscn" id="6_hbtch"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wwbim"]
 resource_name = "Trees"
@@ -156,14 +157,47 @@ position = Vector2(672, -144)
 libraries/ = SubResource("AnimationLibrary_hbtch")
 autoplay = &"platform_move"
 
-[node name="falling_platform" parent="." unique_id=451588450 groups=["platforms"] instance=ExtResource("5_oh5es")]
+[node name="falling_platform" parent="." unique_id=451588450 instance=ExtResource("5_oh5es")]
 position = Vector2(336, -144)
 
-[node name="falling_platform2" parent="." unique_id=1817335623 groups=["platforms"] instance=ExtResource("5_oh5es")]
+[node name="falling_platform2" parent="." unique_id=1817335623 instance=ExtResource("5_oh5es")]
 position = Vector2(368, -144)
 
-[node name="falling_platform3" parent="." unique_id=121570739 groups=["platforms"] instance=ExtResource("5_oh5es")]
+[node name="falling_platform3" parent="." unique_id=121570739 instance=ExtResource("5_oh5es")]
 position = Vector2(208, -16)
+
+[node name="falling_platform_leaf" parent="." unique_id=191251474 instance=ExtResource("6_hbtch")]
+position = Vector2(399, 144)
+
+[node name="falling_platform_leaf2" parent="." unique_id=832403530 instance=ExtResource("6_hbtch")]
+position = Vector2(431, 144)
+
+[node name="falling_platform_leaf3" parent="." unique_id=1778234290 instance=ExtResource("6_hbtch")]
+position = Vector2(463, 107)
+
+[node name="falling_platform_leaf4" parent="." unique_id=1701966197 instance=ExtResource("6_hbtch")]
+position = Vector2(463, 66)
+
+[node name="falling_platform_leaf5" parent="." unique_id=340059046 instance=ExtResource("6_hbtch")]
+position = Vector2(462, 16)
+
+[node name="falling_platform_leaf6" parent="." unique_id=38215263 instance=ExtResource("6_hbtch")]
+position = Vector2(240, -16)
+
+[node name="falling_platform_leaf7" parent="." unique_id=412097545 instance=ExtResource("6_hbtch")]
+position = Vector2(272, -16)
+
+[node name="falling_platform_leaf8" parent="." unique_id=1717940211 instance=ExtResource("6_hbtch")]
+position = Vector2(304, -16)
+
+[node name="falling_platform_leaf9" parent="." unique_id=214095172 instance=ExtResource("6_hbtch")]
+position = Vector2(336, -16)
+
+[node name="falling_platform_leaf10" parent="." unique_id=1512901753 instance=ExtResource("6_hbtch")]
+position = Vector2(368, -16)
+
+[node name="falling_platform_leaf11" parent="." unique_id=2098657066 instance=ExtResource("6_hbtch")]
+position = Vector2(400, -16)
 
 [connection signal="body_entered" from="nut" to="nut" method="_on_body_entered"]
 [connection signal="body_entered" from="nut2" to="nut2" method="_on_body_entered"]
