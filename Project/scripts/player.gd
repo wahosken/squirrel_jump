@@ -9,8 +9,8 @@ const TURN_ACCEL = 2600.0
 const FRICTION = 4000.0
 const CROUCH_SPEED_MULTIPLIER = 0.35
 
-const COYOTE_TIME = 0.12
-const WALL_COYOTE_TIME = 0.20
+const COYOTE_TIME = 0.20
+const WALL_COYOTE_TIME = 0.35
 const JUMP_BUFFER_TIME = 0.12
 const JUMP_CUT_MULTIPLIER = 0.5
 
@@ -158,7 +158,6 @@ func player_jump():
 	elif is_on_floor() or coyote_timer > 0.0:
 		var platform_vel := Vector2.ZERO
 
-		# Try to read platform velocity from what we're standing on
 		for i in get_slide_collision_count():
 			var collision = get_slide_collision(i)
 			var collider = collision.get_collider()
@@ -167,11 +166,12 @@ func player_jump():
 				platform_vel = collider.platform_velocity
 				break
 
+		# Apply jump first
 		velocity.y = JUMP_VELOCITY
 
-		# Cancel downward platform motion (the real fix)
+		# Then subtract upward platform motion ONLY if it helps
 		if platform_vel.y > 0:
-			velocity.y -= platform_vel.y
+			velocity.y -= platform_vel.y * 0.5
 
 		coyote_timer = 0
 		jump_sound.pitch_scale = randf_range(1, 1.5)
@@ -185,10 +185,10 @@ func snap_to_grab(pivot_position: Vector2):
 func _physics_process(delta: float) -> void:
 	jump_cooldown = max(jump_cooldown - delta, 0.0)
 	
-	if velocity.y > 0:
+	if velocity.y > last_fall_speed:
 		last_fall_speed = velocity.y
-		
-	else: 
+
+	if is_on_floor():
 		last_fall_speed = 0.0
 	
 	# --- Facing ---
@@ -388,17 +388,23 @@ func _physics_process(delta: float) -> void:
 		var collider = collision.get_collider()
 
 		if collider and collider.is_in_group("bouncy"):
-			if last_fall_speed > 125:
+			var normal = collision.get_normal()
+
+			# Only trigger when landing FROM ABOVE
+			if normal.y < -0.7 and last_fall_speed > 125:
 				var strength = clamp(last_fall_speed / 500.0, 0.8, 1.2)
 
-				velocity.y = min(velocity.y, 0) # cancel downward momentum
+				# Apply bounce
 				velocity.y = collider.bounce_force * strength
+
+				# Cancel downward momentum cleanly
+				if velocity.y > 0:
+					velocity.y = 0
 
 				# Optional horizontal influence
 				var bounce_input_dir = Input.get_axis("move_left", "move_right")
 				velocity.x += bounce_input_dir * collider.directional_boost
 
-				# Optional: call juice on platform
 				if collider.has_method("play_squash"):
 					collider.play_squash()
 
