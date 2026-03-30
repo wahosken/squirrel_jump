@@ -7,6 +7,8 @@
 size = Vector2(32, 4)
 
 [node name="falling_platform_leaf" type="AnimatableBody2D" unique_id=451588450 groups=["platforms"]]
+collision_layer = 16
+collision_mask = 16
 script = ExtResource("1_tu0kr")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=932224825]
