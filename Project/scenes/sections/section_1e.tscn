@@ -1,67 +1,9 @@
 [gd_scene format=3 uid="uid://p54eo75n40ks"]
 
-[ext_resource type="Texture2D" uid="uid://cjsobt6r1anvt" path="res://assets/tree_textures.png" id="1_kkvqq"]
+[ext_resource type="TileSet" uid="uid://8w40xyqma5f2" path="res://trees_tile_set.tres" id="1_rbhrn"]
 [ext_resource type="PackedScene" uid="uid://cowlcymhjuwxc" path="res://scenes/nut.tscn" id="2_wfh23"]
 [ext_resource type="PackedScene" uid="uid://b0mudofjv6wtb" path="res://scenes/branch.tscn" id="3_p6lov"]
 [ext_resource type="PackedScene" uid="uid://77h6h7ce6nrp" path="res://scenes/platform.tscn" id="4_rbhrn"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wfh23"]
-texture = ExtResource("1_kkvqq")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
-1:0/0 = 0
-1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, -6.631342, -0.4626503, 5.0891724, -16, -6.9397774)
-0:1/0 = 0
-0:7/0 = 0
-1:7/0 = 0
-2:7/0 = 0
-3:7/0 = 0
-4:7/0 = 0
-5:7/0 = 0
-6:7/0 = 0
-0:2/0 = 0
-0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
-0:3/0 = 0
-0:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, -16, 16, -16, -16, 16, -16)
-1:3/0 = 0
-1:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, -16, 16, -16, -16, 16, -16)
-1:4/0 = 0
-0:4/0 = 0
-1:5/0 = 0
-0:5/0 = 0
-5:3/0 = 0
-5:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, 0, 16, 0, -16, 16, -16)
-5:2/0 = 0
-5:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, 0, 16, 0, -16, 16, -16)
-5:1/0 = 0
-5:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, 0, 16, 0, -16, 16, -16)
-5:0/0 = 0
-5:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, 0, 16, -0.35971832, 3.7770348, -10.431807, 0, -16, -6.115196, -13.669264, -8.633219, -8.453361, -2.1583042, -0.17985916, 1.2590122, 0, -16, 16, -16)
-6:0/0 = 0
-6:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(0, -7.965769, -4.4608307, -9.240292, -0.63726044, -16, 7.3285065, -16)
-7:0/0 = 0
-7:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(1.5931549, -8.284399, -2.2304153, -8.284399, -1.5931549, -13.382492, 2.2304153, -13.06386)
-2:0/0 = 0
-2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, -7.965769, -0.9558945, 5.7353554, -16, -8.603029)
-3:0/0 = 0
-3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 9.558922, -8.603029, -8.603031, -7.965769)
-3:0/0/physics_layer_0/polygon_0/one_way = true
-1:1/0 = 0
-1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, 16, 7.965767, 16, -16, -8.603029)
-1:2/0 = 0
-1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-11.789339, -16, 16, -16, 16, -7.965769, -10.8334465, -8.284399)
-2:2/0 = 0
-2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, 16, 8.921661, 16, -16, -8.603029)
-2:3/0 = 0
-2:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, -16, 16, -9.558922, 8.603031, -16)
-7:7/0 = 0
-7:6/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_a3jts"]
-tile_size = Vector2i(32, 32)
-physics_layer_0/collision_layer = 1
-sources/0 = SubResource("TileSetAtlasSource_wfh23")
 
 [sub_resource type="Animation" id="Animation_rbhrn"]
 length = 0.001
@@ -105,7 +47,7 @@ _data = {
 [node name="Section1E" type="Node2D" unique_id=259630230]
 
 [node name="TileMap" type="TileMap" parent="." unique_id=444459736]
-tile_set = SubResource("TileSet_a3jts")
+tile_set = ExtResource("1_rbhrn")
 format = 2
 layer_0/name = "Mid"
 layer_0/tile_data = PackedInt32Array(-851947, 196608, 0, -851946, 196608, 0, -851945, 196608, 0, -851944, 196608, 0, -262146, 65536, 0, -262145, 65536, 0, -327680, 65536, 0, -262151, 65536, 0, -262150, 65536, 0, 393214, 196608, 0, 393215, 196608, 0, 262144, 196608, 0, 262145, 196608, 0, 196610, 196608, 0, 196611, 196608, 0, 131076, 196608, 0, 131077, 196608, 0, 65542, 65536, 0, 65543, 65536, 0, 65544, 65536, 0, 65545, 65536, 0, 65546, 65536, 0, 65547, 65536, 0, -851967, 65536, 0, -851966, 65536, 0, -851965, 65536, 0, -851964, 65536, 0, -786435, 65536, 0, -786434, 65536, 0, -786433, 65536, 0, -851968, 65536, 0, -983038, 196608, 0, -983037, 196608, 0, -1114110, 196608, 0, -1114109, 196608, 0, -1245182, 196608, 0, -1245181, 196608, 0, -1376254, 196608, 0, -1376253, 196608, 0, -1507326, 196608, 0, -1507325, 196608, 0, -1769470, 196608, 0, -1638398, 196608, 0, -1769469, 196608, 0, -1638397, 196608, 0, -2031614, 196608, 0, -1900542, 196608, 0, -2031613, 196608, 0, -1900541, 196608, 0, -2293758, 196608, 0, -2162686, 196608, 0, -2293757, 196608, 0, -2162685, 196608, 0, -2555902, 196608, 0, -2424830, 196608, 0, -2555901, 196608, 0, -2424829, 196608, 0, -2818046, 196608, 0, -2686974, 196608, 0, -2818045, 196608, 0, -2686973, 196608, 0, -3080190, 196608, 0, -2949118, 196608, 0, -3080189, 196608, 0, -2949117, 196608, 0, -3342334, 196608, 0, -3211262, 196608, 0, -3342333, 196608, 0, -3211261, 196608, 0, -720889, 65536, 0, -851959, 65536, 0, -851958, 65536, 0, -589814, 65536, 0, -851957, 65536, 0, -327669, 65536, 0, -851956, 65536, 0, -65524, 65536, 0, -851955, 65536, 0, -851954, 65536, 0, -458738, 65536, 0, -196594, 65536, 0, -720890, 65536, 0, -589815, 65536, 0, -327670, 65536, 0, -65525, 65536, 0, -458739, 65536, 0, -196595, 65536, 0, -3276806, 196608, 0, -3276807, 196608, 0, -3276803, 196608, 0, -3276802, 196608, 0, -3276801, 196608, 0, -3342336, 196608, 0, -3342335, 196608, 0, -3276805, 196608, 0, -3276804, 196608, 0)
@@ -143,7 +85,7 @@ position = Vector2(466, 166)
 [node name="Branch6" parent="." unique_id=1643955415 instance=ExtResource("3_p6lov")]
 position = Vector2(401, 112)
 
-[node name="platform" parent="." unique_id=700560478 groups=["platforms"] instance=ExtResource("4_rbhrn")]
+[node name="platform" parent="." unique_id=700560478 instance=ExtResource("4_rbhrn")]
 position = Vector2(-128, 240)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="platform" unique_id=1541834234]

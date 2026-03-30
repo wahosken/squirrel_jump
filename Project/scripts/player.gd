@@ -50,7 +50,7 @@ var last_fall_speed := 0.0
 # Crouch / Fall-through
 var crouch_timer := 0.0
 var fall_through_timer := 0.0
-var CROUCH_DISABLE_TIME := 0.2
+var CROUCH_DISABLE_TIME := 0.35
 var FALL_THROUGH_DURATION := 0.1
 
 # Wall cling
