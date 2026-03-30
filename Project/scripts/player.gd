@@ -59,6 +59,9 @@ var wall_dir: int = 0
 var wall_cling_grace_timer: float = 0.0
 var was_wall_clinging = false
 
+# Camera
+var default_zoom = 2.5
+
 # ======================================================
 # --- EXPORT VARIABLES ---
 # ======================================================
@@ -189,6 +192,7 @@ func player_jump():
 func snap_to_grab(pivot_position: Vector2):
 	var offset = grab_point.global_position - global_position
 	global_position = pivot_position - offset
+	
 
 # ======================================================
 # --- PHYSICS PROCESS ---
@@ -219,6 +223,7 @@ func _physics_process(delta: float) -> void:
 	if swing.is_swinging:
 		var swing_x = camera_swing_offset.x if facing_right else -camera_swing_offset.x
 		target_camera_pos = Vector2(swing_x, camera_swing_offset.y)
+		camera.zoom = camera.zoom.lerp(Vector2(default_zoom, default_zoom), 0.1)
 	camera.position = camera.position.lerp(target_camera_pos, 10.0 * delta)
 
 	# --- Swing Release ---
@@ -231,6 +236,8 @@ func _physics_process(delta: float) -> void:
 	
 	# --- If swinging, skip normal movement ---
 	if swing.is_swinging:
+		velocity.y = 0                 # reset vertical momentum
+		last_fall_speed = 0.0          # reset fall tracking
 		visuals.rotation_degrees = 0
 		visuals.position = visuals_normal_position
 		visuals.scale.y = 1
@@ -350,6 +357,8 @@ func _physics_process(delta: float) -> void:
 				change_state(PlayerState.JUMP)
 			elif velocity.y > 100 and Input.is_action_pressed("jump"):
 				change_state(PlayerState.GLIDE)
+				velocity.y = 100                 # reset vertical momentum
+				last_fall_speed = 100          # reset fall tracking
 			elif velocity.y > 0:
 				change_state(PlayerState.FALL)
 
@@ -357,6 +366,7 @@ func _physics_process(delta: float) -> void:
 			velocity.x = move_toward(velocity.x, direction * SPEED, accel * delta)
 		else:
 			velocity.x = move_toward(velocity.x, 0, FRICTION * delta)
+			
 
 	# --- Flip Sprite / Wall Cling Rotation ---
 	if is_wall_clinging:
@@ -382,9 +392,27 @@ func _physics_process(delta: float) -> void:
 	else:
 		run_sound_timer.stop()
 
+	# --- Zoom out when falling ---
+	var target_zoom = default_zoom
+	var is_falling = state == PlayerState.FALL
+
+	if not is_on_floor() and is_falling:
+		if last_fall_speed > 2000:
+			target_zoom = 1.6  # big fall
+		elif last_fall_speed > 1500:
+			target_zoom = 1.9  # medium fall
+		elif last_fall_speed > 1000:
+			target_zoom = 2.2  # subtle warning
+		camera.zoom = camera.zoom.lerp(Vector2(target_zoom, target_zoom), 0.1)
+		
+	else:
+		camera.zoom = camera.zoom.lerp(Vector2(default_zoom, default_zoom), 0.1)
+		
+
 	# --- Apply Movement ---
 	move_and_slide()
 	just_jumped = false
+	
 
 	# --- Bounce Check ---
 	for i in get_slide_collision_count():

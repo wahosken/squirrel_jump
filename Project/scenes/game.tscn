@@ -85,7 +85,7 @@ position = Vector2(-1024, -4032)
 
 [node name="player" parent="." unique_id=131994215 groups=["player"] instance=ExtResource("1_uwrxv")]
 z_index = 5
-position = Vector2(-19, 32)
+position = Vector2(-650, -5599)
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -40)
