@@ -51,10 +51,11 @@ var just_jumped = false
 var jump_cooldown = 0.0
 var last_fall_speed := 0.0
 
+
 # Crouch / Fall-through
 var crouch_timer := 0.0
 var fall_through_timer := 0.0
-var CROUCH_DISABLE_TIME := 0.35
+var CROUCH_DISABLE_TIME := 0.5
 var FALL_THROUGH_DURATION := 0.1
 
 # Wall cling
@@ -377,11 +378,16 @@ func _physics_process(delta: float) -> void:
 	# --- CROUCH + FALL-THROUGH ---
 	if on_floor and Input.is_action_pressed("move_down"):
 		is_crouching = true
-		crouch_timer += delta
 
-		if crouch_timer >= CROUCH_DISABLE_TIME and fall_through_timer <= 0.0:
-			fall_through_timer = FALL_THROUGH_DURATION
-			set_collision_mask_value(5, false)
+		if abs(direction) < 0.1:
+			crouch_timer += delta
+			
+			if crouch_timer >= CROUCH_DISABLE_TIME and fall_through_timer <= 0.0:
+				fall_through_timer = FALL_THROUGH_DURATION
+				set_collision_mask_value(5, false)
+				
+		else:
+			crouch_timer = 0.0
 
 		velocity.x = move_toward(
 			velocity.x,
