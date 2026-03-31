@@ -6,7 +6,7 @@ extends CharacterBody2D
 const SPEED = 200.0
 const JUMP_VELOCITY = -380.0
 const GROUND_ACCEL = 2000.0
-const AIR_ACCEL = 700.0
+const AIR_ACCEL = 600.0
 const TURN_ACCEL = 2600.0
 const FRICTION = 4000.0
 const CROUCH_SPEED_MULTIPLIER = 0.35
@@ -16,7 +16,7 @@ const WALL_COYOTE_TIME = 0.35
 const JUMP_BUFFER_TIME = 0.12
 const JUMP_CUT_MULTIPLIER = 0.5
 
-const FAST_FALL_MULTIPLIER = 1.5
+const FAST_FALL_MULTIPLIER = 1.25
 const GLIDE_GRAVITY_MULTIPLIER = 0.5
 const FAST_FALL_DURATION = 0.85
 
@@ -24,10 +24,14 @@ const APEX_THRESHOLD = 40.0
 const APEX_ACCEL_MULTIPLIER = 2.2
 const APEX_GRAVITY_MULTIPLIER = 0.6
 
+const BIG_FALL = 1800
+const MEDIUM_FALL = 1200
+const SHORT_FALL = 800
+
 # ======================================================
 # --- ENUMS & STATES ---
 # ======================================================
-enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, CROUCH, SWING, WALL_CLING }
+enum PlayerState { IDLE, RUN, JUMP, FALL, GLIDE, GLIDE_LOW, CROUCH, SWING, WALL_CLING }
 var state = PlayerState.IDLE
 
 # ======================================================
@@ -61,6 +65,12 @@ var was_wall_clinging = false
 
 # Camera
 var default_zoom = 2.5
+
+# --- Glide / Stamina ---
+var glide_timer: float = 0.0
+var max_glide_time: float = 4   # max seconds of glide
+var can_glide: bool = true
+var is_gliding: bool = false
 
 # ======================================================
 # --- EXPORT VARIABLES ---
@@ -112,6 +122,7 @@ func change_state(new_state):
 		PlayerState.JUMP: play_anim("jump")
 		PlayerState.FALL: play_anim("fall")
 		PlayerState.GLIDE: play_anim("glide")
+		PlayerState.GLIDE_LOW: play_anim("glide_low")
 		PlayerState.CROUCH: play_anim("crouch")
 		PlayerState.SWING: play_anim("swing")
 		PlayerState.WALL_CLING: play_anim("wall_cling")
@@ -205,7 +216,10 @@ func _physics_process(delta: float) -> void:
 	
 	jump_cooldown = max(jump_cooldown - delta, 0.0)
 	
-	if velocity.y > last_fall_speed:
+	if is_gliding:
+		# do nothing, preserve previous fall speed
+		pass
+	elif velocity.y > last_fall_speed:
 		last_fall_speed = velocity.y
 
 	if is_on_floor():
@@ -245,29 +259,68 @@ func _physics_process(delta: float) -> void:
 		change_state(PlayerState.SWING)
 		return
 
+# ======================================================
+# --- GLIDE / FALL / GRAVITY ---
+# ======================================================
 	var on_floor = is_on_floor()
-
-	# --- Landing Sound ---
 	var just_landed = on_floor and not was_on_floor
-	if just_landed and fall_timer > 0.25:
-		land_sound.pitch_scale = randf_range(1, 1.5)
-		land_sound.play()
 
-	# --- Gravity ---
+	# --- Fall tracking ---
+	if on_floor:
+		last_fall_speed = 0.0
+		fall_timer = 0
+	else:
+		fall_timer += delta
+
+	# --- Landing reset ---
+	if just_landed:
+		glide_timer = 0.0
+		can_glide = true
+		is_gliding = false
+
+		if fall_timer > 0.25:
+			land_sound.pitch_scale = randf_range(1, 1.5)
+			land_sound.play()
+
+	# --- Reset glide from systems ---
+	if is_wall_clinging or swing.is_swinging:
+		glide_timer = 0.0
+		can_glide = true
+		is_gliding = false
+
+	# --- Gravity + Glide ---
 	if not on_floor:
 		if velocity.y < 0:
+			# Rising
 			velocity += get_gravity() * delta
-			fall_timer = 0
+			is_gliding = false
+			glide_timer = 0.0
 		else:
-			fall_timer += delta
-			if Input.is_action_pressed("jump") and velocity.y > 100:
-				velocity += get_gravity() * GLIDE_GRAVITY_MULTIPLIER * delta
-				velocity.y = min(velocity.y, 120)
-			else:
-				velocity += get_gravity() * FAST_FALL_MULTIPLIER * delta
-	else:
-		fall_timer = 0
+			# Falling
+			if Input.is_action_pressed("jump") and velocity.y > 100 and can_glide:
+				# --- GLIDE ---
+				is_gliding = true
+				glide_timer += delta
 
+				velocity.y = min(velocity.y, 120)
+				velocity += get_gravity() * GLIDE_GRAVITY_MULTIPLIER * delta
+
+				# --- Animation (NOW CORRECT) ---
+				if glide_timer > max_glide_time * 0.6:
+					change_state(PlayerState.GLIDE_LOW)
+				else:
+					change_state(PlayerState.GLIDE)
+
+				# --- Exhaustion ---
+				if glide_timer >= max_glide_time:
+					can_glide = false
+					is_gliding = false
+			else:
+				# Normal fall
+				if is_gliding:
+					is_gliding = false
+				velocity += get_gravity() * FAST_FALL_MULTIPLIER * delta
+			
 	# --- Jump Buffer ---
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer_timer = JUMP_BUFFER_TIME
@@ -343,25 +396,30 @@ func _physics_process(delta: float) -> void:
 		fall_through_timer -= delta
 		if fall_through_timer <= 0.0:
 			set_collision_mask_value(5, true)
+	
+	# --- Wall cling / Swing resets glide ---
+	if is_wall_clinging or swing.is_swinging:
+		glide_timer = 0.0
+		can_glide = true
+		is_gliding = false
 
-	# --- STATE MACHINE (skip if crouching or wall-clinging handled above) ---
+# --- STATE MACHINE ---
 	if not is_crouching and not is_wall_clinging:
 		var grounded = (on_floor or coyote_timer > 0.2) and not just_jumped
+		
 		if grounded:
 			if abs(velocity.x) < 5:
 				change_state(PlayerState.IDLE)
 			else:
 				change_state(PlayerState.RUN)
 		else:
-			if velocity.y < 0:
+			if is_gliding:
+				pass  # glide owns animation
+			elif velocity.y < 0:
 				change_state(PlayerState.JUMP)
-			elif velocity.y > 100 and Input.is_action_pressed("jump"):
-				change_state(PlayerState.GLIDE)
-				velocity.y = 100                 # reset vertical momentum
-				last_fall_speed = 100          # reset fall tracking
-			elif velocity.y > 0:
+			else:
 				change_state(PlayerState.FALL)
-
+		
 		if direction != 0:
 			velocity.x = move_toward(velocity.x, direction * SPEED, accel * delta)
 		else:
@@ -397,11 +455,11 @@ func _physics_process(delta: float) -> void:
 	var is_falling = state == PlayerState.FALL
 
 	if not is_on_floor() and is_falling:
-		if last_fall_speed > 2000:
+		if last_fall_speed > BIG_FALL:
 			target_zoom = 1.6  # big fall
-		elif last_fall_speed > 1500:
+		elif last_fall_speed > MEDIUM_FALL:
 			target_zoom = 1.9  # medium fall
-		elif last_fall_speed > 1000:
+		elif last_fall_speed > SHORT_FALL:
 			target_zoom = 2.2  # subtle warning
 		camera.zoom = camera.zoom.lerp(Vector2(target_zoom, target_zoom), 0.1)
 		
@@ -430,6 +488,7 @@ func _physics_process(delta: float) -> void:
 				if collider.has_method("play_squash"):
 					collider.play_squash()
 				break
+				
 
 # ======================================================
 # --- RUN SOUND TIMER CALLBACK ---

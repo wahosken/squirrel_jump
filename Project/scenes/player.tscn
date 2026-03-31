@@ -30,6 +30,10 @@ region = Rect2(0, 64, 64, 32)
 atlas = ExtResource("2_g2els")
 region = Rect2(128, 64, 64, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_fulsm"]
+atlas = ExtResource("2_g2els")
+region = Rect2(128, 128, 64, 32)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhqgy"]
 atlas = ExtResource("2_g2els")
 region = Rect2(0, 0, 64, 32)
@@ -103,6 +107,14 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fulsm")
+}],
+"loop": true,
+"name": &"glide_low",
+"speed": 5.0
+}, {
+"frames": [{
 "duration": 3.0,
 "texture": SubResource("AtlasTexture_qhqgy")
 }, {
@@ -173,7 +185,7 @@ shape = SubResource("RectangleShape2D_qlg0r")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals" unique_id=203799251]
 position = Vector2(-11, -16)
 sprite_frames = SubResource("SpriteFrames_dqkch")
-animation = &"fall"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="GrabPoint" type="Marker2D" parent="Visuals" unique_id=990645229]
