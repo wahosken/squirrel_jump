@@ -30,8 +30,8 @@ const SHORT_FALL = 800
 
 const LEAF_LAYER = 5
 
-const LEAF_SHAKE_SPEED = 250.0
-const LEAF_BREAK_SPEED = 450.0
+const LEAF_SHAKE_SPEED = 1000.0
+const LEAF_BREAK_SPEED = 1600.0
 const FAST_FALL_THROUGH_DURATION := 0.2
 
 # ======================================================
@@ -225,6 +225,25 @@ func update_leaf_collision():
 		set_collision_mask_value(LEAF_LAYER, false)
 	else:
 		set_collision_mask_value(LEAF_LAYER, true)
+		
+		
+# --- Placeholder shake effect ---
+func landing_feedback() -> void:
+	# Only trigger if falling fast enough to be in "shake" state
+	if fall_state != "shake":
+		return
+
+	# Squash/stretch effect
+	visuals.scale.y = 0.7
+	visuals.scale.x = 1.2 if facing_right else -1.2
+
+	# Optional: quick color flash for extra feedback
+	animated_sprite_2d.modulate = Color(1, 0.8, 0.6)
+
+	# Return to normal after a short delay
+	await get_tree().create_timer(0.1).timeout
+	visuals.scale = Vector2(1 if facing_right else -1, 1)
+	animated_sprite_2d.modulate = Color(1, 1, 1)
 
 
 # ======================================================
@@ -303,6 +322,8 @@ func _physics_process(delta: float) -> void:
 		if fall_timer > 0.25:
 			land_sound.pitch_scale = randf_range(1, 1.5)
 			land_sound.play()
+			
+		landing_feedback()
 
 	# --- Reset glide from systems ---
 	if is_wall_clinging or swing.is_swinging:
@@ -436,24 +457,27 @@ func _physics_process(delta: float) -> void:
 	else:
 		fall_state = "none"
 		
-	# --- Apply Leaf Collision ---
+	# --- LEAF COLLISION HANDLING ---
+	var leaf_disabled := false
+
+	# High-speed fall-through (lowest priority)
 	if fast_fall_through_timer > 0.0:
 		fast_fall_through_timer -= delta
-		set_collision_mask_value(LEAF_LAYER, false)
-	else:
-		# Only re-enable if crouch isn't disabling it
-		if fall_through_timer <= 0.0:
-			set_collision_mask_value(LEAF_LAYER, true)
-			
-	if is_on_floor():
+		leaf_disabled = true
+
+	# Crouch fall-through (highest priority)
+	if fall_through_timer > 0.0:
+		fall_through_timer -= delta
+		leaf_disabled = true
+
+	# Only update collision once per frame
+	set_collision_mask_value(LEAF_LAYER, not leaf_disabled)
+
+	# Reset if on floor normally
+	if is_on_floor() and not Input.is_action_pressed("move_down"):
 		fast_fall_through_timer = 0.0
+		fall_through_timer = 0.0
 		set_collision_mask_value(LEAF_LAYER, true)
-	
-	# --- Wall cling / Swing resets glide ---
-	if is_wall_clinging or swing.is_swinging:
-		glide_timer = 0.0
-		can_glide = true
-		is_gliding = false
 
 # --- STATE MACHINE ---
 	if not is_crouching and not is_wall_clinging:
