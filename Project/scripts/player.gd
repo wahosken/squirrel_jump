@@ -28,6 +28,12 @@ const BIG_FALL = 1800
 const MEDIUM_FALL = 1200
 const SHORT_FALL = 800
 
+const LEAF_LAYER = 5
+
+const LEAF_SHAKE_SPEED = 250.0
+const LEAF_BREAK_SPEED = 450.0
+const FAST_FALL_THROUGH_DURATION := 0.2
+
 # ======================================================
 # --- ENUMS & STATES ---
 # ======================================================
@@ -67,11 +73,15 @@ var was_wall_clinging = false
 # Camera
 var default_zoom = 2.5
 
-# --- Glide / Stamina ---
+# Glide / Stamina
 var glide_timer: float = 0.0
 var max_glide_time: float = 4   # max seconds of glide
 var can_glide: bool = true
 var is_gliding: bool = false
+
+# Fall Through High Speed Fall
+var fall_state = "none"  # "none", "shake", "break"
+var fast_fall_through_timer := 0.0
 
 # ======================================================
 # --- EXPORT VARIABLES ---
@@ -97,6 +107,7 @@ var is_gliding: bool = false
 @onready var swing: Node = $SwingComponent
 @onready var grab_point: Marker2D = $Visuals/GrabPoint
 @onready var camera: Camera2D = $Camera2D
+
 
 # ======================================================
 # --- READY FUNCTION ---
@@ -207,6 +218,14 @@ func snap_to_grab(pivot_position: Vector2):
 	var offset = grab_point.global_position - global_position
 	global_position = pivot_position - offset
 	
+
+# --- Fast Fall Through ---
+func update_leaf_collision():
+	if fall_state == "break":
+		set_collision_mask_value(LEAF_LAYER, false)
+	else:
+		set_collision_mask_value(LEAF_LAYER, true)
+
 
 # ======================================================
 # --- PHYSICS PROCESS ---
@@ -386,7 +405,7 @@ func _physics_process(delta: float) -> void:
 			
 			if crouch_timer >= CROUCH_DISABLE_TIME and fall_through_timer <= 0.0:
 				fall_through_timer = FALL_THROUGH_DURATION
-				set_collision_mask_value(5, false)
+				set_collision_mask_value(LEAF_LAYER, false)
 				
 		else:
 			crouch_timer = 0.0
@@ -403,7 +422,32 @@ func _physics_process(delta: float) -> void:
 	if fall_through_timer > 0.0:
 		fall_through_timer -= delta
 		if fall_through_timer <= 0.0:
-			set_collision_mask_value(5, true)
+			set_collision_mask_value(LEAF_LAYER, true)
+
+	# --- High Speed Fall Through ---
+	if velocity.y > 0:  # only while falling
+		if velocity.y > LEAF_BREAK_SPEED:
+			fall_state = "break"
+			fast_fall_through_timer = FAST_FALL_THROUGH_DURATION
+		elif velocity.y > LEAF_SHAKE_SPEED:
+			fall_state = "shake"
+		else:
+			fall_state = "none"
+	else:
+		fall_state = "none"
+		
+	# --- Apply Leaf Collision ---
+	if fast_fall_through_timer > 0.0:
+		fast_fall_through_timer -= delta
+		set_collision_mask_value(LEAF_LAYER, false)
+	else:
+		# Only re-enable if crouch isn't disabling it
+		if fall_through_timer <= 0.0:
+			set_collision_mask_value(LEAF_LAYER, true)
+			
+	if is_on_floor():
+		fast_fall_through_timer = 0.0
+		set_collision_mask_value(LEAF_LAYER, true)
 	
 	# --- Wall cling / Swing resets glide ---
 	if is_wall_clinging or swing.is_swinging:
@@ -479,6 +523,15 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	just_jumped = false
 	
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+
+		if collider and collider.is_in_group("leaf"):
+			if fall_state == "shake":
+				if collider.has_method("shake"):
+					collider.shake()
+	
 
 	# --- Bounce Check ---
 	for i in get_slide_collision_count():
@@ -497,6 +550,7 @@ func _physics_process(delta: float) -> void:
 					collider.play_squash()
 				break
 				
+	print(velocity.y)
 
 # ======================================================
 # --- RUN SOUND TIMER CALLBACK ---
@@ -504,3 +558,4 @@ func _physics_process(delta: float) -> void:
 func _on_run_sound_timer_timeout() -> void:
 	run_sound.pitch_scale = randf_range(1, 1.5)
 	run_sound.play()
+	
