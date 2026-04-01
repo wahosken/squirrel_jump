@@ -194,6 +194,8 @@ func player_jump():
 		velocity.y = JUMP_VELOCITY
 		if platform_vel.y > 0:
 			velocity.y -= platform_vel.y * 0.5
+		if not Input.is_action_pressed("jump"):
+			velocity.y *= JUMP_CUT_MULTIPLIER
 		coyote_timer = 0
 		jump_sound.pitch_scale = randf_range(1, 1.5)
 		jump_sound.play()
