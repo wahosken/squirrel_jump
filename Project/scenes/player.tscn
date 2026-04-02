@@ -185,7 +185,7 @@ shape = SubResource("RectangleShape2D_qlg0r")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals" unique_id=203799251]
 position = Vector2(-11, -16)
 sprite_frames = SubResource("SpriteFrames_dqkch")
-animation = &"wall_cling"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="GrabPoint" type="Marker2D" parent="Visuals" unique_id=990645229]
