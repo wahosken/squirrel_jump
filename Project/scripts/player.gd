@@ -574,7 +574,6 @@ func _physics_process(delta: float) -> void:
 					collider.play_squash()
 				break
 				
-	print(velocity.y)
 
 # ======================================================
 # --- RUN SOUND TIMER CALLBACK ---
@@ -582,4 +581,3 @@ func _physics_process(delta: float) -> void:
 func _on_run_sound_timer_timeout() -> void:
 	run_sound.pitch_scale = randf_range(1, 1.5)
 	run_sound.play()
-	

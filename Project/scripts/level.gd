@@ -20,8 +20,9 @@ var debug_timer := 0.0
 
 # --- READY ---
 func _ready():
+	auto_align_sections()
+	
 	_setup_rows_and_columns()
-	_initialize_column_positions()
 	update_section_visibility()
 	_connect_nuts()
 	
@@ -59,10 +60,6 @@ func _setup_rows_and_columns():
 			column.append(r[i])
 		columns.append(column)
 
-func _initialize_column_positions():
-	for i in range(columns.size()):
-		for section in columns[i]:
-			section.global_position.x = i * SECTION_WIDTH
 
 # --- NUT CONNECTION ---
 func _connect_nuts():
@@ -241,3 +238,39 @@ func print_active_platforms():
 			active_platforms += 1
 
 	print("Active platforms:", active_platforms)
+	
+func auto_align_sections():
+	for row_node in get_children():
+		for section in row_node.get_children():
+			
+			var section_name := section.name.to_lower()
+			
+			if not section_name.begins_with("section_"):
+				continue
+			
+			var id := section_name.replace("section_", "")
+			
+			# --- Extract row number ---
+			var row_str := ""
+			var col_char := ""
+			
+			for i in id.length():
+				var current_char := id[i]
+				
+				if current_char.is_valid_int():
+					row_str += current_char
+				else:
+					col_char = current_char
+			
+			if row_str == "" or col_char == "":
+				push_error("Invalid section name: " + section_name)
+				continue
+			
+			var row_index := int(row_str)
+			var col_index := col_char.unicode_at(0) - "a".unicode_at(0)
+			
+			# --- Apply position ---
+			section.position = Vector2(
+				col_index * SECTION_WIDTH,
+				-row_index * SECTION_HEIGHT
+			)
