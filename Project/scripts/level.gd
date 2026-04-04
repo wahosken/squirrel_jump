@@ -79,7 +79,8 @@ func rotate_right():
 	columns.append(first)
 	var rightmost = columns[columns.size() - 2]
 	for i in range(first.size()):
-		first[i].global_position.x = rightmost[i].global_position.x + SECTION_WIDTH
+		first[i].position.x = rightmost[i].position.x + SECTION_WIDTH
+		snap_section(first[i])
 	call_deferred("update_section_visibility")
 
 func rotate_left():
@@ -89,7 +90,8 @@ func rotate_left():
 	columns.insert(0, last)
 	var leftmost = columns[1]
 	for i in range(last.size()):
-		last[i].global_position.x = leftmost[i].global_position.x - SECTION_WIDTH
+		last[i].position.x = leftmost[i].position.x - SECTION_WIDTH
+		snap_section(last[i])
 	call_deferred("update_section_visibility")
 
 # --- SECTION VISIBILITY & ACTIVATION ---
@@ -270,7 +272,11 @@ func auto_align_sections():
 			var col_index := col_char.unicode_at(0) - "a".unicode_at(0)
 			
 			# --- Apply position ---
-			section.position = Vector2(
+			section.position = Vector2i(
 				col_index * SECTION_WIDTH,
 				-row_index * SECTION_HEIGHT
 			)
+			
+func snap_section(section):
+	section.position.x = round(section.position.x)
+	section.position.y = round(section.position.y)
