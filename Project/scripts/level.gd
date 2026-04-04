@@ -45,6 +45,8 @@ func _process(delta):
 		print_active_platforms()
 		print("--------")
 		debug_timer = 0
+		
+	
 
 # --- ROWS & COLUMNS SETUP ---
 func _setup_rows_and_columns():
@@ -93,6 +95,7 @@ func rotate_left():
 		last[i].position.x = leftmost[i].position.x - SECTION_WIDTH
 		snap_section(last[i])
 	call_deferred("update_section_visibility")
+	
 
 # --- SECTION VISIBILITY & ACTIVATION ---
 func update_section_visibility():

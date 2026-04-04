@@ -1,13 +1,5 @@
 extends AnimatableBody2D
 
-func set_active(active: bool):
-	set_physics_process(active)
-
-	for c in get_children():
-		if c is CollisionShape2D or c is CollisionPolygon2D:
-			c.disabled = not active
-
-
 @onready var visuals: Node2D = $Visuals
 
 @export var shake_time: float = 0.8
@@ -27,8 +19,13 @@ var original_position: Vector2
 var shake_timer := 0.0
 var fall_timer := 0.0
 
+var original_collision_layer := 0
+var original_collision_mask := 0
+
 func _ready():
 	original_position = position
+	original_collision_layer = collision_layer
+	original_collision_mask = collision_mask
 
 func _physics_process(delta):
 	if shaking:
@@ -37,24 +34,21 @@ func _physics_process(delta):
 		var shake_offset = sin(Time.get_ticks_msec() * 0.05) * shake_intensity
 		visuals.position.x = shake_offset
 		visuals.position.y = 0
-
 		visuals.rotation_degrees = shake_offset * 0.5
 
 		if shake_timer <= 0:
 			shaking = false
 			falling = true
 
-			# 🔥 Disable collision immediately when falling starts
-			for c in get_children():
-				if c is CollisionShape2D or c is CollisionPolygon2D:
-					c.disabled = true
+			# Disable collisions by setting parent layer/mask to 0
+			collision_layer = 0
+			collision_mask = 0
 
 			visuals.position = Vector2.ZERO
 			visuals.rotation_degrees = 0
 
 	elif falling:
 		fall_timer -= delta
-
 		velocity.y += gravity * delta
 		position += velocity * delta
 
@@ -63,7 +57,6 @@ func _physics_process(delta):
 			
 	if respawning:
 		respawn_timer -= delta
-
 		if respawn_timer <= 0:
 			respawn()
 		return
@@ -80,7 +73,7 @@ func start_fall_sequence():
 	shaking = true
 	shake_timer = shake_time
 	fall_timer = fall_time
-	
+
 func start_respawn():
 	respawning = true
 	respawn_timer = respawn_time
@@ -89,16 +82,15 @@ func start_respawn():
 	visible = false
 
 	# Disable collisions
-	for c in get_children():
-		if c is CollisionShape2D or c is CollisionPolygon2D:
-			c.disabled = true
+	collision_layer = 0
+	collision_mask = 0
 
 	# Reset physics state
 	falling = false
 	shaking = false
 	activated = false
 	velocity = Vector2.ZERO
-	
+
 func respawn():
 	respawning = false
 
@@ -110,10 +102,10 @@ func respawn():
 	modulate.a = 0.0
 	create_tween().tween_property(self, "modulate:a", 1.0, 0.3)
 
-	# Re-enable collision
-	for c in get_children():
-		if c is CollisionShape2D or c is CollisionPolygon2D:
-			c.disabled = false
-			
+	# Restore original collisions
+	collision_layer = original_collision_layer
+	collision_mask = original_collision_mask
+
 	visuals.position = Vector2.ZERO
 	visuals.rotation_degrees = 0
+	
