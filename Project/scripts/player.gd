@@ -87,8 +87,8 @@ var fast_fall_through_timer := 0.0
 # --- EXPORT VARIABLES ---
 # ======================================================
 @export var wall_cling_slide_speed: float = 80.0
-@export var wall_cling_left_offset: Vector2 = Vector2(7, -5)
-@export var wall_cling_right_offset: Vector2 = Vector2(-11, -5)
+@export var wall_cling_left_offset: Vector2 = Vector2(13, -7)
+@export var wall_cling_right_offset: Vector2 = Vector2(-11, -7)
 @export var wall_cling_grace_time: float = 0.13
 @export var wall_jump_horizontal_speed: float = 340.0
 @export var wall_jump_vertical_speed: float = -340.0

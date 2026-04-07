@@ -8,7 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://chpd4n5fwd7od" path="res://audio/squirrel_audio_footsteps.wav" id="5_qlg0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
-size = Vector2(13, 24)
+size = Vector2(13, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3v2ag"]
 atlas = ExtResource("2_g2els")
@@ -176,7 +176,7 @@ collision_mask = 17
 script = ExtResource("1_3vyb7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1692399753]
-position = Vector2(-2, -7.5)
+position = Vector2(0.49999976, -7.5)
 rotation = -1.5707964
 shape = SubResource("RectangleShape2D_qlg0r")
 
