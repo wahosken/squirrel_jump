@@ -70,8 +70,6 @@ var wall_dir: int = 0
 var wall_cling_grace_timer: float = 0.0
 var was_wall_clinging = false
 
-# Camera
-var default_zoom = 2.5
 
 # Glide / Stamina
 var glide_timer: float = 0.0
@@ -83,6 +81,8 @@ var is_gliding: bool = false
 var fall_state = "none"  # "none", "shake", "break"
 var fast_fall_through_timer := 0.0
 
+var base_zoom: float
+
 # ======================================================
 # --- EXPORT VARIABLES ---
 # ======================================================
@@ -92,6 +92,13 @@ var fast_fall_through_timer := 0.0
 @export var wall_cling_grace_time: float = 0.13
 @export var wall_jump_horizontal_speed: float = 340.0
 @export var wall_jump_vertical_speed: float = -340.0
+@export var zoom_lerp_speed := 6.0
+@export var min_zoom_mult := 0.5   # max zoom OUT (big fall)
+@export var max_zoom_mult := 1.0   # normal zoom
+@export var zoom_start_speed := 600.0  # must exceed this before zooming starts
+@export var fall_speed_for_max_zoom := 1800.0
+@export var zoom_curve_power := 1.6  # shape of curve
+
 
 # ======================================================
 # --- NODE REFERENCES ---
@@ -116,6 +123,7 @@ func _ready():
 	swing.grab_point = grab_point
 	camera_normal_position = camera.position
 	visuals_normal_position = visuals.position
+	base_zoom = camera.zoom.x
 
 # ======================================================
 # --- ANIMATION HELPERS ---
@@ -278,7 +286,7 @@ func _physics_process(delta: float) -> void:
 	if swing.is_swinging:
 		var swing_x = camera_swing_offset.x if facing_right else -camera_swing_offset.x
 		target_camera_pos = Vector2(swing_x, camera_swing_offset.y)
-		camera.zoom = camera.zoom.lerp(Vector2(default_zoom, default_zoom), 0.1)
+		camera.zoom = camera.zoom.lerp(Vector2(base_zoom, base_zoom), 0.1)
 	camera.position = camera.position.lerp(target_camera_pos, 10.0 * delta)
 
 	# --- Swing Release ---
@@ -527,21 +535,29 @@ func _physics_process(delta: float) -> void:
 		run_sound_timer.stop()
 
 	# --- Zoom out when falling ---
-	var target_zoom = default_zoom
-	var is_falling = state == PlayerState.FALL
+	var target_zoom = base_zoom
 
-	if not is_on_floor() and is_falling:
-		if last_fall_speed > BIG_FALL:
-			target_zoom = 1.6  # big fall
-		elif last_fall_speed > MEDIUM_FALL:
-			target_zoom = 1.9  # medium fall
-		elif last_fall_speed > SHORT_FALL:
-			target_zoom = 2.2  # subtle warning
-		camera.zoom = camera.zoom.lerp(Vector2(target_zoom, target_zoom), 0.1)
-		
-	else:
-		camera.zoom = camera.zoom.lerp(Vector2(default_zoom, default_zoom), 0.1)
-		
+	if not is_on_floor() and velocity.y > 0:
+		# Normalize fall speed (0 → 1)
+		var t = clamp(
+			(last_fall_speed - zoom_start_speed) / (fall_speed_for_max_zoom - zoom_start_speed),
+			0.0,
+			1.0
+		)
+
+		# Shape the curve (makes it feel better)
+		t = pow(t, zoom_curve_power)
+
+		# Interpolate zoom multiplier
+		var zoom_mult = lerp(max_zoom_mult, min_zoom_mult, t)
+
+		target_zoom = base_zoom * zoom_mult
+
+	# Smoothly apply
+	camera.zoom = camera.zoom.lerp(
+		Vector2(target_zoom, target_zoom),
+		zoom_lerp_speed * delta
+	)
 
 	# --- Apply Movement ---
 	move_and_slide()
