@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cauripuk6qmki" path="res://scripts/bouncy_platform.gd" id="1_sogjj"]
 
 [node name="bouncy_platform" type="AnimatableBody2D" unique_id=970677477 groups=["bouncy", "platforms"]]
-collision_mask = 3
+collision_mask = 16
 script = ExtResource("1_sogjj")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2027689724]

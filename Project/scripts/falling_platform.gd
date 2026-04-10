@@ -109,3 +109,45 @@ func respawn():
 	visuals.position = Vector2.ZERO
 	visuals.rotation_degrees = 0
 	
+func reset():
+	# --- FULL STATE RESET ---
+	respawning = false
+	respawn_timer = 0.0
+
+	activated = false
+	shaking = false
+	falling = false
+
+	velocity = Vector2.ZERO
+	shake_timer = 0.0
+	fall_timer = 0.0
+
+	# --- POSITION RESET ---
+	position = original_position
+
+	# --- VISUAL RESET ---
+	visible = true
+	modulate.a = 1.0
+	visuals.position = Vector2.ZERO
+	visuals.rotation_degrees = 0
+
+	# --- COLLISION HARD RESET ---
+	collision_layer = 0
+	collision_mask = 0
+
+	# wait 1 frame before restoring
+	await get_tree().process_frame
+
+	collision_layer = original_collision_layer
+	collision_mask = original_collision_mask
+	
+func set_active(active: bool):
+	visible = active
+	set_physics_process(active)
+
+	if active:
+		reset()   # always reset when re-enabled
+	else:
+		# disable collision cleanly
+		collision_layer = 0
+		collision_mask = 0
