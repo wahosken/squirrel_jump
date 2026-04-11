@@ -34,6 +34,9 @@ const LEAF_SHAKE_SPEED = 1000.0
 const LEAF_BREAK_SPEED = 1600.0
 const FAST_FALL_THROUGH_DURATION := 0.2
 
+const CAMERA_NORMAL_FOLLOW_SPEED := 10.0
+const CAMERA_FAST_FOLLOW_SPEED := 18.0
+
 # ======================================================
 # --- ENUMS & STATES ---
 # ======================================================
@@ -81,7 +84,11 @@ var is_gliding: bool = false
 var fall_state = "none"  # "none", "shake", "break"
 var fast_fall_through_timer := 0.0
 
+# Camera Zoom
 var base_zoom: float
+var manual_zoom := 0.0
+var glide_zoom_reset := false
+var zoom_target: Vector2
 
 # ======================================================
 # --- EXPORT VARIABLES ---
@@ -93,7 +100,7 @@ var base_zoom: float
 @export var wall_jump_horizontal_speed: float = 340.0
 @export var wall_jump_vertical_speed: float = -340.0
 @export var zoom_lerp_speed := 6.0
-@export var min_zoom_mult := 0.5   # max zoom OUT (big fall)
+@export var min_zoom_mult := 0.6   # max zoom OUT (big fall)
 @export var max_zoom_mult := 1.0   # normal zoom
 @export var zoom_start_speed := 600.0  # must exceed this before zooming starts
 @export var fall_speed_for_max_zoom := 1800.0
@@ -273,8 +280,40 @@ func _physics_process(delta: float) -> void:
 
 	if is_on_floor():
 		last_fall_speed = 0.0
+		
+	# --- CAMERA ZOOM BASE ---
+	var cam_fall_speed := velocity.y
+	if is_gliding:
+		cam_fall_speed = min(cam_fall_speed, 120.0)
+		
+	# --- BASE ZOOM ---
+	zoom_target = Vector2(base_zoom, base_zoom)
+
+	# --- FALL ZOOM ---
+	if not is_on_floor():
+		var t = clamp(
+			(cam_fall_speed - zoom_start_speed) /
+			(fall_speed_for_max_zoom - zoom_start_speed),
+			0.0,
+			1.0
+		)
+
+		t = pow(t, zoom_curve_power)
+
+		var zoom_mult = lerp(max_zoom_mult, min_zoom_mult, t)
+		zoom_target *= zoom_mult
+
+	# --- MANUAL ZOOM ALWAYS WINS ---
+	if Input.is_action_pressed("camera_zoom"):
+		zoom_target = Vector2(base_zoom * min_zoom_mult, base_zoom * min_zoom_mult)
+
+	# --- APPLY ---
+	camera.zoom = camera.zoom.lerp(
+		zoom_target,
+		zoom_lerp_speed * delta
+	)
 	
-	# --- Facing ---
+		# --- Facing ---
 	if not swing.is_swinging:
 		if direction > 0:
 			facing_right = true
@@ -283,11 +322,21 @@ func _physics_process(delta: float) -> void:
 
 	# --- Swing Camera Position ---
 	var target_camera_pos = camera_normal_position
+
 	if swing.is_swinging:
 		var swing_x = camera_swing_offset.x if facing_right else -camera_swing_offset.x
 		target_camera_pos = Vector2(swing_x, camera_swing_offset.y)
-		camera.zoom = camera.zoom.lerp(Vector2(base_zoom, base_zoom), 0.1)
-	camera.position = camera.position.lerp(target_camera_pos, 10.0 * delta)
+	
+		
+	# --- CAMERA FOLLOW SPEED BASED ON FALL SPEED ---
+	var fall_factor: float = clampf((velocity.y - 600.0) / 1000.0, 0.0, 1.0)
+	var cam_speed: float = lerpf(CAMERA_NORMAL_FOLLOW_SPEED, CAMERA_FAST_FOLLOW_SPEED, fall_factor)
+
+	camera.position = camera.position.lerp(
+		target_camera_pos,
+		cam_speed * delta
+	)
+		
 
 	# --- Swing Release ---
 	if swing.is_swinging and Input.is_action_just_pressed("move_down"):
@@ -352,6 +401,9 @@ func _physics_process(delta: float) -> void:
 				# --- GLIDE ---
 				is_gliding = true
 				glide_timer += delta
+				
+				if not glide_zoom_reset:
+					glide_zoom_reset = true
 
 				velocity.y = min(velocity.y, 120)
 				velocity += get_gravity() * GLIDE_GRAVITY_MULTIPLIER * delta
@@ -366,10 +418,12 @@ func _physics_process(delta: float) -> void:
 				if glide_timer >= max_glide_time:
 					can_glide = false
 					is_gliding = false
+					glide_zoom_reset = false
 			else:
 				# Normal fall
 				if is_gliding:
 					is_gliding = false
+					glide_zoom_reset = false
 				velocity += get_gravity() * FAST_FALL_MULTIPLIER * delta
 			
 	# --- Jump Buffer ---
@@ -531,31 +585,10 @@ func _physics_process(delta: float) -> void:
 			run_sound_timer.start()
 	else:
 		run_sound_timer.stop()
-
-	# --- Zoom out when falling ---
-	var target_zoom = base_zoom
-
-	if not is_on_floor() and velocity.y > 0:
-		# Normalize fall speed (0 → 1)
-		var t = clamp(
-			(last_fall_speed - zoom_start_speed) / (fall_speed_for_max_zoom - zoom_start_speed),
-			0.0,
-			1.0
-		)
-
-		# Shape the curve (makes it feel better)
-		t = pow(t, zoom_curve_power)
-
-		# Interpolate zoom multiplier
-		var zoom_mult = lerp(max_zoom_mult, min_zoom_mult, t)
-
-		target_zoom = base_zoom * zoom_mult
-
-	# Smoothly apply
-	camera.zoom = camera.zoom.lerp(
-		Vector2(target_zoom, target_zoom),
-		zoom_lerp_speed * delta
-	)
+		
+	if is_gliding:
+		cam_fall_speed = min(cam_fall_speed, 120.0)
+		
 
 	# --- Apply Movement ---
 	move_and_slide()
