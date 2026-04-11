@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://30re00hte0v7" path="res://assets/bouncing_platform.png" id="1_6lsdx"]
 [ext_resource type="Script" uid="uid://cauripuk6qmki" path="res://scripts/bouncy_platform.gd" id="1_sogjj"]
 
-[node name="bouncy_platform" type="AnimatableBody2D" unique_id=970677477 groups=["bouncy", "platforms"]]
+[node name="bouncy_platform" type="AnimatableBody2D" unique_id=970677477 groups=["bouncy", "leaf", "platforms"]]
 collision_mask = 16
 script = ExtResource("1_sogjj")
 
@@ -13,3 +13,4 @@ texture = ExtResource("1_6lsdx")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=143654015]
 polygon = PackedVector2Array(-17, -7, -49, 2, 48, 2, 20, -7)
+one_way_collision = true

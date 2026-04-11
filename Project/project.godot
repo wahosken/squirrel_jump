@@ -33,6 +33,7 @@ platforms=""
 player=""
 bouncy=""
 moving_platform=""
+leaf=""
 
 [input]
 

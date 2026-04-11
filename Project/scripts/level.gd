@@ -283,7 +283,3 @@ func auto_align_sections():
 func snap_section(section):
 	section.position.x = round(section.position.x)
 	section.position.y = round(section.position.y)
-
-
-func _on_body_entered(body: Node2D) -> void:
-	pass # Replace with function body.

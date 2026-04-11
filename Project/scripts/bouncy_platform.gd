@@ -30,6 +30,11 @@ func _ready():
 	original_position = position
 	original_collision_layer = collision_layer
 	original_collision_mask = collision_mask
+	
+func set_leaf_disabled(disabled: bool) -> void:
+	for c in get_children():
+		if c is CollisionPolygon2D or c is CollisionShape2D:
+			c.set_deferred("disabled", disabled)
 
 func play_squash():
 	if tween:

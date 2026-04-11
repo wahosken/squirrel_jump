@@ -448,10 +448,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		crouch_timer = 0.0
 
-	if fall_through_timer > 0.0:
-		fall_through_timer -= delta
-		if fall_through_timer <= 0.0:
-			set_collision_mask_value(LEAF_LAYER, true)
 
 	# --- High Speed Fall Through ---
 	if velocity.y > 0:  # only while falling
@@ -468,24 +464,26 @@ func _physics_process(delta: float) -> void:
 	# --- LEAF COLLISION HANDLING ---
 	var leaf_disabled := false
 
-	# High-speed fall-through (lowest priority)
+	# --- Timers ---
 	if fast_fall_through_timer > 0.0:
 		fast_fall_through_timer -= delta
 		leaf_disabled = true
 
-	# Crouch fall-through (highest priority)
 	if fall_through_timer > 0.0:
 		fall_through_timer -= delta
 		leaf_disabled = true
 
+	# --- Apply result ONCE ---
+	set_collision_mask_value(LEAF_LAYER, not leaf_disabled)
+
+	for p in get_tree().get_nodes_in_group("leaf"):
+		if p.has_method("set_leaf_disabled"):
+			p.set_leaf_disabled(leaf_disabled)
+		
+
 	# Only update collision once per frame
 	set_collision_mask_value(LEAF_LAYER, not leaf_disabled)
 
-	# Reset if on floor normally
-	if is_on_floor() and not Input.is_action_pressed("move_down"):
-		fast_fall_through_timer = 0.0
-		fall_through_timer = 0.0
-		set_collision_mask_value(LEAF_LAYER, true)
 
 # --- STATE MACHINE ---
 	if not is_crouching and not is_wall_clinging:
