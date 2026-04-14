@@ -40,14 +40,15 @@ func _physics_process(delta):
 			shaking = false
 			falling = true
 
-			# Disable collisions by setting parent layer/mask to 0
-			collision_layer = 0
-			collision_mask = 0
-
 			visuals.position = Vector2.ZERO
 			visuals.rotation_degrees = 0
 
 	elif falling:
+		# disable collisions once when falling begins
+		if collision_layer != 0:
+			collision_layer = 0
+			collision_mask = 0
+		
 		fall_timer -= delta
 		velocity.y += gravity * delta
 		position += velocity * delta
@@ -60,8 +61,16 @@ func _physics_process(delta):
 		if respawn_timer <= 0:
 			respawn()
 		return
+		
+	if activated:
+		return
 
-func _on_area_2d_body_entered(body):	
+	for body in $Area2D.get_overlapping_bodies():
+		if body.is_in_group("player") and body.velocity.y >= 0:
+			start_fall_sequence()
+			break
+
+func _on_area_2d_body_entered(body):
 	if activated:
 		return
 
@@ -151,3 +160,4 @@ func set_active(active: bool):
 		# disable collision cleanly
 		collision_layer = 0
 		collision_mask = 0
+		
