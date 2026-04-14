@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bapx7emv5ow1i" path="res://scripts/platform.gd" id="1_nlgqw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nlgqw"]
-size = Vector2(62, 10)
+size = Vector2(64, 10)
 
 [node name="platform" type="AnimatableBody2D" unique_id=700560478 groups=["moving_platform", "platforms"]]
 collision_layer = 16
@@ -16,6 +16,6 @@ texture = ExtResource("1_ba0x2")
 region_rect = Rect2(0, 0, 64, 31.19512)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1737299213]
-position = Vector2(-1, -11)
+position = Vector2(0, -11)
 shape = SubResource("RectangleShape2D_nlgqw")
 one_way_collision = true
