@@ -1,4 +1,4 @@
-extends AnimatableBody2D
+extends CharacterBody2D
 
 @onready var visuals: Node2D = $Visuals
 
@@ -14,7 +14,6 @@ var activated := false
 var shaking := false
 var falling := false
 
-var velocity := Vector2.ZERO
 var original_position: Vector2
 var shake_timer := 0.0
 var fall_timer := 0.0
@@ -28,6 +27,7 @@ func _ready():
 	original_collision_mask = collision_mask
 
 func _physics_process(delta):
+
 	if shaking:
 		shake_timer -= delta
 
@@ -42,16 +42,17 @@ func _physics_process(delta):
 
 			visuals.position = Vector2.ZERO
 			visuals.rotation_degrees = 0
+	
 
 	elif falling:
-		# disable collisions once when falling begins
 		if collision_layer != 0:
 			collision_layer = 0
 			collision_mask = 0
 		
 		fall_timer -= delta
+		
 		velocity.y += gravity * delta
-		position += velocity * delta
+		move_and_slide()
 
 		if fall_timer <= 0:
 			start_respawn()
@@ -65,10 +66,6 @@ func _physics_process(delta):
 	if activated:
 		return
 
-	for body in $Area2D.get_overlapping_bodies():
-		if body.is_in_group("player") and body.velocity.y >= 0:
-			start_fall_sequence()
-			break
 
 func _on_area_2d_body_entered(body):
 	if activated:
@@ -78,10 +75,16 @@ func _on_area_2d_body_entered(body):
 		start_fall_sequence()
 
 func start_fall_sequence():
+	if activated:
+		return
+
 	activated = true
 	shaking = true
+	falling = false
+
 	shake_timer = shake_time
 	fall_timer = fall_time
+	
 
 func start_respawn():
 	respawning = true

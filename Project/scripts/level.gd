@@ -5,6 +5,8 @@ const SECTION_WIDTH = 1024
 const SECTION_HEIGHT = 2016
 const LOOP_BUFFER = 200
 const DEBUG_PRINT_INTERVAL = 6.0  # seconds
+const GRID_X := SECTION_WIDTH
+const GRID_Y := SECTION_HEIGHT
 
 # --- NODES ---
 @onready var player: CharacterBody2D = $"../player"
@@ -77,23 +79,39 @@ func _on_nut_collected(_nut):
 func rotate_right():
 	if columns.size() < 2:
 		return
+
 	var first = columns.pop_front()
 	columns.append(first)
-	var rightmost = columns[columns.size() - 2]
-	for i in range(first.size()):
-		first[i].position.x = rightmost[i].position.x + SECTION_WIDTH
-		snap_section(first[i])
+
+	var base_x = columns[columns.size() - 2][0].position.x + SECTION_WIDTH
+
+	for r in range(first.size()):
+		var section = first[r]
+
+		section.visible = false  # prevent flicker during move
+		section.position.x = base_x
+		section.position.y = -r * SECTION_HEIGHT
+		snap_section(section)
+
 	call_deferred("update_section_visibility")
 
 func rotate_left():
 	if columns.size() < 2:
 		return
+
 	var last = columns.pop_back()
 	columns.insert(0, last)
-	var leftmost = columns[1]
-	for i in range(last.size()):
-		last[i].position.x = leftmost[i].position.x - SECTION_WIDTH
-		snap_section(last[i])
+
+	var base_x = columns[1][0].position.x - SECTION_WIDTH
+
+	for r in range(last.size()):
+		var section = last[r]
+
+		section.visible = false
+		section.position.x = base_x
+		section.position.y = -r * SECTION_HEIGHT
+		snap_section(section)
+
 	call_deferred("update_section_visibility")
 	
 
@@ -110,7 +128,7 @@ func update_section_visibility():
 		for r in range(rows.size()):
 			var section = columns[c][r]
 
-			var row_active = (r == current_row) or (r == current_row - 1)  # show current + previous row
+			var row_active = (r == current_row) or (r == current_row - 1)
 			var active = column_active and row_active
 
 			set_section_active(section, active)
@@ -121,7 +139,7 @@ func set_section_active(section: Node, active: bool) -> void:
 	section.process_mode = Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
 	section.set_physics_process(active)
 
-	# Child objects (recursive + scalable)
+	# Child objects
 	for child in section.get_children():
 		_activate_node(child, active)
 
@@ -144,7 +162,6 @@ func _activate_node(node: Node, active: bool) -> void:
 		if child is CollisionShape2D:
 			child.disabled = not active
 
-	# --- Recurse into children ---
 	for child in node.get_children():
 		_activate_node(child, active)
 
@@ -186,7 +203,6 @@ func print_column_layout():
 func print_visible_rows():
 	var visible_rows := []
 	for r in range(rows.size()):
-		# A row is visible if any section in that row is active
 		for c in columns:
 			if c[r].visible:
 				visible_rows.append(r)
@@ -207,7 +223,6 @@ func print_active_nuts():
 		if not nut.visible or nut.process_mode == Node.PROCESS_MODE_DISABLED:
 			continue
 
-		# Check if any CollisionShape2D is enabled
 		var has_enabled_collision := false
 		for c in nut.get_children():
 			if c is CollisionShape2D and not c.disabled:
@@ -281,5 +296,5 @@ func auto_align_sections():
 			)
 			
 func snap_section(section):
-	section.position.x = round(section.position.x)
-	section.position.y = round(section.position.y)
+	section.position.x = round(section.position.x / GRID_X) * GRID_X
+	section.position.y = round(section.position.y / GRID_Y) * GRID_Y

@@ -252,7 +252,7 @@ func landing_feedback() -> void:
 	visuals.scale.y = 0.7
 	visuals.scale.x = 1.2 if facing_right else -1.2
 
-	# Optional: quick color flash for extra feedback
+	# Quick color flash for extra feedback
 	animated_sprite_2d.modulate = Color(1, 0.8, 0.6)
 
 	# Return to normal after a short delay
@@ -408,7 +408,7 @@ func _physics_process(delta: float) -> void:
 				velocity.y = min(velocity.y, 120)
 				velocity += get_gravity() * GLIDE_GRAVITY_MULTIPLIER * delta
 
-				# --- Animation (NOW CORRECT) ---
+				# --- Animation ---
 				if glide_timer > max_glide_time * 0.6:
 					change_state(PlayerState.GLIDE_LOW)
 				else:
@@ -504,7 +504,7 @@ func _physics_process(delta: float) -> void:
 
 
 	# --- High Speed Fall Through ---
-	if velocity.y > 0:  # only while falling
+	if velocity.y > 0:
 		if velocity.y > LEAF_BREAK_SPEED:
 			fall_state = "break"
 			fast_fall_through_timer = FAST_FALL_THROUGH_DURATION

@@ -3,28 +3,27 @@
 [ext_resource type="Script" uid="uid://cfpepvr8345so" path="res://scripts/falling_platform.gd" id="1_tu0kr"]
 [ext_resource type="Texture2D" uid="uid://br4vntgvrcmd3" path="res://assets/breaking_platform2.png" id="2_84ni4"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_eyv7q"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dsamb"]
 size = Vector2(32, 4)
 
-[node name="falling_platform_leaf" type="AnimatableBody2D" unique_id=451588450 groups=["leaf", "platforms"]]
-collision_layer = 16
+[node name="falling_platform_leaf" type="CharacterBody2D" unique_id=1067524163 groups=["leaf", "platforms"]]
 collision_mask = 16
 script = ExtResource("1_tu0kr")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=932224825]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=59652716]
 polygon = PackedVector2Array(-16, -8, -16, -16, 16, -16, 16, -8, -1, -8)
 one_way_collision = true
 
-[node name="Visuals" type="Node2D" parent="." unique_id=1557245955]
+[node name="Visuals" type="Node2D" parent="." unique_id=1510589588]
 
-[node name="Sprite2D" type="Sprite2D" parent="Visuals" unique_id=487774263]
+[node name="Sprite2D" type="Sprite2D" parent="Visuals" unique_id=379364409]
 texture = ExtResource("2_84ni4")
 
-[node name="Area2D" type="Area2D" parent="." unique_id=71795806]
-collision_mask = 2
+[node name="Area2D" type="Area2D" parent="." unique_id=1146833702]
+collision_mask = 16
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1522678324]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1141825825]
 position = Vector2(0, -15)
-shape = SubResource("RectangleShape2D_eyv7q")
+shape = SubResource("RectangleShape2D_dsamb")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
