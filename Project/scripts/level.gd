@@ -134,33 +134,31 @@ func update_section_visibility():
 			set_section_active(section, active)
 
 func set_section_active(section: Node, active: bool) -> void:
-	# Section processing & visibility
 	section.visible = active
 	section.process_mode = Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
+	section.set_process(active)
 	section.set_physics_process(active)
 
-	# Child objects
 	for child in section.get_children():
 		_activate_node(child, active)
 
 func _activate_node(node: Node, active: bool) -> void:
-	# --- If node has custom activation, let it handle itself ---
 	if node.has_method("set_active"):
 		node.set_active(active)
 		return
 
-	# --- Default behavior (fallback for everything else) ---
 	if node is CanvasItem:
 		node.visible = active
 
-	if node is CollisionObject2D:
-		node.set_physics_process(active)
-		node.set_process(active)
+	node.set_process(active)
+	node.set_physics_process(active)
 
-	# Disable all collision shapes inside
-	for child in node.get_children():
-		if child is CollisionShape2D:
-			child.disabled = not active
+	if node is CollisionObject2D:
+		node.set_process_input(active)
+		node.set_process_unhandled_input(active)
+
+	if node is CollisionShape2D:
+		node.disabled = not active
 
 	for child in node.get_children():
 		_activate_node(child, active)

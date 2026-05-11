@@ -90,6 +90,9 @@ var manual_zoom := 0.0
 var glide_zoom_reset := false
 var zoom_target: Vector2
 
+# NPC Interact
+var input_enabled := true
+
 # ======================================================
 # --- EXPORT VARIABLES ---
 # ======================================================
@@ -266,6 +269,13 @@ func landing_feedback() -> void:
 # ======================================================
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
+	# --- NPC Interaction Input Block ---
+	if not input_enabled:
+		velocity.x = move_toward(velocity.x, 0.0, FRICTION * delta)
+		move_and_slide()
+		return
+	
+	
 	# --- Get Horizontal Input ---
 	var direction := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	var is_crouching := false
@@ -501,7 +511,7 @@ func _physics_process(delta: float) -> void:
 		change_state(PlayerState.CROUCH)
 	else:
 		crouch_timer = 0.0
-
+		
 
 	# --- High Speed Fall Through ---
 	if velocity.y > 0:
@@ -620,7 +630,6 @@ func _physics_process(delta: float) -> void:
 				if collider.has_method("play_squash"):
 					collider.play_squash()
 				break
-				
 
 # ======================================================
 # --- RUN SOUND TIMER CALLBACK ---
@@ -628,3 +637,13 @@ func _physics_process(delta: float) -> void:
 func _on_run_sound_timer_timeout() -> void:
 	run_sound.pitch_scale = randf_range(1, 1.5)
 	run_sound.play()
+	
+	
+# ======================================================
+# --- NPC Interaction ---
+# ======================================================
+func set_input_enabled(enabled: bool) -> void:
+	input_enabled = enabled
+
+	if not input_enabled:
+		velocity = Vector2.ZERO

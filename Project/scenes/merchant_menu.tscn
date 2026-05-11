@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://c1eo7hb505t3k"]
+
+[ext_resource type="Script" uid="uid://dyib4gqmkvqd4" path="res://scripts/merchant_menu.gd" id="1_ljn32"]
+
+[node name="merchant_menu" type="CanvasLayer" unique_id=929037811]
+script = ExtResource("1_ljn32")
+
+[node name="Panel" type="Panel" parent="." unique_id=782947099]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -40.0
+offset_right = 150.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1943256924]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -119.0
+offset_top = -62.5
+offset_right = 119.0
+offset_bottom = 62.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1512194633]
+layout_mode = 2
+text = "Merchant"
+horizontal_alignment = 1
+
+[node name="ItemButton" type="Button" parent="Panel/VBoxContainer" unique_id=593653182]
+layout_mode = 2
+text = "Buy Placeholder Hat - 10 Nuts"
+
+[node name="CloseButton" type="Button" parent="Panel/VBoxContainer" unique_id=1852865729]
+layout_mode = 2
+text = "Close"
