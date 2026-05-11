@@ -25,35 +25,66 @@ func _input(event):
 
 	if event is InputEventKey:
 		hide()
+		
+
+func press_action(action_name: String) -> void:
+	var event := InputEventAction.new()
+	event.action = action_name
+	event.pressed = true
+	Input.parse_input_event(event)
+
+
+func release_action(action_name: String) -> void:
+	var event := InputEventAction.new()
+	event.action = action_name
+	event.pressed = false
+	Input.parse_input_event(event)
 
 
 func _on_left_pressed() -> void:
-	Input.action_press("move_left")
+	press_action("move_left")
+	press_action("ui_left")
 
 
 func _on_left_released() -> void:
-	Input.action_release("move_left")
+	release_action("move_left")
+	release_action("ui_left")
 
 
 func _on_right_pressed() -> void:
-	Input.action_press("move_right")
+	press_action("move_right")
+	press_action("ui_right")
 
 
 func _on_right_released() -> void:
-	Input.action_release("move_right")
+	release_action("move_right")
+	release_action("ui_right")
 
 
 func _on_up_pressed() -> void:
-	Input.action_press("jump")
+	press_action("jump")
+	press_action("ui_up")
 
 
 func _on_up_released() -> void:
-	Input.action_release("jump")
+	release_action("jump")
+	release_action("ui_up")
 
 
 func _on_down_pressed() -> void:
-	Input.action_press("move_down")
+	press_action("move_down")
+	press_action("ui_down")
 
 
 func _on_down_released() -> void:
-	Input.action_release("move_down")
+	release_action("move_down")
+	release_action("ui_down")
+
+
+func _on_interact_pressed() -> void:
+	press_action("interact")
+	press_action("ui_accept")
+
+func _on_interact_released() -> void:
+	release_action("interact")
+	release_action("ui_accept")

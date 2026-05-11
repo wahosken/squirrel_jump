@@ -13,7 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/buttons7.png" id="19_bhx41"]
 [ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
 [ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/buttons8.png" id="20_qnb83"]
+[ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/buttons13.png" id="21_37s47"]
 [ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/buttons3.png" id="21_sww3w"]
+[ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/buttons14.png" id="22_bt5mj"]
 [ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/buttons4.png" id="22_suyxu"]
 [ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/buttons1.png" id="23_sgl2t"]
 [ext_resource type="Texture2D" uid="uid://cbpce4bcqgnrw" path="res://assets/buttons2.png" id="24_qouja"]
@@ -400,6 +402,9 @@ position = Vector2(688, 112)
 [node name="nut2" parent="Level/row1/section_1a" unique_id=1787742858 instance=ExtResource("8_264po")]
 position = Vector2(672, 81)
 
+[node name="npc" parent="Level/row1/section_1a" unique_id=1870510558 instance=ExtResource("9_1kice")]
+position = Vector2(176, 288)
+
 [node name="section_1b" type="Node2D" parent="Level/row1" unique_id=65745711]
 position = Vector2(1024, -2016)
 
@@ -532,9 +537,6 @@ position = Vector2(688, -144)
 
 [node name="falling_platform_leaf15" parent="Level/row1/section_1c" unique_id=1682662347 instance=ExtResource("7_nepv3")]
 position = Vector2(720, -144)
-
-[node name="npc" parent="Level/row1/section_1c" unique_id=1870510558 instance=ExtResource("9_1kice")]
-position = Vector2(304, 288)
 
 [node name="section_1d" type="Node2D" parent="Level/row1" unique_id=647772634]
 position = Vector2(-2048, -2016)
@@ -1030,6 +1032,26 @@ position = Vector2(-91, 24)
 scale = Vector2(3, 3)
 texture_normal = ExtResource("27_sww3w")
 
+[node name="HBoxContainer4" type="HBoxContainer" parent="Overlay/UI" unique_id=802425429]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = -20.0
+offset_bottom = 40.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="InteractButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer4" unique_id=158781576]
+modulate = Color(1, 1, 1, 0.8)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("21_37s47")
+texture_pressed = ExtResource("22_bt5mj")
+
 [node name="NutCounterLabel" type="Label" parent="Overlay" unique_id=1285863482]
 unique_name_in_owner = true
 anchors_preset = -1
@@ -1053,3 +1075,5 @@ text = "Nuts: 0"
 [connection signal="pressed" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_pressed"]
 [connection signal="released" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_released"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer3/FullscreenButton" to="Overlay/UI" method="_on_fullscreen_button_pressed"]
+[connection signal="pressed" from="Overlay/UI/HBoxContainer4/InteractButton" to="Overlay/UI" method="_on_interact_pressed"]
+[connection signal="released" from="Overlay/UI/HBoxContainer4/InteractButton" to="Overlay/UI" method="_on_interact_released"]

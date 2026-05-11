@@ -8,25 +8,45 @@ extends Area2D
 var player_in_range := false
 var player_ref: Node = null
 var menu_instance: Node = null
+var is_active := true
+var waiting_for_interact_release := false
 
 
 func _ready() -> void:
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
 	player_in_range = false
 	player_ref = null
 	menu_instance = null
 
 	update_prompt_visibility()
 
-	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
-
 
 func _process(_delta: float) -> void:
+	if not is_active:
+		return
+
+	if waiting_for_interact_release:
+		if not Input.is_action_pressed("interact"):
+			waiting_for_interact_release = false
+		return
+
+	if menu_instance != null:
+		return
+
 	if player_in_range and Input.is_action_just_pressed("interact"):
 		open_menu()
 
 
+# ------------------------------------------------------
+# Player detection
+# ------------------------------------------------------
+
 func _on_body_entered(body: Node) -> void:
+	if not is_active:
+		return
+
 	if body.is_in_group("player"):
 		player_in_range = true
 		player_ref = body
@@ -40,19 +60,24 @@ func _on_body_exited(body: Node) -> void:
 		update_prompt_visibility()
 
 
+# ------------------------------------------------------
+# Prompt
+# ------------------------------------------------------
+
 func update_prompt_visibility() -> void:
-	if player_in_range and menu_instance == null:
+	if is_active and player_in_range and menu_instance == null:
 		prompt_label.show()
 	else:
 		prompt_label.hide()
 
 
-func open_menu() -> void:
-	if menu_instance != null:
-		return
+# ------------------------------------------------------
+# Menu
+# ------------------------------------------------------
 
+func open_menu() -> void:
 	if menu_scene == null:
-		push_warning("NPC has no menu_scene assigned.")
+		push_warning("%s has no menu_scene assigned." % name)
 		return
 
 	menu_instance = menu_scene.instantiate()
@@ -64,29 +89,55 @@ func open_menu() -> void:
 	if menu_instance.has_signal("menu_closed"):
 		menu_instance.menu_closed.connect(_on_menu_closed)
 
-	if player_ref != null and player_ref.has_method("set_input_enabled"):
-		player_ref.set_input_enabled(false)
+	# Backup cleanup in case the menu gets freed without emitting menu_closed.
+	menu_instance.tree_exited.connect(_on_menu_removed)
 
+	set_player_input_enabled(false)
 	update_prompt_visibility()
 
 
 func _on_menu_closed() -> void:
-	menu_instance = null
+	cleanup_menu()
 
-	if player_ref != null and player_ref.has_method("set_input_enabled"):
-		player_ref.set_input_enabled(true)
+
+func _on_menu_removed() -> void:
+	cleanup_menu()
+
+
+func cleanup_menu() -> void:
+	menu_instance = null
+	set_player_input_enabled(true)
+
+	waiting_for_interact_release = true
 
 	update_prompt_visibility()
-	
-	
+
+
+func set_player_input_enabled(enabled: bool) -> void:
+	if player_ref != null and player_ref.has_method("set_input_enabled"):
+		player_ref.set_input_enabled(enabled)
+
+
+# ------------------------------------------------------
+# Section activation support
+# ------------------------------------------------------
+
 func set_active(active: bool) -> void:
+	is_active = active
+
 	visible = active
+	monitoring = active
 	set_process(active)
 	set_physics_process(active)
-	monitoring = active
 
 	if not active:
 		player_in_range = false
 		player_ref = null
+
+		if menu_instance != null and is_instance_valid(menu_instance):
+			menu_instance.queue_free()
+			menu_instance = null
+
+		set_player_input_enabled(true)
 
 	update_prompt_visibility()
