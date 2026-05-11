@@ -534,7 +534,7 @@ position = Vector2(688, -144)
 position = Vector2(720, -144)
 
 [node name="npc" parent="Level/row1/section_1c" unique_id=1870510558 instance=ExtResource("9_1kice")]
-position = Vector2(304, 264)
+position = Vector2(304, 288)
 
 [node name="section_1d" type="Node2D" parent="Level/row1" unique_id=647772634]
 position = Vector2(-2048, -2016)

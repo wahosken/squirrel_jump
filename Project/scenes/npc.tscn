@@ -2,10 +2,42 @@
 
 [ext_resource type="Script" uid="uid://dtt0vgye2gw8g" path="res://scripts/npc.gd" id="1_abqhh"]
 [ext_resource type="PackedScene" uid="uid://c1eo7hb505t3k" path="res://scenes/merchant_menu.tscn" id="2_7n8xq"]
-[ext_resource type="Texture2D" uid="uid://cbpce4bcqgnrw" path="res://assets/buttons2.png" id="2_rv78h"]
+[ext_resource type="Texture2D" uid="uid://c3tfcphjgcp0y" path="res://assets/merchant.png" id="3_rv78h"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_rv78h"]
-radius = 16.0
+[sub_resource type="AtlasTexture" id="AtlasTexture_7n8xq"]
+atlas = ExtResource("3_rv78h")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4wlns"]
+atlas = ExtResource("3_rv78h")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tl2vt"]
+atlas = ExtResource("3_rv78h")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hwkja"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7n8xq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4wlns")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tl2vt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4wlns")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0tygy"]
+size = Vector2(40, 56)
 
 [node name="npc" type="Area2D" unique_id=1870510558]
 collision_mask = 2
@@ -13,35 +45,21 @@ script = ExtResource("1_abqhh")
 npc_name = "Acorn Merchant"
 menu_scene = ExtResource("2_7n8xq")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1595064765]
-texture = ExtResource("2_rv78h")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1373453873]
+position = Vector2(0, -32)
+sprite_frames = SubResource("SpriteFrames_hwkja")
+autoplay = "default"
+frame_progress = 0.80046964
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1743003988]
-shape = SubResource("CircleShape2D_rv78h")
+position = Vector2(4, -28)
+shape = SubResource("RectangleShape2D_0tygy")
 
 [node name="PromptLabel" type="Label" parent="." unique_id=2083988670]
-visible = false
-offset_left = -30.0
-offset_top = -40.0
-offset_right = 26.0
-offset_bottom = -17.0
+offset_left = -24.0
+offset_top = -80.0
+offset_right = 32.0
+offset_bottom = -57.0
 theme_override_font_sizes/font_size = 12
 text = "[E] Talk"
 horizontal_alignment = 1
-
-[node name="PlaceholderLabel" type="Label" parent="." unique_id=2104769484]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 12
-text = "NPC"
-horizontal_alignment = 1
-vertical_alignment = 1
