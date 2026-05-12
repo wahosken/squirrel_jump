@@ -89,7 +89,6 @@ func open_menu() -> void:
 	if menu_instance.has_signal("menu_closed"):
 		menu_instance.menu_closed.connect(_on_menu_closed)
 
-	# Backup cleanup in case the menu gets freed without emitting menu_closed.
 	menu_instance.tree_exited.connect(_on_menu_removed)
 
 	set_player_input_enabled(false)

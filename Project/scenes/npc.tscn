@@ -4,21 +4,24 @@
 [ext_resource type="PackedScene" uid="uid://c1eo7hb505t3k" path="res://scenes/merchant_menu.tscn" id="2_7n8xq"]
 [ext_resource type="Texture2D" uid="uid://c3tfcphjgcp0y" path="res://assets/merchant.png" id="3_rv78h"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_rv78h"]
+atlas = ExtResource("3_rv78h")
+region = Rect2(0, 0, 32, 32)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_7n8xq"]
 atlas = ExtResource("3_rv78h")
-region = Rect2(0, 0, 64, 64)
+region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4wlns"]
 atlas = ExtResource("3_rv78h")
-region = Rect2(64, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_tl2vt"]
-atlas = ExtResource("3_rv78h")
-region = Rect2(128, 0, 64, 64)
+region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hwkja"]
 animations = [{
 "frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rv78h")
+}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7n8xq")
 }, {
@@ -26,10 +29,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_4wlns")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_tl2vt")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4wlns")
+"texture": SubResource("AtlasTexture_7n8xq")
 }],
 "loop": true,
 "name": &"default",
@@ -37,29 +37,29 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0tygy"]
-size = Vector2(40, 56)
+size = Vector2(32, 32)
 
 [node name="npc" type="Area2D" unique_id=1870510558]
 collision_mask = 2
 script = ExtResource("1_abqhh")
-npc_name = "Acorn Merchant"
 menu_scene = ExtResource("2_7n8xq")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1373453873]
-position = Vector2(0, -32)
+position = Vector2(0, -16)
 sprite_frames = SubResource("SpriteFrames_hwkja")
 autoplay = "default"
 frame_progress = 0.80046964
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1743003988]
-position = Vector2(4, -28)
+position = Vector2(0, -16)
 shape = SubResource("RectangleShape2D_0tygy")
 
 [node name="PromptLabel" type="Label" parent="." unique_id=2083988670]
-offset_left = -24.0
-offset_top = -80.0
-offset_right = 32.0
-offset_bottom = -57.0
-theme_override_font_sizes/font_size = 12
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 16.0
+offset_bottom = -36.0
+theme_override_font_sizes/font_size = 8
 text = "[E] Talk"
 horizontal_alignment = 1
+vertical_alignment = 1
