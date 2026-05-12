@@ -41,6 +41,7 @@ vertical_alignment = 1
 
 [node name="NutsLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1219507630]
 layout_mode = 2
+size_flags_horizontal = 3
 vertical_alignment = 1
 
 [node name="InventoryTitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2073108603]
@@ -49,8 +50,18 @@ text = "Inventory"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AcornCapButton" type="Button" parent="Panel/VBoxContainer" unique_id=538449777]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=1984141138]
 layout_mode = 2
+alignment = 1
+
+[node name="Default" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1085334633]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default"
+
+[node name="AcornCapButton" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=538449777]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Acorn Cap"
 
 [node name="ResumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=683945781]
