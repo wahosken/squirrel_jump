@@ -12,8 +12,10 @@
 [ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="9_1kice"]
 [ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/buttons7.png" id="19_bhx41"]
 [ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
+[ext_resource type="Texture2D" uid="uid://div7lcnt10w6n" path="res://assets/pause_button.png" id="20_pl11u"]
 [ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/buttons8.png" id="20_qnb83"]
 [ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/buttons13.png" id="21_37s47"]
+[ext_resource type="Texture2D" uid="uid://cqijo7v5cmgcm" path="res://assets/pause_button_pressed.png" id="21_bhx41"]
 [ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/buttons3.png" id="21_sww3w"]
 [ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/buttons14.png" id="22_bt5mj"]
 [ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/buttons4.png" id="22_suyxu"]
@@ -1015,6 +1017,28 @@ position = Vector2(0, 55)
 scale = Vector2(1.4999999, 1.4999999)
 texture_normal = ExtResource("25_wljb1")
 texture_pressed = ExtResource("26_v2yb1")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Overlay/UI" unique_id=660550458]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -34.0
+offset_top = -34.0
+offset_right = 88.0
+offset_bottom = 96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PauseButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer3" unique_id=713726282]
+modulate = Color(1, 1, 1, 0.8)
+position = Vector2(546, -294)
+scale = Vector2(3, 3)
+texture_normal = ExtResource("20_pl11u")
+texture_pressed = ExtResource("21_bhx41")
+action = "pause"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Overlay/UI" unique_id=802425429]
 layout_mode = 1
