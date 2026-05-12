@@ -3,23 +3,32 @@ extends CanvasLayer
 signal menu_closed
 
 @onready var nuts_label: Label = $Panel/VBoxContainer/NutsLabel
-@onready var default_button: Button = $Panel/VBoxContainer/HBoxContainer/Default
-@onready var acorn_cap_button: Button = $Panel/VBoxContainer/HBoxContainer/AcornCapButton
+@onready var cosmetic_option_button: OptionButton = $Panel/VBoxContainer/CosmeticOptionButton
 @onready var resume_button: Button = $Panel/VBoxContainer/ResumeButton
 
 var is_closing := false
+var is_rebuilding_dropdown := false
 
-const DEFAULT_ID := ""
-const ACORN_CAP_ID := "acorn_cap"
+var cosmetic_options := [
+	{
+		"id": "",
+		"name": "Default",
+		"owned": true
+	},
+	{
+		"id": "acorn_cap",
+		"name": "Acorn Cap",
+		"owned": false
+	}
+]
 
 
 func _ready() -> void:
-	default_button.pressed.connect(_on_default_pressed)
-	acorn_cap_button.pressed.connect(_on_acorn_cap_pressed)
+	cosmetic_option_button.item_selected.connect(_on_cosmetic_selected)
 	resume_button.pressed.connect(close_menu)
 
 	update_inventory_display()
-	grab_best_focus()
+	cosmetic_option_button.grab_focus()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -32,62 +41,80 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("ui_accept"):
-		activate_focused_button()
+		activate_focused_control()
 		get_viewport().set_input_as_handled()
 		return
 
 
-func activate_focused_button() -> void:
+func activate_focused_control() -> void:
 	var focused := get_viewport().gui_get_focus_owner()
 
 	if focused is Button:
 		focused.emit_signal("pressed")
+	elif focused is OptionButton:
+		focused.show_popup()
 
 
 func update_inventory_display() -> void:
 	nuts_label.text = "Nuts: %d" % GameState.nuts
+	rebuild_cosmetic_dropdown()
 
-	# Default skin is always available.
-	if GameState.equipped_cosmetic == DEFAULT_ID:
-		default_button.text = "Default\nEquipped"
-		default_button.disabled = true
+
+func rebuild_cosmetic_dropdown() -> void:
+	is_rebuilding_dropdown = true
+
+	cosmetic_option_button.clear()
+
+	for option in cosmetic_options:
+		var item_id: String = str(option["id"])
+		var item_name: String = str(option["name"])
+
+		var owned: bool = option.get("owned", false) as bool
+
+		if GameState.owns_cosmetic(item_id):
+			owned = true
+
+		var display_name := item_name
+
+		if not owned:
+			display_name += " (Locked)"
+
+		cosmetic_option_button.add_item(display_name)
+		cosmetic_option_button.set_item_metadata(cosmetic_option_button.item_count - 1, item_id)
+
+	select_equipped_cosmetic()
+
+	is_rebuilding_dropdown = false
+
+
+func select_equipped_cosmetic() -> void:
+	for i in range(cosmetic_option_button.item_count):
+		var item_id := str(cosmetic_option_button.get_item_metadata(i))
+
+		if item_id == GameState.equipped_cosmetic:
+			cosmetic_option_button.select(i)
+			return
+
+	cosmetic_option_button.select(0)
+
+
+func _on_cosmetic_selected(index: int) -> void:
+	if is_rebuilding_dropdown:
+		return
+
+	var selected_id := str(cosmetic_option_button.get_item_metadata(index))
+
+	if selected_id != "" and not GameState.owns_cosmetic(selected_id):
+		select_equipped_cosmetic()
+		return
+
+	if selected_id == "":
+		GameState.equipped_cosmetic = ""
+		GameState.cosmetic_equipped.emit("")
 	else:
-		default_button.text = "Equip\nDefault"
-		default_button.disabled = false
+		GameState.equip_cosmetic(selected_id)
 
-	# Acorn Cap must be owned before it can be equipped.
-	if GameState.owns_cosmetic(ACORN_CAP_ID):
-		if GameState.equipped_cosmetic == ACORN_CAP_ID:
-			acorn_cap_button.text = "Acorn Cap\nEquipped"
-			acorn_cap_button.disabled = true
-		else:
-			acorn_cap_button.text = "Equip\nAcorn Cap"
-			acorn_cap_button.disabled = false
-	else:
-		acorn_cap_button.text = "Acorn Cap\nNot Owned"
-		acorn_cap_button.disabled = true
-
-
-func grab_best_focus() -> void:
-	if not default_button.disabled:
-		default_button.grab_focus()
-	elif not acorn_cap_button.disabled:
-		acorn_cap_button.grab_focus()
-	else:
-		resume_button.grab_focus()
-
-
-func _on_default_pressed() -> void:
-	GameState.equipped_cosmetic = DEFAULT_ID
-	GameState.cosmetic_equipped.emit(DEFAULT_ID)
 	update_inventory_display()
-	grab_best_focus()
-
-
-func _on_acorn_cap_pressed() -> void:
-	if GameState.equip_cosmetic(ACORN_CAP_ID):
-		update_inventory_display()
-		grab_best_focus()
 
 
 func close_menu() -> void:

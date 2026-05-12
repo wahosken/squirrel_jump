@@ -50,19 +50,13 @@ text = "Inventory"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=1984141138]
+[node name="CosmeticOptionButton" type="OptionButton" parent="Panel/VBoxContainer" unique_id=668267237]
 layout_mode = 2
-alignment = 1
-
-[node name="Default" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1085334633]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Default"
-
-[node name="AcornCapButton" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=538449777]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Acorn Cap"
+item_count = 2
+popup/item_0/text = "Default"
+popup/item_0/id = 0
+popup/item_1/text = "AcornCapButton"
+popup/item_1/id = 1
 
 [node name="ResumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=683945781]
 layout_mode = 2
