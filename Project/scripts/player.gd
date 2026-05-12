@@ -90,8 +90,9 @@ var manual_zoom := 0.0
 var glide_zoom_reset := false
 var zoom_target: Vector2
 
-# NPC Interact
+# Menu Interact
 var input_enabled := true
+var movement_locked := false
 
 # ======================================================
 # --- EXPORT VARIABLES ---
@@ -125,6 +126,8 @@ var input_enabled := true
 @onready var grab_point: Marker2D = $Visuals/GrabPoint
 @onready var camera: Camera2D = $Camera2D
 
+@export var default_sprite_frames: SpriteFrames
+@export var acorn_cap_sprite_frames: SpriteFrames
 
 # ======================================================
 # --- READY FUNCTION ---
@@ -134,6 +137,29 @@ func _ready():
 	camera_normal_position = camera.position
 	visuals_normal_position = visuals.position
 	base_zoom = camera.zoom.x
+	
+	GameState.cosmetic_equipped.connect(_on_cosmetic_equipped)
+	_apply_equipped_cosmetic()
+
+func _on_cosmetic_equipped(_item_id: String) -> void:
+	_apply_equipped_cosmetic()
+
+
+func _apply_equipped_cosmetic() -> void:
+	var current_anim := animated_sprite_2d.animation
+	var current_frame := animated_sprite_2d.frame
+
+	match GameState.equipped_cosmetic:
+		"acorn_cap":
+			if acorn_cap_sprite_frames != null:
+				animated_sprite_2d.sprite_frames = acorn_cap_sprite_frames
+		_:
+			if default_sprite_frames != null:
+				animated_sprite_2d.sprite_frames = default_sprite_frames
+
+	if animated_sprite_2d.sprite_frames.has_animation(current_anim):
+		animated_sprite_2d.play(current_anim)
+		animated_sprite_2d.frame = current_frame
 
 # ======================================================
 # --- ANIMATION HELPERS ---
@@ -223,7 +249,7 @@ func player_jump():
 		velocity.y = JUMP_VELOCITY
 		if platform_vel.y > 0:
 			velocity.y -= platform_vel.y * 0.5
-		if not Input.is_action_pressed("jump"):
+		if not gameplay_action_pressed("jump"):
 			velocity.y *= JUMP_CUT_MULTIPLIER
 		coyote_timer = 0
 		jump_sound.pitch_scale = randf_range(1, 1.5)
@@ -269,15 +295,13 @@ func landing_feedback() -> void:
 # ======================================================
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
-	# --- NPC Interaction Input Block ---
-	if not input_enabled:
-		velocity.x = move_toward(velocity.x, 0.0, FRICTION * delta)
-		move_and_slide()
-		return
-	
+	var menu_input_locked := movement_locked
 	
 	# --- Get Horizontal Input ---
-	var direction := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	var direction := 0.0
+
+	if not menu_input_locked:
+		direction = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	var is_crouching := false
 	
 	jump_cooldown = max(jump_cooldown - delta, 0.0)
@@ -314,7 +338,7 @@ func _physics_process(delta: float) -> void:
 		zoom_target *= zoom_mult
 
 	# --- MANUAL ZOOM ALWAYS WINS ---
-	if Input.is_action_pressed("camera_zoom"):
+	if gameplay_action_pressed("camera_zoom"):
 		zoom_target = Vector2(base_zoom * min_zoom_mult, base_zoom * min_zoom_mult)
 
 	# --- APPLY ---
@@ -349,11 +373,11 @@ func _physics_process(delta: float) -> void:
 		
 
 	# --- Swing Release ---
-	if swing.is_swinging and Input.is_action_just_pressed("move_down"):
+	if swing.is_swinging and gameplay_action_just_pressed("move_down"):
 		swing.release_swing()
 	
 	# --- Swing Jump ---
-	if swing.is_swinging and Input.is_action_just_pressed("jump"):
+	if swing.is_swinging and gameplay_action_just_pressed("jump"):
 		player_jump()
 	
 	# --- If swinging, skip normal movement ---
@@ -407,7 +431,7 @@ func _physics_process(delta: float) -> void:
 			glide_timer = 0.0
 		else:
 			# Falling
-			if Input.is_action_pressed("jump") and velocity.y > 100 and can_glide:
+			if gameplay_action_pressed("jump") and velocity.y > 100 and can_glide:
 				# --- GLIDE ---
 				is_gliding = true
 				glide_timer += delta
@@ -437,11 +461,11 @@ func _physics_process(delta: float) -> void:
 				velocity += get_gravity() * FAST_FALL_MULTIPLIER * delta
 			
 	# --- Jump Buffer ---
-	if Input.is_action_just_pressed("jump"):
+	if gameplay_action_just_pressed("jump"):
 		jump_buffer_timer = JUMP_BUFFER_TIME
 
 	# --- Variable Jump Height ---
-	if Input.is_action_just_released("jump") and velocity.y < 0:
+	if gameplay_action_just_released("jump") and velocity.y < 0:
 		velocity.y *= JUMP_CUT_MULTIPLIER
 
 	# --- Jump Check (Ground + Wall) ---
@@ -484,13 +508,13 @@ func _physics_process(delta: float) -> void:
 	if is_wall_clinging:
 		change_state(PlayerState.WALL_CLING)
 		velocity.x = wall_dir * 1.0
-		if Input.is_action_pressed("move_down"):
+		if gameplay_action_pressed("move_down"):
 			velocity.y = min(velocity.y, wall_cling_slide_speed)
 		else:
 			velocity.y = min(velocity.y, 0.0)
 
 	# --- CROUCH + FALL-THROUGH ---
-	if on_floor and Input.is_action_pressed("move_down"):
+	if on_floor and gameplay_action_pressed("move_down"):
 		is_crouching = true
 
 		if abs(direction) < 0.1:
@@ -590,7 +614,7 @@ func _physics_process(delta: float) -> void:
 
 	# --- Landing/Running Sounds ---
 	was_on_floor = on_floor
-	if on_floor and abs(velocity.x) > 0 and not Input.is_action_pressed("move_down"):
+	if on_floor and abs(velocity.x) > 0 and not gameplay_action_pressed("move_down"):
 		if run_sound_timer.is_stopped():
 			run_sound_timer.start()
 	else:
@@ -640,10 +664,55 @@ func _on_run_sound_timer_timeout() -> void:
 	
 	
 # ======================================================
-# --- NPC Interaction ---
+# --- MENU / INPUT LOCK ---
 # ======================================================
 func set_input_enabled(enabled: bool) -> void:
 	input_enabled = enabled
+	movement_locked = not enabled
 
-	if not input_enabled:
-		velocity = Vector2.ZERO
+	if movement_locked:
+		stop_player_control()
+
+
+func stop_player_control() -> void:
+	velocity.x = 0.0
+
+	is_gliding = false
+	is_wall_clinging = false
+	wall_dir = 0
+	crouch_timer = 0.0
+	jump_buffer_timer = 0.0
+
+	run_sound.stop()
+	run_sound_timer.stop()
+
+	var actions := [
+		"move_left",
+		"move_right",
+		"move_down",
+		"jump",
+		"glide",
+		"fast_fall",
+		"interact"
+	]
+
+	for action in actions:
+		if InputMap.has_action(action):
+			Input.action_release(action)
+
+func gameplay_action_pressed(action_name: String) -> bool:
+	if movement_locked:
+		return false
+	return Input.is_action_pressed(action_name)
+
+
+func gameplay_action_just_pressed(action_name: String) -> bool:
+	if movement_locked:
+		return false
+	return Input.is_action_just_pressed(action_name)
+
+
+func gameplay_action_just_released(action_name: String) -> bool:
+	if movement_locked:
+		return false
+	return Input.is_action_just_released(action_name)

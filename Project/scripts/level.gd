@@ -16,7 +16,6 @@ const GRID_Y := SECTION_HEIGHT
 var rows: Array = []          # rows of sections
 var columns: Array = []       # columns of sections
 var current_row: int = -1
-var nuts_collected: int = 0
 var debug_timer := 0.0
 
 
@@ -28,6 +27,8 @@ func _ready():
 	update_section_visibility()
 	_connect_nuts()
 	
+	GameState.nuts_changed.connect(_on_nuts_changed)
+	_on_nuts_changed(GameState.nuts)
 
 # --- PROCESS ---
 func _process(delta):
@@ -72,8 +73,10 @@ func _connect_nuts():
 			nut.connect("collected", Callable(self, "_on_nut_collected"))
 
 func _on_nut_collected(_nut):
-	nuts_collected += 1
-	nut_counter_label.text = "Nuts: %d" % nuts_collected
+	GameState.add_nuts(1)
+	
+func _on_nuts_changed(new_amount: int) -> void:
+	nut_counter_label.text = "Nuts: %d" % new_amount
 
 # --- HORIZONTAL LOOP ---
 func rotate_right():

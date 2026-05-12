@@ -10,6 +10,7 @@ var player_ref: Node = null
 var menu_instance: Node = null
 var is_active := true
 var waiting_for_interact_release := false
+var waiting_to_unlock_player := false
 
 
 func _ready() -> void:
@@ -24,6 +25,12 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if waiting_to_unlock_player:
+		if menu_inputs_released():
+			waiting_to_unlock_player = false
+			set_player_input_enabled(true)
+		return
+
 	if not is_active:
 		return
 
@@ -33,6 +40,9 @@ func _process(_delta: float) -> void:
 		return
 
 	if menu_instance != null:
+		return
+
+	if GameState.menu_open or GameState.menu_open_cooldown:
 		return
 
 	if player_in_range and Input.is_action_just_pressed("interact"):
@@ -76,7 +86,14 @@ func update_prompt_visibility() -> void:
 # ------------------------------------------------------
 
 func open_menu() -> void:
+	if menu_instance != null:
+		return
+
+	if not GameState.request_menu_open("merchant"):
+		return
+
 	if menu_scene == null:
+		GameState.close_menu_state("merchant")
 		push_warning("%s has no menu_scene assigned." % name)
 		return
 
@@ -88,8 +105,12 @@ func open_menu() -> void:
 
 	if menu_instance.has_signal("menu_closed"):
 		menu_instance.menu_closed.connect(_on_menu_closed)
-
-	menu_instance.tree_exited.connect(_on_menu_removed)
+	else:
+		GameState.close_menu_state("merchant")
+		push_warning("Menu scene has no menu_closed signal.")
+		menu_instance.queue_free()
+		menu_instance = null
+		return
 
 	set_player_input_enabled(false)
 	update_prompt_visibility()
@@ -99,22 +120,39 @@ func _on_menu_closed() -> void:
 	cleanup_menu()
 
 
-func _on_menu_removed() -> void:
-	cleanup_menu()
-
-
 func cleanup_menu() -> void:
+	if menu_instance == null:
+		return
+
 	menu_instance = null
-	set_player_input_enabled(true)
+
+	GameState.close_menu_state("merchant")
 
 	waiting_for_interact_release = true
+	waiting_to_unlock_player = true
 
 	update_prompt_visibility()
 
 
 func set_player_input_enabled(enabled: bool) -> void:
-	if player_ref != null and player_ref.has_method("set_input_enabled"):
-		player_ref.set_input_enabled(enabled)
+	var target_player := player_ref
+
+	if target_player == null or not is_instance_valid(target_player):
+		if not is_inside_tree():
+			return
+
+		var tree := get_tree()
+		if tree == null:
+			return
+
+		var players := tree.get_nodes_in_group("player")
+		if players.size() > 0:
+			target_player = players[0]
+
+	if target_player != null and target_player.has_method("set_input_enabled"):
+		target_player.set_input_enabled(enabled)
+	else:
+		push_warning("NPC could not find player to set input enabled.")
 
 
 # ------------------------------------------------------
@@ -140,3 +178,18 @@ func set_active(active: bool) -> void:
 		set_player_input_enabled(true)
 
 	update_prompt_visibility()
+
+func menu_inputs_released() -> bool:
+	var actions := [
+		"jump",
+		"interact",
+		"ui_accept",
+		"ui_cancel",
+		"pause"
+	]
+
+	for action in actions:
+		if InputMap.has_action(action) and Input.is_action_pressed(action):
+			return false
+
+	return true

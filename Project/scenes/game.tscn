@@ -17,11 +17,12 @@
 [ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/buttons3.png" id="21_sww3w"]
 [ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/buttons14.png" id="22_bt5mj"]
 [ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/buttons4.png" id="22_suyxu"]
+[ext_resource type="Script" uid="uid://bc0d2lrn8kr6w" path="res://scripts/pause_manager.gd" id="23_bt5mj"]
 [ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/buttons1.png" id="23_sgl2t"]
+[ext_resource type="PackedScene" uid="uid://d2trsyeyglxos" path="res://scenes/pause_menu.tscn" id="24_e1j6l"]
 [ext_resource type="Texture2D" uid="uid://cbpce4bcqgnrw" path="res://assets/buttons2.png" id="24_qouja"]
 [ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/buttons5.png" id="25_wljb1"]
 [ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/buttons6.png" id="26_v2yb1"]
-[ext_resource type="Texture2D" uid="uid://b62nx1nn1u1t2" path="res://assets/fullscreen_button.png" id="27_sww3w"]
 
 [sub_resource type="Animation" id="Animation_gcfbr"]
 length = 0.001
@@ -944,7 +945,7 @@ drag_bottom_margin = 0.6
 
 [node name="Overlay" type="CanvasLayer" parent="." unique_id=1855333385]
 
-[node name="UI" type="Control" parent="Overlay" unique_id=1387734739 node_paths=PackedStringArray("fullscreen_button")]
+[node name="UI" type="Control" parent="Overlay" unique_id=1387734739]
 z_index = 1
 layout_mode = 3
 anchors_preset = 7
@@ -958,7 +959,6 @@ offset_right = 640.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("20_5newe")
-fullscreen_button = NodePath("HBoxContainer3/FullscreenButton")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Overlay/UI" unique_id=529509077]
 custom_minimum_size = Vector2(50, 50)
@@ -1016,22 +1016,6 @@ scale = Vector2(1.4999999, 1.4999999)
 texture_normal = ExtResource("25_wljb1")
 texture_pressed = ExtResource("26_v2yb1")
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="Overlay/UI" unique_id=1100490631]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -50.0
-offset_bottom = 50.0
-grow_horizontal = 0
-
-[node name="FullscreenButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer3" unique_id=1880833291]
-modulate = Color(1, 1, 1, 0.6)
-position = Vector2(-91, 24)
-scale = Vector2(3, 3)
-texture_normal = ExtResource("27_sww3w")
-
 [node name="HBoxContainer4" type="HBoxContainer" parent="Overlay/UI" unique_id=802425429]
 layout_mode = 1
 anchors_preset = 6
@@ -1066,6 +1050,11 @@ offset_bottom = 0.11999512
 theme_override_font_sizes/font_size = 32
 text = "Nuts: 0"
 
+[node name="PauseManager" type="Node" parent="." unique_id=1630957555 node_paths=PackedStringArray("player")]
+script = ExtResource("23_bt5mj")
+pause_menu_scene = ExtResource("24_e1j6l")
+player = NodePath("../player")
+
 [connection signal="pressed" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_pressed"]
 [connection signal="released" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_released"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_pressed"]
@@ -1074,6 +1063,5 @@ text = "Nuts: 0"
 [connection signal="released" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_released"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_pressed"]
 [connection signal="released" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_released"]
-[connection signal="pressed" from="Overlay/UI/HBoxContainer3/FullscreenButton" to="Overlay/UI" method="_on_fullscreen_button_pressed"]
 [connection signal="pressed" from="Overlay/UI/HBoxContainer4/InteractButton" to="Overlay/UI" method="_on_interact_pressed"]
 [connection signal="released" from="Overlay/UI/HBoxContainer4/InteractButton" to="Overlay/UI" method="_on_interact_released"]

@@ -12,9 +12,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
-offset_top = -40.0
+offset_top = -96.0
 offset_right = 150.0
-offset_bottom = 110.0
+offset_bottom = 114.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -38,6 +38,10 @@ alignment = 1
 layout_mode = 2
 text = "Merchant"
 horizontal_alignment = 1
+
+[node name="NutsLabel" type="Label" parent="Panel/VBoxContainer" unique_id=899437560]
+layout_mode = 2
+text = "Nuts: 0"
 
 [node name="ItemButton" type="Button" parent="Panel/VBoxContainer" unique_id=593653182]
 layout_mode = 2

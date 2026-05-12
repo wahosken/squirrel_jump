@@ -55,11 +55,15 @@ position = Vector2(0, -16)
 shape = SubResource("RectangleShape2D_0tygy")
 
 [node name="PromptLabel" type="Label" parent="." unique_id=2083988670]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
 offset_left = -16.0
 offset_top = -48.0
 offset_right = 16.0
 offset_bottom = -36.0
+grow_horizontal = 2
 theme_override_font_sizes/font_size = 8
-text = "[E] Talk"
+text = "[E] Shop"
 horizontal_alignment = 1
 vertical_alignment = 1
