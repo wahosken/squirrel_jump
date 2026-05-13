@@ -5,54 +5,64 @@
 [node name="PauseMenu" type="CanvasLayer" unique_id=849888738]
 script = ExtResource("1_n87rw")
 
-[node name="Panel" type="Panel" parent="." unique_id=280458082]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -120.0
-offset_right = 150.0
-offset_bottom = 120.0
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1969569104]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=331002842]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -96.0
-offset_top = -80.0
-offset_right = 96.0
-offset_bottom = 80.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 14
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=322817791]
+layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=766556941]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=1173367603]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer" unique_id=331002842]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=766556941]
 layout_mode = 2
 text = "Paused"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="NutsLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1219507630]
+[node name="NutsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1219507630]
 layout_mode = 2
 size_flags_horizontal = 3
 vertical_alignment = 1
 
-[node name="InventoryTitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2073108603]
+[node name="InventoryTitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=2073108603]
 layout_mode = 2
 text = "Inventory"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CosmeticOptionButton" type="OptionButton" parent="Panel/VBoxContainer" unique_id=668267237]
+[node name="CosmeticDropdownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=822561794]
+layout_mode = 2
+text = "Cosmetics"
+
+[node name="CosmeticOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1914356526]
+visible = false
 layout_mode = 2
 
-[node name="ResumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=683945781]
+[node name="DefaultButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=179423693]
+layout_mode = 2
+text = "Default"
+
+[node name="AcornCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1996013499]
+layout_mode = 2
+text = "Acorn Cap"
+
+[node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1634841393]
+layout_mode = 2
+text = "Super Squirrel"
+
+[node name="ResumeButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=683945781]
 layout_mode = 2
 text = "Resume"
