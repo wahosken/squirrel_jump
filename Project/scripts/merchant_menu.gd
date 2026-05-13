@@ -2,11 +2,11 @@ extends CanvasLayer
 
 signal menu_closed
 
-@onready var title_label: Label = $Panel/VBoxContainer/TitleLabel
-@onready var nuts_label: Label = $Panel/VBoxContainer/NutsLabel
-@onready var acorn_cap_button: Button = $Panel/VBoxContainer/ItemButton
-@onready var super_squirrel_button: Button = $Panel/VBoxContainer/SuperSquirrelButton
-@onready var close_button: Button = $Panel/VBoxContainer/CloseButton
+@onready var title_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
+@onready var nuts_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/NutsLabel
+@onready var acorn_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/AcornCapButton
+@onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SuperSquirrelButton
+@onready var close_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CloseButton
 
 var showing_shop_message := false
 var is_closing := false

@@ -5,52 +5,52 @@
 [node name="merchant_menu" type="CanvasLayer" unique_id=929037811]
 script = ExtResource("1_ljn32")
 
-[node name="Panel" type="Panel" parent="." unique_id=782947099]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=110570995]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -96.0
-offset_right = 150.0
-offset_bottom = 114.0
+offset_left = -118.5
+offset_top = -115.5
+offset_right = 118.5
+offset_bottom = 115.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1943256924]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -119.0
-offset_top = -62.5
-offset_right = 119.0
-offset_bottom = 62.5
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=2092597366]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=863515799]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer" unique_id=1943256924]
+layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1512194633]
+[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1512194633]
 layout_mode = 2
 text = "Merchant"
 horizontal_alignment = 1
 
-[node name="NutsLabel" type="Label" parent="Panel/VBoxContainer" unique_id=899437560]
+[node name="NutsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=899437560]
 layout_mode = 2
 text = "Nuts: 0"
 
-[node name="ItemButton" type="Button" parent="Panel/VBoxContainer" unique_id=593653182]
+[node name="AcornCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=593653182]
 layout_mode = 2
 text = "Acorn Hat - 10 Nuts"
 
-[node name="SuperSquirrelButton" type="Button" parent="Panel/VBoxContainer" unique_id=504400778]
+[node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=504400778]
 layout_mode = 2
 text = "Superhero Cape - 25 Nuts"
 
-[node name="CloseButton" type="Button" parent="Panel/VBoxContainer" unique_id=1852865729]
+[node name="CloseButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1852865729]
 layout_mode = 2
 text = "Close"

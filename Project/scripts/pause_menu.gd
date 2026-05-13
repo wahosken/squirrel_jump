@@ -12,8 +12,8 @@ signal menu_closed
 @onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/SuperSquirrelButton
 
 
-@onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/FullscreenButton
-@onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MuteButton
+@onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FullscreenButton
+@onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MuteButton
 @onready var volume_container: HBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer
 @onready var volume_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/VolumeLabel
 @onready var volume_slider: HSlider = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/VolumeSlider
@@ -78,21 +78,32 @@ func toggle_cosmetic_dropdown() -> void:
 
 func open_cosmetic_dropdown() -> void:
 	dropdown_open = true
+
+	cosmetic_dropdown_button.hide()
 	cosmetic_options_container.show()
+
 	update_inventory_display()
 
 	match GameState.equipped_cosmetic:
 		ACORN_CAP_ID:
-			acorn_cap_button.grab_focus()
+			if not acorn_cap_button.disabled:
+				acorn_cap_button.grab_focus()
+			else:
+				default_button.grab_focus()
 		SUPER_SQUIRREL_ID:
-			super_squirrel_button.grab_focus()
+			if not super_squirrel_button.disabled:
+				super_squirrel_button.grab_focus()
+			else:
+				default_button.grab_focus()
 		_:
 			default_button.grab_focus()
 
 
 func close_cosmetic_dropdown() -> void:
 	dropdown_open = false
+
 	cosmetic_options_container.hide()
+	cosmetic_dropdown_button.show()
 	cosmetic_dropdown_button.grab_focus()
 
 

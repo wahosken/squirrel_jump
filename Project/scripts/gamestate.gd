@@ -81,7 +81,6 @@ func _process(_delta: float) -> void:
 	if not menu_open_cooldown:
 		return
 
-	# Wait until all menu-opening/selecting buttons are released.
 	var any_menu_button_held := false
 
 	var actions := [

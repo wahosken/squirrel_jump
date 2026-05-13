@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=322817791]
-custom_minimum_size = Vector2(240, 200)
+custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=1173367603]
@@ -35,9 +35,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="NutsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1219507630]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+text = "Nuts:"
 vertical_alignment = 1
 
 [node name="CosmeticDropdownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=822561794]
@@ -60,11 +60,18 @@ text = "Acorn Cap"
 layout_mode = 2
 text = "Super Squirrel"
 
-[node name="FullscreenButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=728669560]
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1975548044]
 layout_mode = 2
 
-[node name="MuteButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=2000789571]
+[node name="FullscreenButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=728669560]
 layout_mode = 2
+size_flags_horizontal = 3
+text = "Toggle Fullscreen"
+
+[node name="MuteButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=2000789571]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Mute"
 
 [node name="VolumeContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1723462411]
 layout_mode = 2
@@ -73,6 +80,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+text = "Volume:"
 
 [node name="VolumeSlider" type="HSlider" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer" unique_id=226910430]
 layout_mode = 2

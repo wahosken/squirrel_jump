@@ -66,7 +66,7 @@ func run_sequence() -> void:
 
 
 # ----------------------------------------------------
-# SHAKE PHASE (GUARANTEED COMPLETE)
+# SHAKE PHASE
 # ----------------------------------------------------
 
 func shake_phase() -> void:
@@ -87,13 +87,12 @@ func shake_phase() -> void:
 
 
 # ----------------------------------------------------
-# FALL PHASE (PHYSICS DRIVEN)
+# FALL PHASE
 # ----------------------------------------------------
 
 func fall_phase() -> void:
 	state = State.FALLING
 
-	# disable collision once
 	collision_layer = 0
 	collision_mask = 0
 
@@ -103,7 +102,6 @@ func fall_phase() -> void:
 		await get_tree().process_frame
 		t -= get_process_delta_time()
 
-	# ensure we exit cleanly
 	velocity = Vector2.ZERO
 
 

@@ -67,7 +67,7 @@ func reset():
 	collision_layer = original_collision_layer
 	collision_mask = original_collision_mask
 
-	# Re-enable collision
+	# --- RE-ENABLE COLLISION ---
 	for c in get_children():
 		if c is CollisionShape2D or c is CollisionPolygon2D:
 			c.disabled = false
