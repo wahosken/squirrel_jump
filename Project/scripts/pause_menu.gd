@@ -19,6 +19,11 @@ var cosmetic_options := [
 		"id": "acorn_cap",
 		"name": "Acorn Cap",
 		"owned": false
+	},
+	{
+		"id": "super_squirrel",
+		"name": "Super Squirrel",
+		"owned": false
 	}
 ]
 

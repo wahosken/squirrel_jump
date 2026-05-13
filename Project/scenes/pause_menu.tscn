@@ -52,11 +52,6 @@ vertical_alignment = 1
 
 [node name="CosmeticOptionButton" type="OptionButton" parent="Panel/VBoxContainer" unique_id=668267237]
 layout_mode = 2
-item_count = 2
-popup/item_0/text = "Default"
-popup/item_0/id = 0
-popup/item_1/text = "AcornCapButton"
-popup/item_1/id = 1
 
 [node name="ResumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=683945781]
 layout_mode = 2

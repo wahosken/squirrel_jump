@@ -126,8 +126,12 @@ var movement_locked := false
 @onready var grab_point: Marker2D = $Visuals/GrabPoint
 @onready var camera: Camera2D = $Camera2D
 
+# ======================================================
+# --- COSMETICS ---
+# ======================================================
 @export var default_sprite_frames: SpriteFrames
 @export var acorn_cap_sprite_frames: SpriteFrames
+@export var super_squirrel_sprite_frames: SpriteFrames
 
 # ======================================================
 # --- READY FUNCTION ---
@@ -153,6 +157,11 @@ func _apply_equipped_cosmetic() -> void:
 		"acorn_cap":
 			if acorn_cap_sprite_frames != null:
 				animated_sprite_2d.sprite_frames = acorn_cap_sprite_frames
+
+		"super_squirrel":
+			if super_squirrel_sprite_frames != null:
+				animated_sprite_2d.sprite_frames = super_squirrel_sprite_frames
+
 		_:
 			if default_sprite_frames != null:
 				animated_sprite_2d.sprite_frames = default_sprite_frames
