@@ -26,6 +26,7 @@ var dropdown_open := false
 var master_bus_index: int
 var previous_volume := 100.0
 var mute_toggle_locked := false
+var is_initializing_ui := false
 
 const DEFAULT_ID := ""
 const ACORN_CAP_ID := "acorn_cap"
@@ -33,26 +34,96 @@ const SUPER_SQUIRREL_ID := "super_squirrel"
 
 
 func _ready() -> void:
+	is_initializing_ui = true
+
 	cosmetic_dropdown_button.pressed.connect(toggle_cosmetic_dropdown)
 	master_bus_index = AudioServer.get_bus_index("Master")
 
 	default_button.pressed.connect(func(): select_cosmetic(DEFAULT_ID))
 	acorn_cap_button.pressed.connect(func(): select_cosmetic(ACORN_CAP_ID))
 	super_squirrel_button.pressed.connect(func(): select_cosmetic(SUPER_SQUIRREL_ID))
-	
+
+	mute_button.pressed.connect(_on_mute_pressed)
+
+	if not GameState.mute_changed.is_connected(_on_mute_changed):
+		GameState.mute_changed.connect(_on_mute_changed)
+
 	fullscreen_button.pressed.connect(_on_fullscreen_button_pressed)
-	mute_button.pressed.connect(_on_mute_button_pressed)
 	volume_slider.value_changed.connect(_on_volume_slider_value_changed)
 
 	resume_button.pressed.connect(close_menu)
 
 	cosmetic_options_container.hide()
 
-	volume_slider.value = 100
+	volume_slider.value = db_to_linear(AudioServer.get_bus_volume_db(master_bus_index)) * 100.0
+
 	_update_volume_ui()
 	_update_fullscreen_button_text()
 	update_inventory_display()
+
 	cosmetic_dropdown_button.grab_focus()
+
+	is_initializing_ui = false
+
+
+func _on_mute_pressed() -> void:
+	if GameState.is_muted:
+		GameState.set_muted(false)
+
+		var restore_volume := GameState.previous_volume
+		if restore_volume <= 0.0:
+			restore_volume = 100.0
+
+		volume_slider.value = restore_volume
+	else:
+		GameState.previous_volume = volume_slider.value
+		GameState.set_muted(true)
+		volume_slider.value = 0.0
+
+	_update_volume_ui()
+
+
+func _on_mute_changed(is_muted: bool) -> void:
+	if is_muted:
+		volume_slider.value = 0.0
+	else:
+		var restore_volume := GameState.previous_volume
+		if restore_volume <= 0.0:
+			restore_volume = 100.0
+
+		volume_slider.value = restore_volume
+
+	_update_volume_ui()
+
+
+func update_mute_button() -> void:
+	_update_volume_ui()
+
+
+func _on_volume_slider_value_changed(value: float) -> void:
+	if is_initializing_ui:
+		return
+
+	if value <= 0.0:
+		AudioServer.set_bus_volume_db(master_bus_index, linear_to_db(0.001))
+		GameState.set_muted(true)
+	else:
+		AudioServer.set_bus_volume_db(master_bus_index, linear_to_db(value / 100.0))
+		GameState.previous_volume = value
+
+		if GameState.is_muted:
+			GameState.set_muted(false)
+
+	_update_volume_ui()
+
+
+func _update_volume_ui() -> void:
+	if GameState.is_muted:
+		mute_button.text = "Unmute"
+		volume_label.text = "Volume: 0%"
+	else:
+		mute_button.text = "Mute"
+		volume_label.text = "Volume: " + str(roundi(volume_slider.value)) + "%"
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -163,45 +234,6 @@ func _on_fullscreen_button_pressed() -> void:
 func _update_fullscreen_button_text() -> void:
 	fullscreen_button.text = "Toggle Fullscreen"
 
-func _on_mute_button_pressed() -> void:
-	if mute_toggle_locked:
-		return
-
-	mute_toggle_locked = true
-
-	var is_muted := AudioServer.is_bus_mute(master_bus_index)
-	AudioServer.set_bus_mute(master_bus_index, !is_muted)
-
-	if !is_muted:
-		previous_volume = volume_slider.value
-		volume_slider.value = 0
-	else:
-		volume_slider.value = previous_volume if previous_volume > 0.0 else 100.0
-
-	_update_volume_ui()
-
-	await get_tree().create_timer(0.15).timeout
-	mute_toggle_locked = false
-
-func _on_volume_slider_value_changed(value: float) -> void:
-	if value <= 0:
-		AudioServer.set_bus_volume_db(master_bus_index, linear_to_db(0.001))
-	else:
-		AudioServer.set_bus_mute(master_bus_index, false)
-		AudioServer.set_bus_volume_db(master_bus_index, linear_to_db(value / 100.0))
-		previous_volume = value
-
-	_update_volume_ui()
-
-func _update_volume_ui() -> void:
-	var is_muted = AudioServer.is_bus_mute(master_bus_index)
-
-	if is_muted:
-		mute_button.text = "Unmute"
-		volume_label.text = "Volume: 0%"
-	else:
-		mute_button.text = "Mute"
-		volume_label.text = "Volume: " + str(roundi(volume_slider.value)) + "%"
 
 func close_menu() -> void:
 	if is_closing:

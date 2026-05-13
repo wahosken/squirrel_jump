@@ -4,8 +4,12 @@ signal nuts_changed(new_amount: int)
 signal inventory_changed
 signal cosmetic_equipped(item_id: String)
 signal menu_state_changed(is_open: bool)
+signal mute_changed(is_muted: bool)
 
 var nuts: int = 0
+
+var is_muted := false
+var previous_volume := 100.0
 
 var menu_open := false
 var active_menu_id := ""
@@ -46,12 +50,18 @@ func buy_cosmetic(item_id: String, price: int) -> bool:
 
 
 func equip_cosmetic(item_id: String) -> bool:
+	if item_id == "":
+		equipped_cosmetic = ""
+		cosmetic_equipped.emit(item_id)
+		return true
+
 	if not owns_cosmetic(item_id):
 		return false
 
 	equipped_cosmetic = item_id
 	cosmetic_equipped.emit(item_id)
 	return true
+
 
 func request_menu_open(menu_id: String) -> bool:
 	if menu_open:
@@ -72,10 +82,10 @@ func close_menu_state(menu_id: String = "") -> void:
 
 	menu_open = false
 	active_menu_id = ""
-
 	menu_open_cooldown = true
 
 	menu_state_changed.emit(false)
+
 
 func _process(_delta: float) -> void:
 	if not menu_open_cooldown:
@@ -97,3 +107,13 @@ func _process(_delta: float) -> void:
 
 	if not any_menu_button_held:
 		menu_open_cooldown = false
+
+
+func set_muted(value: bool) -> void:
+	is_muted = value
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), is_muted)
+	mute_changed.emit(is_muted)
+
+
+func toggle_mute() -> void:
+	set_muted(not is_muted)
