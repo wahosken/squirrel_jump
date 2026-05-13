@@ -8,17 +8,18 @@ signal menu_closed
 @onready var super_squirrel_button: Button = $Panel/VBoxContainer/SuperSquirrelButton
 @onready var close_button: Button = $Panel/VBoxContainer/CloseButton
 
+var showing_shop_message := false
 var is_closing := false
 
 var shop_items := {
 	"acorn_cap": {
 		"name": "Acorn Cap",
-		"price": 10,
+		"price": 5,
 		"button": null
 	},
 	"super_squirrel": {
 		"name": "Super Squirrel",
-		"price": 25,
+		"price": 10,
 		"button": null
 	}
 }
@@ -33,7 +34,7 @@ func _ready() -> void:
 	close_button.pressed.connect(close_menu)
 
 	GameState.nuts_changed.connect(_on_nuts_changed)
-	GameState.inventory_changed.connect(update_shop_display)
+	GameState.inventory_changed.connect(_on_inventory_changed)
 
 	update_shop_display()
 	acorn_cap_button.grab_focus()
@@ -66,6 +67,9 @@ func activate_focused_button() -> void:
 
 
 func _on_shop_item_pressed(item_id: String) -> void:
+	if showing_shop_message:
+		return
+
 	var item: Dictionary = shop_items[item_id]
 	var item_name: String = str(item["name"])
 	var item_price: int = int(item["price"])
@@ -73,16 +77,15 @@ func _on_shop_item_pressed(item_id: String) -> void:
 
 	if GameState.owns_cosmetic(item_id):
 		button.text = "%s Owned" % item_name
-		await get_tree().create_timer(0.5).timeout
-
-		if not is_closing:
-			update_shop_display()
-
 		return
 
 	if GameState.nuts < item_price:
+		showing_shop_message = true
 		button.text = "Not Enough Nuts"
-		await get_tree().create_timer(0.7).timeout
+
+		await get_tree().create_timer(0.8).timeout
+
+		showing_shop_message = false
 
 		if not is_closing:
 			update_shop_display()
@@ -92,15 +95,21 @@ func _on_shop_item_pressed(item_id: String) -> void:
 	var bought := GameState.buy_cosmetic(item_id, item_price)
 
 	if bought:
+		showing_shop_message = true
 		button.text = "Item Purchased"
 
-	await get_tree().create_timer(0.8).timeout
+		await get_tree().create_timer(0.8).timeout
 
-	if not is_closing:
-		update_shop_display()
+		showing_shop_message = false
+
+		if not is_closing:
+			update_shop_display()
 
 
 func _on_nuts_changed(_new_amount: int) -> void:
+	if showing_shop_message:
+		return
+
 	update_shop_display()
 
 
@@ -113,12 +122,18 @@ func update_shop_display() -> void:
 		var item_price: int = int(item["price"])
 		var button: Button = item["button"]
 
-		button.disabled = false
-
 		if GameState.owns_cosmetic(item_id):
 			button.text = "%s Owned" % item_name
+			button.disabled = true
 		else:
 			button.text = "Buy %s - %d Nuts" % [item_name, item_price]
+			button.disabled = false
+
+func _on_inventory_changed() -> void:
+	if showing_shop_message:
+		return
+
+	update_shop_display()
 
 func close_menu() -> void:
 	if is_closing:
