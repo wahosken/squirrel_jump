@@ -161,10 +161,7 @@ func _on_fullscreen_button_pressed() -> void:
 
 
 func _update_fullscreen_button_text() -> void:
-	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
-		fullscreen_button.text = "Windowed"
-	else:
-		fullscreen_button.text = "Fullscreen"
+	fullscreen_button.text = "Toggle Fullscreen"
 
 func _on_mute_button_pressed() -> void:
 	if mute_toggle_locked:
