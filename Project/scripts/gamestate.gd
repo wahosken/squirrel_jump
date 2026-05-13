@@ -5,7 +5,7 @@ signal inventory_changed
 signal cosmetic_equipped(item_id: String)
 signal menu_state_changed(is_open: bool)
 
-var nuts: int = 15
+var nuts: int = 0
 
 var menu_open := false
 var active_menu_id := ""

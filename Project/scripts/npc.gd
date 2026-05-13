@@ -6,12 +6,12 @@ extends Area2D
 @onready var prompt_label: Label = $PromptLabel
 
 var player_in_range := false
+var using_controller := false
 var player_ref: Node = null
 var menu_instance: Node = null
 var is_active := true
 var waiting_for_interact_release := false
 var waiting_to_unlock_player := false
-
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -61,6 +61,7 @@ func _on_body_entered(body: Node) -> void:
 		player_in_range = true
 		player_ref = body
 		update_prompt_visibility()
+		prompt_label.show()
 
 
 func _on_body_exited(body: Node) -> void:
@@ -68,6 +69,7 @@ func _on_body_exited(body: Node) -> void:
 		player_in_range = false
 		player_ref = null
 		update_prompt_visibility()
+		prompt_label.hide()
 
 
 # ------------------------------------------------------
@@ -193,3 +195,36 @@ func menu_inputs_released() -> bool:
 			return false
 
 	return true
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventJoypadButton:
+		_set_controller_prompt()
+
+	elif event is InputEventJoypadMotion:
+		if abs(event.axis_value) > 0.2:
+			_set_controller_prompt()
+
+	elif event is InputEventKey or event is InputEventScreenTouch or event is InputEventScreenDrag:
+		_set_keyboard_prompt()
+
+func _set_controller_prompt() -> void:
+	if using_controller:
+		return
+
+	using_controller = true
+	_update_prompt_text()
+
+
+func _set_keyboard_prompt() -> void:
+	if !using_controller:
+		return
+
+	using_controller = false
+	_update_prompt_text()
+
+
+func _update_prompt_text() -> void:
+	if using_controller:
+		prompt_label.text = "[X] Shop"
+	else:
+		prompt_label.text = "[E] Shop"
