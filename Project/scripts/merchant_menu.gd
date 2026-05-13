@@ -36,7 +36,7 @@ func _ready() -> void:
 	GameState.inventory_changed.connect(update_shop_display)
 
 	update_shop_display()
-	grab_best_focus()
+	acorn_cap_button.grab_focus()
 
 
 func setup(npc_name: String) -> void:
@@ -66,28 +66,38 @@ func activate_focused_button() -> void:
 
 
 func _on_shop_item_pressed(item_id: String) -> void:
-	if GameState.owns_cosmetic(item_id):
-		return
-
 	var item: Dictionary = shop_items[item_id]
 	var item_name: String = str(item["name"])
 	var item_price: int = int(item["price"])
 	var button: Button = item["button"]
 
+	if GameState.owns_cosmetic(item_id):
+		button.text = "%s Owned" % item_name
+		await get_tree().create_timer(0.5).timeout
+
+		if not is_closing:
+			update_shop_display()
+
+		return
+
+	if GameState.nuts < item_price:
+		button.text = "Not Enough Nuts"
+		await get_tree().create_timer(0.7).timeout
+
+		if not is_closing:
+			update_shop_display()
+
+		return
+
 	var bought := GameState.buy_cosmetic(item_id, item_price)
 
 	if bought:
 		button.text = "Item Purchased"
-		button.disabled = true
-		close_button.grab_focus()
-	else:
-		button.text = "Not Enough Nuts"
 
 	await get_tree().create_timer(0.8).timeout
 
 	if not is_closing:
 		update_shop_display()
-		grab_best_focus()
 
 
 func _on_nuts_changed(_new_amount: int) -> void:
@@ -103,24 +113,12 @@ func update_shop_display() -> void:
 		var item_price: int = int(item["price"])
 		var button: Button = item["button"]
 
+		button.disabled = false
+
 		if GameState.owns_cosmetic(item_id):
 			button.text = "%s Owned" % item_name
-			button.disabled = true
 		else:
 			button.text = "Buy %s - %d Nuts" % [item_name, item_price]
-			button.disabled = GameState.nuts < item_price
-
-
-func grab_best_focus() -> void:
-	for item_id in shop_items.keys():
-		var button: Button = shop_items[item_id]["button"]
-
-		if not button.disabled:
-			button.grab_focus()
-			return
-
-	close_button.grab_focus()
-
 
 func close_menu() -> void:
 	if is_closing:
