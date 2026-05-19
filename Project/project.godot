@@ -38,6 +38,7 @@ player=""
 bouncy=""
 moving_platform=""
 leaf=""
+managed_entities=""
 
 [input]
 

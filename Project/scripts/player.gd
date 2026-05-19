@@ -89,6 +89,9 @@ var base_zoom: float
 var manual_zoom := 0.0
 var glide_zoom_reset := false
 var zoom_target: Vector2
+var camera_snap_next_frame := false
+var camera_smoothing_restore_next_frame := false
+var camera_smoothing_was_enabled := false
 
 # Menu Interact
 var input_enabled := true
@@ -304,6 +307,10 @@ func landing_feedback() -> void:
 # ======================================================
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
+	if camera_smoothing_restore_next_frame:
+		camera.position_smoothing_enabled = camera_smoothing_was_enabled
+		camera_smoothing_restore_next_frame = false
+
 	var menu_input_locked := movement_locked
 	
 	# --- Get Horizontal Input ---
@@ -351,10 +358,13 @@ func _physics_process(delta: float) -> void:
 		zoom_target = Vector2(base_zoom * min_zoom_mult, base_zoom * min_zoom_mult)
 
 	# --- APPLY ---
-	camera.zoom = camera.zoom.lerp(
-		zoom_target,
-		zoom_lerp_speed * delta
-	)
+	if camera_snap_next_frame:
+		camera.zoom = zoom_target
+	else:
+		camera.zoom = camera.zoom.lerp(
+			zoom_target,
+			zoom_lerp_speed * delta
+		)
 	
 		# --- Facing ---
 	if not swing.is_swinging:
@@ -375,11 +385,17 @@ func _physics_process(delta: float) -> void:
 	var fall_factor: float = clampf((velocity.y - 600.0) / 1000.0, 0.0, 1.0)
 	var cam_speed: float = lerpf(CAMERA_NORMAL_FOLLOW_SPEED, CAMERA_FAST_FOLLOW_SPEED, fall_factor)
 
-	camera.position = camera.position.lerp(
-		target_camera_pos,
-		cam_speed * delta
-	)
-		
+	if camera_snap_next_frame:
+		camera.position = target_camera_pos
+		camera.reset_smoothing()
+		camera.force_update_scroll()
+		camera_snap_next_frame = false
+	else:
+		camera.position = camera.position.lerp(
+			target_camera_pos,
+			cam_speed * delta
+		)
+
 
 	# --- Swing Release ---
 	if swing.is_swinging and gameplay_action_just_pressed("move_down"):
@@ -635,6 +651,11 @@ func _physics_process(delta: float) -> void:
 
 	# --- Apply Movement ---
 	move_and_slide()
+
+	var level := get_parent().get_node_or_null("Level")
+	if level and level.has_method("update_horizontal_player_wrap"):
+		level.update_horizontal_player_wrap()
+
 	just_jumped = false
 	
 	for i in get_slide_collision_count():
@@ -725,3 +746,18 @@ func gameplay_action_just_released(action_name: String) -> bool:
 	if movement_locked:
 		return false
 	return Input.is_action_just_released(action_name)
+	
+func snap_camera_after_world_wrap() -> void:
+	if camera == null:
+		return
+
+	camera_snap_next_frame = true
+
+	camera_smoothing_was_enabled = camera.position_smoothing_enabled
+	camera.position_smoothing_enabled = false
+
+	camera.position = camera_normal_position
+	camera.reset_smoothing()
+	camera.force_update_scroll()
+
+	camera_smoothing_restore_next_frame = true

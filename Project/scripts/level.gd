@@ -1,160 +1,314 @@
 extends Node2D
 
-# --- CONFIG ---
-const SECTION_WIDTH = 1024
-const SECTION_HEIGHT = 2016
-const LOOP_BUFFER = 200
-const DEBUG_PRINT_INTERVAL = 6.0  # seconds
-const GRID_X := SECTION_WIDTH
-const GRID_Y := SECTION_HEIGHT
+# ======================================================
+# --- WORLD WRAP CONFIG ---
+# ======================================================
+@export var world_left_x := -2272.0
+@export var world_width := 5120.0
 
+# ======================================================
+# --- CAMERA WRAP GUARD CONFIG ---
+# ======================================================
+# Outer distance: camera begins easing into seam-safe behavior.
+# Inner distance: camera smoothing turns fully off before teleport.
+@export var camera_guard_outer_distance := 192.0
+@export var camera_guard_inner_distance := 24.0
+@export var camera_guard_max_smoothing_speed := 80.0
+
+# ======================================================
+# --- ENTITY ACTIVATION CONFIG ---
+# ======================================================
+@export var entity_check_interval := 0.25
+@export var entity_vertical_activation_distance := 1800.0
+@export var entity_vertical_deactivation_distance := 2200.0
+
+# ======================================================
+# --- DEBUG CONFIG ---
+# ======================================================
+@export var debug_enabled := false
+@export var debug_print_interval := 6.0
+
+# ======================================================
 # --- NODES ---
+# ======================================================
 @onready var player: CharacterBody2D = $"../player"
+@onready var camera: Camera2D = $"../player/Camera2D"
 @onready var nut_counter_label: Label = %NutCounterLabel
 
-# --- DATA / STATE ---
-var rows: Array = []          # rows of sections
-var columns: Array = []       # columns of sections
-var current_row: int = -1
+# ======================================================
+# --- STATE ---
+# ======================================================
+var entity_check_timer := 0.0
 var debug_timer := 0.0
+var managed_entities: Array[Node] = []
+
+var camera_smoothing_was_enabled := false
+var camera_original_smoothing_enabled := true
+var camera_original_smoothing_speed := 5.0
+var camera_in_soft_guard := false
 
 
+# ======================================================
 # --- READY ---
-func _ready():
-	auto_align_sections()
-	
-	_setup_rows_and_columns()
-	update_section_visibility()
+# ======================================================
+func _ready() -> void:
 	_connect_nuts()
-	
-	GameState.nuts_changed.connect(_on_nuts_changed)
+	_cache_managed_entities()
+
+	if camera != null:
+		camera_original_smoothing_enabled = camera.position_smoothing_enabled
+		camera_original_smoothing_speed = camera.position_smoothing_speed
+
+	if not GameState.nuts_changed.is_connected(_on_nuts_changed):
+		GameState.nuts_changed.connect(_on_nuts_changed)
+
 	_on_nuts_changed(GameState.nuts)
+	update_entity_activation()
 
+
+# ======================================================
 # --- PROCESS ---
-func _process(delta):
-	update_vertical_sections()
-	update_horizontal_loop()
+# ======================================================
+func _process(delta: float) -> void:
+	_update_soft_camera_wrap_guard()
 
-	# Debug printing
-	var time = Time.get_time_dict_from_system()
-	debug_timer += delta
-	if debug_timer >= DEBUG_PRINT_INTERVAL:
-		print("--------")
-		print(time)
-		print_column_layout()
-		print_visible_rows()
-		print_active_sections()
-		print_active_nuts()
-		print_active_platforms()
-		print("--------")
-		debug_timer = 0
-		
-	
+	entity_check_timer += delta
+	if entity_check_timer >= entity_check_interval:
+		entity_check_timer = 0.0
+		update_entity_activation()
 
-# --- ROWS & COLUMNS SETUP ---
-func _setup_rows_and_columns():
-	# Build rows
-	for row_node in get_children():
-		rows.append(row_node.get_children())
-
-	# Build columns
-	var col_count = rows[0].size()
-	for i in range(col_count):
-		var column = []
-		for r in rows:
-			column.append(r[i])
-		columns.append(column)
+	if debug_enabled:
+		debug_timer += delta
+		if debug_timer >= debug_print_interval:
+			debug_timer = 0.0
+			print_debug_info()
 
 
+# ======================================================
 # --- NUT CONNECTION ---
-func _connect_nuts():
+# ======================================================
+func _connect_nuts() -> void:
 	for nut in get_tree().get_nodes_in_group("nuts"):
 		if not nut.is_connected("collected", Callable(self, "_on_nut_collected")):
 			nut.connect("collected", Callable(self, "_on_nut_collected"))
 
-func _on_nut_collected(_nut):
+
+func _on_nut_collected(_nut) -> void:
 	GameState.add_nuts(1)
-	
+
+
 func _on_nuts_changed(new_amount: int) -> void:
 	nut_counter_label.text = "Nuts: %d" % new_amount
 
-# --- HORIZONTAL LOOP ---
-func rotate_right():
-	if columns.size() < 2:
+
+# ======================================================
+# --- HORIZONTAL WORLD WRAP ---
+# ======================================================
+func update_horizontal_player_wrap() -> void:
+	var world_right_x: float = get_world_right_x()
+	var old_x: float = player.global_position.x
+	var new_x: float = old_x
+
+	if old_x >= world_right_x:
+		new_x = old_x - world_width
+
+	elif old_x < world_left_x:
+		new_x = old_x + world_width
+
+	if is_equal_approx(new_x, old_x):
 		return
 
-	var first = columns.pop_front()
-	columns.append(first)
+	_prepare_camera_for_wrap()
 
-	var base_x = columns[columns.size() - 2][0].position.x + SECTION_WIDTH
+	player.global_position.x = new_x
+	_reset_wrap_interpolation()
 
-	for r in range(first.size()):
-		var section = first[r]
+	_finish_camera_after_wrap()
 
-		section.visible = false  # prevent flicker during move
-		section.position.x = base_x
-		section.position.y = -r * SECTION_HEIGHT
-		snap_section(section)
 
-	call_deferred("update_section_visibility")
+func get_world_right_x() -> float:
+	return world_left_x + world_width
 
-func rotate_left():
-	if columns.size() < 2:
+
+# ======================================================
+# --- SOFT CAMERA WRAP GUARD ---
+# ======================================================
+func _update_soft_camera_wrap_guard() -> void:
+	if camera == null or player == null:
 		return
 
-	var last = columns.pop_back()
-	columns.insert(0, last)
+	var world_right_x: float = get_world_right_x()
+	var player_x: float = player.global_position.x
 
-	var base_x = columns[1][0].position.x - SECTION_WIDTH
+	var distance_to_left: float = abs(player_x - world_left_x)
+	var distance_to_right: float = abs(world_right_x - player_x)
+	var distance_to_nearest_edge: float = min(distance_to_left, distance_to_right)
 
-	for r in range(last.size()):
-		var section = last[r]
+	# Outside the guard zone: restore the normal camera behavior.
+	if distance_to_nearest_edge > camera_guard_outer_distance:
+		if camera_in_soft_guard:
+			_restore_normal_camera_smoothing()
 
-		section.visible = false
-		section.position.x = base_x
-		section.position.y = -r * SECTION_HEIGHT
-		snap_section(section)
-
-	call_deferred("update_section_visibility")
-	
-
-# --- SECTION VISIBILITY & ACTIVATION ---
-func update_section_visibility():
-	if columns.size() == 0:
 		return
 
-	var middle_index = int(columns.size() / 2.0)
+	camera_in_soft_guard = true
 
-	for c in range(columns.size()):
-		var column_active = abs(c - middle_index) <= 1
+	# Inner guard zone: turn smoothing fully off.
+	# The outer guard zone should have already sped up the camera,
+	# so this should feel less abrupt than a hard on/off switch.
+	if distance_to_nearest_edge <= camera_guard_inner_distance:
+		camera.position_smoothing_enabled = false
+		camera.reset_smoothing()
+		camera.force_update_scroll()
+		return
 
-		for r in range(rows.size()):
-			var section = columns[c][r]
+	# Outer guard zone: keep smoothing enabled, but gradually increase speed.
+	camera.position_smoothing_enabled = true
 
-			var row_active = (r == current_row) or (r == current_row - 1)
-			var active = column_active and row_active
+	var t: float = inverse_lerp(
+		camera_guard_outer_distance,
+		camera_guard_inner_distance,
+		distance_to_nearest_edge
+	)
 
-			set_section_active(section, active)
+	t = clampf(t, 0.0, 1.0)
+	t = smoothstep(0.0, 1.0, t)
 
-func set_section_active(section: Node, active: bool) -> void:
-	section.visible = active
-	section.process_mode = Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
-	section.set_process(active)
-	section.set_physics_process(active)
+	camera.position_smoothing_speed = lerpf(
+		camera_original_smoothing_speed,
+		camera_guard_max_smoothing_speed,
+		t
+	)
 
-	for child in section.get_children():
-		_activate_node(child, active)
 
-func _activate_node(node: Node, active: bool) -> void:
+func _restore_normal_camera_smoothing() -> void:
+	if camera == null:
+		return
+
+	camera.position_smoothing_enabled = camera_original_smoothing_enabled
+	camera.position_smoothing_speed = camera_original_smoothing_speed
+
+	camera_in_soft_guard = false
+
+
+func _prepare_camera_for_wrap() -> void:
+	if camera == null:
+		return
+
+	camera_smoothing_was_enabled = camera.position_smoothing_enabled
+	camera.position_smoothing_enabled = false
+	camera.reset_smoothing()
+	camera.force_update_scroll()
+
+
+func _finish_camera_after_wrap() -> void:
+	if camera == null:
+		return
+
+	# Keep smoothing off immediately after teleport.
+	# The soft guard restores smoothing only after the player leaves the seam area.
+	camera.position_smoothing_enabled = false
+	camera.reset_smoothing()
+	camera.force_update_scroll()
+
+	camera_in_soft_guard = true
+
+
+func _reset_wrap_interpolation() -> void:
+	_reset_physics_interpolation_recursive(player)
+
+	if camera != null:
+		camera.reset_physics_interpolation()
+		camera.reset_smoothing()
+		camera.force_update_scroll()
+
+
+func _reset_physics_interpolation_recursive(node: Node) -> void:
+	if node == null:
+		return
+
+	node.reset_physics_interpolation()
+
+	for child in node.get_children():
+		_reset_physics_interpolation_recursive(child)
+
+
+# ======================================================
+# --- ENTITY ACTIVATION ---
+# ======================================================
+func _cache_managed_entities() -> void:
+	managed_entities.clear()
+
+	for entity in get_tree().get_nodes_in_group("managed_entities"):
+		if not entity is Node2D:
+			continue
+
+		if _is_inside_edge_projection(entity):
+			if debug_enabled:
+				print("Skipping projected managed entity:", entity.name)
+			continue
+
+		managed_entities.append(entity)
+
+
+func _is_inside_edge_projection(node: Node) -> bool:
+	var current := node
+
+	while current != null:
+		if current.name == "EdgeProjectionManager":
+			return true
+		if current.name == "LeftProjection":
+			return true
+		if current.name == "RightProjection":
+			return true
+
+		current = current.get_parent()
+
+	return false
+
+
+func update_entity_activation() -> void:
+	for entity in managed_entities:
+		if not is_instance_valid(entity):
+			continue
+
+		var active := _should_entity_be_active(entity)
+		_set_entity_active(entity, active)
+
+
+func _should_entity_be_active(entity: Node) -> bool:
+	if not entity is Node2D:
+		return true
+
+	var entity_2d := entity as Node2D
+	var dy: float = abs(entity_2d.global_position.y - player.global_position.y)
+
+	var currently_active := entity.process_mode != Node.PROCESS_MODE_DISABLED
+
+	if currently_active:
+		return dy <= entity_vertical_deactivation_distance
+	else:
+		return dy <= entity_vertical_activation_distance
+
+
+func _set_entity_active(node: Node, active: bool) -> void:
 	if node.has_method("set_active"):
 		node.set_active(active)
 		return
 
-	if node is CanvasItem:
-		node.visible = active
+	# Avoid directly disabling animation systems.
+	if node is AnimationPlayer:
+		return
 
+	if node is AnimationTree:
+		return
+
+	node.process_mode = Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
 	node.set_process(active)
 	node.set_physics_process(active)
+
+	if node is CanvasItem:
+		node.visible = active
 
 	if node is CollisionObject2D:
 		node.set_process_input(active)
@@ -164,138 +318,61 @@ func _activate_node(node: Node, active: bool) -> void:
 		node.disabled = not active
 
 	for child in node.get_children():
-		_activate_node(child, active)
+		_set_entity_active(child, active)
 
-# --- VERTICAL ROW UPDATE ---
-func get_player_row() -> int:
-	return int((-player.global_position.y + SECTION_HEIGHT / 2.0) / SECTION_HEIGHT)
 
-func update_vertical_sections():
-	var player_row = clamp(get_player_row(), 0, rows.size() - 1)
-	if player_row != current_row:
-		current_row = player_row
-		update_section_visibility()
+# ======================================================
+# --- DEBUG ---
+# ======================================================
+func print_debug_info() -> void:
+	print("--------")
+	print("Player position:", player.global_position)
+	print("World left:", world_left_x)
+	print("World right:", get_world_right_x())
 
-# --- HORIZONTAL LOOP CHECK ---
-func update_horizontal_loop():
-	if columns.size() < 2:
-		return
+	if camera != null:
+		print("Camera smoothing enabled:", camera.position_smoothing_enabled)
+		print("Camera smoothing speed:", camera.position_smoothing_speed)
+	else:
+		print("Camera smoothing enabled: No camera")
+		print("Camera smoothing speed: No camera")
 
-	var safe_row = clamp(current_row, 0, rows.size() - 1)
-	var middle_index = int(columns.size() / 2.0)
-	var middle = columns[middle_index][safe_row]
+	print("Camera in soft guard:", camera_in_soft_guard)
+	print("Managed entities:", managed_entities.size())
+	print("Active entities:", get_active_entity_count())
+	print("Active nuts:", get_active_nuts_count())
+	print("Active platforms:", get_active_platforms_count())
+	print("--------")
 
-	if player.global_position.x > middle.global_position.x + SECTION_WIDTH + LOOP_BUFFER:
-		rotate_right()
-		print("rotate right")
-	elif player.global_position.x < middle.global_position.x - LOOP_BUFFER:
-		rotate_left()
-		print("rotate left")
 
-# --- DEBUG FUNCTIONS ---
-func print_column_layout():
-	var layout := ""
-	for c in range(columns.size()):
-		var column_name = columns[c][0].name
-		var letter = column_name.substr(column_name.length() - 1, 1)
-		layout += "[" + letter + "]"
-	print(layout)
-	
-func print_visible_rows():
-	var visible_rows := []
-	for r in range(rows.size()):
-		for c in columns:
-			if c[r].visible:
-				visible_rows.append(r)
-				break
-	print("Visible rows:", visible_rows)
+func get_active_entity_count() -> int:
+	var count := 0
 
-func print_active_sections():
-	var active_sections := 0
-	for r in rows:
-		for section in r:
-			if section.process_mode != Node.PROCESS_MODE_DISABLED:
-				active_sections += 1
-	print("Active sections:", active_sections)
+	for entity in managed_entities:
+		if not is_instance_valid(entity):
+			continue
 
-func print_active_nuts():
-	var active_nuts := 0
+		if entity.process_mode != Node.PROCESS_MODE_DISABLED:
+			count += 1
+
+	return count
+
+
+func get_active_nuts_count() -> int:
+	var count := 0
+
 	for nut in get_tree().get_nodes_in_group("nuts"):
-		if not nut.visible or nut.process_mode == Node.PROCESS_MODE_DISABLED:
-			continue
+		if nut.visible and nut.process_mode != Node.PROCESS_MODE_DISABLED:
+			count += 1
 
-		var has_enabled_collision := false
-		for c in nut.get_children():
-			if c is CollisionShape2D and not c.disabled:
-				has_enabled_collision = true
-				break
+	return count
 
-		if has_enabled_collision:
-			active_nuts += 1
 
-	print("Active nuts:", active_nuts)
-	
-func print_active_platforms():
-	var active_platforms := 0
-	
+func get_active_platforms_count() -> int:
+	var count := 0
+
 	for platform in get_tree().get_nodes_in_group("platforms"):
-		if not platform.visible or platform.process_mode == Node.PROCESS_MODE_DISABLED:
-			continue
+		if platform.visible and platform.process_mode != Node.PROCESS_MODE_DISABLED:
+			count += 1
 
-		var has_enabled_collision := false
-		var stack := [platform]
-
-		while stack.size() > 0:
-			var node = stack.pop_back()
-
-			if node is CollisionShape2D and not node.disabled:
-				has_enabled_collision = true
-				break
-
-			for child in node.get_children():
-				stack.append(child)
-
-		if has_enabled_collision:
-			active_platforms += 1
-
-	print("Active platforms:", active_platforms)
-	
-func auto_align_sections():
-	for row_node in get_children():
-		for section in row_node.get_children():
-			
-			var section_name := section.name.to_lower()
-			
-			if not section_name.begins_with("section_"):
-				continue
-			
-			var id := section_name.replace("section_", "")
-			
-			# --- Extract row number ---
-			var row_str := ""
-			var col_char := ""
-			
-			for i in id.length():
-				var current_char := id[i]
-				
-				if current_char.is_valid_int():
-					row_str += current_char
-				else:
-					col_char = current_char
-			
-			if row_str == "" or col_char == "":
-				push_error("Invalid section name: " + section_name)
-				continue
-			
-			var row_index := int(row_str)
-			var col_index := col_char.unicode_at(0) - "a".unicode_at(0)
-			
-			# --- Apply position ---
-			section.position = Vector2i(
-				col_index * SECTION_WIDTH,
-				-row_index * SECTION_HEIGHT
-			)
-			
-func snap_section(section):
-	section.position.x = round(section.position.x / GRID_X) * GRID_X
-	section.position.y = round(section.position.y / GRID_Y) * GRID_Y
+	return count
