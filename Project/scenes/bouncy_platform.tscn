@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://30re00hte0v7" path="res://assets/bouncing_platform.png" id="1_6lsdx"]
 [ext_resource type="Script" uid="uid://cauripuk6qmki" path="res://scripts/bouncy_platform.gd" id="1_sogjj"]
 
-[node name="bouncy_platform" type="AnimatableBody2D" unique_id=970677477 groups=["bouncy", "leaf", "managed_entities", "platforms"]]
+[node name="bouncy_platform" type="AnimatableBody2D" unique_id=970677477 groups=["bouncy", "leaf", "live_edge_mirror", "managed_entities", "platforms"]]
 collision_mask = 16
 script = ExtResource("1_sogjj")
 

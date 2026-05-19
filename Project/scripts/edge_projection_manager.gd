@@ -1,13 +1,21 @@
 extends Node2D
 
 @export var world_width := 5120.0
+@export var static_visuals_path: NodePath = "../StaticVisuals"
 
-@onready var level: Node2D = get_parent()
 @onready var left_projection: Node2D = $LeftProjection
 @onready var right_projection: Node2D = $RightProjection
 
+var static_visuals: Node2D
+
 
 func _ready() -> void:
+	static_visuals = get_node_or_null(static_visuals_path)
+
+	if static_visuals == null:
+		push_error("EdgeProjectionManager could not find StaticVisuals.")
+		return
+
 	rebuild_projections()
 
 
@@ -15,46 +23,17 @@ func rebuild_projections() -> void:
 	_clear_children(left_projection)
 	_clear_children(right_projection)
 
-	for source in level.get_children():
-		if not _should_project(source):
-			continue
+	var left_clone := static_visuals.duplicate()
+	var right_clone := static_visuals.duplicate()
 
-		var left_clone := source.duplicate()
-		var right_clone := source.duplicate()
+	left_clone.position.x -= world_width
+	right_clone.position.x += world_width
 
-		left_clone.position.x -= world_width
-		right_clone.position.x += world_width
+	_make_visual_only(left_clone)
+	_make_visual_only(right_clone)
 
-		_make_visual_only(left_clone)
-		_make_visual_only(right_clone)
-
-		left_projection.add_child(left_clone)
-		right_projection.add_child(right_clone)
-
-
-func _should_project(source: Node) -> bool:
-	if source == self:
-		return false
-
-	if source == left_projection:
-		return false
-
-	if source == right_projection:
-		return false
-
-	if source.name == "EdgeProjectionManager":
-		return false
-
-	if source.name == "LeftProjection":
-		return false
-
-	if source.name == "RightProjection":
-		return false
-
-	if not source is Node2D:
-		return false
-
-	return true
+	left_projection.add_child(left_clone)
+	right_projection.add_child(right_clone)
 
 
 func _clear_children(parent: Node) -> void:
@@ -71,14 +50,22 @@ func _make_visual_only(node: Node) -> void:
 	node.set_process_input(false)
 	node.set_process_unhandled_input(false)
 
-	node.process_mode = Node.PROCESS_MODE_DISABLED
-
 	if node is CollisionObject2D:
 		node.collision_layer = 0
 		node.collision_mask = 0
 
 	if node is CollisionShape2D:
 		node.disabled = true
+
+	if node is Area2D:
+		node.monitoring = false
+		node.monitorable = false
+
+	if node is AnimationPlayer:
+		node.stop()
+
+	if node is AnimationTree:
+		node.active = false
 
 	if node is CanvasItem:
 		node.visible = true

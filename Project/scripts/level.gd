@@ -261,6 +261,12 @@ func _is_inside_edge_projection(node: Node) -> bool:
 			return true
 		if current.name == "RightProjection":
 			return true
+		if current.name == "LiveEdgeMirrorManager":
+			return true
+		if current.name == "LeftLiveMirrors":
+			return true
+		if current.name == "RightLiveMirrors":
+			return true
 
 		current = current.get_parent()
 
