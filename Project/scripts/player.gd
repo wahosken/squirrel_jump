@@ -525,12 +525,11 @@ func _physics_process(delta: float) -> void:
 
 	# --- Jump Check (Ground + Wall) ---
 	if not swing.is_swinging and jump_buffer_timer > 0 and jump_cooldown <= 0.0:
-		if coyote_timer > 0 or wall_coyote_timer > 0:
+		if is_on_floor() or coyote_timer > 0.0 or wall_coyote_timer > 0.0:
 			player_jump()
-			coyote_timer = 0
-			wall_coyote_timer = 0
-			jump_buffer_timer = 0
-			jump_cooldown = 0.25
+			coyote_timer = 0.0
+			wall_coyote_timer = 0.0
+			jump_buffer_timer = 0.0
 
 	# --- Timers ---
 	jump_buffer_timer -= delta
@@ -780,3 +779,14 @@ func gameplay_action_just_released(action_name: String) -> bool:
 func snap_camera_after_world_wrap() -> void:
 	if camera_controller:
 		camera_controller.snap_after_world_wrap()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if movement_locked:
+		return
+
+	if event is InputEventKey and event.echo:
+		return
+
+	if event.is_action_pressed("jump"):
+		jump_buffer_timer = JUMP_BUFFER_TIME

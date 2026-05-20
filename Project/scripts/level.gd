@@ -23,7 +23,7 @@ extends Node2D
 # ======================================================
 # --- DEBUG CONFIG ---
 # ======================================================
-@export var debug_enabled := false
+@export var debug_enabled := true
 @export var debug_print_interval := 6.0
 
 # ======================================================
@@ -122,6 +122,8 @@ func update_horizontal_player_wrap() -> void:
 	_reset_wrap_interpolation()
 
 	_finish_camera_after_wrap()
+	
+	print("World Wrap")
 
 
 func get_world_right_x() -> float:
@@ -323,23 +325,24 @@ func _set_entity_active(node: Node, active: bool) -> void:
 # ======================================================
 func print_debug_info() -> void:
 	print("--------")
-	print("Player position:", player.global_position)
-	print("World left:", world_left_x)
-	print("World right:", get_world_right_x())
+	print("Player position: ", player.global_position)
+	print("Timestamp ", Time.get_time_string_from_system())
 
 	if camera != null:
-		print("Camera smoothing enabled:", camera.position_smoothing_enabled)
-		print("Camera smoothing speed:", camera.position_smoothing_speed)
+		print("")
+		print("Camera smoothing enabled: ", camera.position_smoothing_enabled)
+		print("Camera smoothing speed: ", camera.position_smoothing_speed)
 	else:
+		print("")
 		print("Camera smoothing enabled: No camera")
 		print("Camera smoothing speed: No camera")
 
-	print("Camera in soft guard:", camera_in_soft_guard)
-	print("Managed entities:", managed_entities.size())
-	print("Active entities:", get_active_entity_count())
-	print("Active nuts:", get_active_nuts_count())
-	print("Active platforms:", get_active_platforms_count())
-	print("--------")
+	print("Camera in soft guard: ", camera_in_soft_guard)
+	print("")
+	print("Managed entities: ", managed_entities.size())
+	print("Active entities: ", get_active_entity_count())
+	print("Active nuts: ", get_active_nuts_count())
+	print("Active platforms: ", get_active_platforms_count())
 
 
 func get_active_entity_count() -> int:

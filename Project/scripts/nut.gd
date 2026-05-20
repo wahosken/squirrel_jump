@@ -32,6 +32,7 @@ func _on_body_entered(_body: Node2D) -> void:
 
 	is_collected = true
 
+	print("")
 	print("+! nut!")
 
 	for c in get_children():
