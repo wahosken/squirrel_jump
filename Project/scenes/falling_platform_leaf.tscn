@@ -6,7 +6,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dsamb"]
 size = Vector2(32, 4)
 
-[node name="falling_platform_leaf" type="CharacterBody2D" unique_id=1067524163 groups=["leaf", "live_edge_mirror", "managed_entities", "platforms"]]
+[node name="falling_platform_leaf" type="CharacterBody2D" unique_id=1067524163 groups=["leaf", "managed_entities", "platforms"]]
+collision_layer = 16
 collision_mask = 16
 script = ExtResource("1_tu0kr")
 

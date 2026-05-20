@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eyv7q"]
 size = Vector2(32, 4)
 
-[node name="falling_platform" type="CharacterBody2D" unique_id=582303264 groups=["live_edge_mirror", "managed_entities", "platforms"]]
+[node name="falling_platform" type="CharacterBody2D" unique_id=582303264 groups=["managed_entities", "platforms"]]
 script = ExtResource("1_eyv7q")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1023108533]

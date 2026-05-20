@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nlgqw"]
 size = Vector2(64, 10)
 
-[node name="platform" type="AnimatableBody2D" unique_id=700560478 groups=["live_edge_mirror", "managed_entities", "moving_platform", "platforms"]]
+[node name="platform" type="AnimatableBody2D" unique_id=700560478 groups=["managed_entities", "moving_platform", "platforms"]]
 collision_layer = 16
 collision_mask = 16
 script = ExtResource("1_nlgqw")

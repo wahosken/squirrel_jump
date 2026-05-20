@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://6nu2dmhr2c45" path="res://scripts/nut.gd" id="1_1t6dd"]
 [ext_resource type="Texture2D" uid="uid://b2uv88omyhq7f" path="res://assets/nut.png" id="1_e8gc1"]
-[ext_resource type="AudioStream" uid="uid://bclhbuckevyhy" path="res://audio/squirrel_audio_crunch.wav" id="3_5cbsx"]
+[ext_resource type="AudioStream" uid="uid://6s5w77lacg1q" path="res://audio/squirrel_audio_crunch.wav" id="3_5cbsx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1t6dd"]
 atlas = ExtResource("1_e8gc1")
@@ -35,7 +35,7 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ifhf5"]
 
-[node name="nut" type="Area2D" unique_id=1734965692 groups=["live_edge_mirror", "managed_entities", "nuts"]]
+[node name="nut" type="Area2D" unique_id=1734965692 groups=["managed_entities", "nuts"]]
 collision_mask = 2
 script = ExtResource("1_1t6dd")
 

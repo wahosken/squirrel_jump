@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://bslbo67tno0pw" path="res://scripts/swing_component.gd" id="1_qlg0r"]
 [ext_resource type="SpriteFrames" uid="uid://dwed3o8pqk6v1" path="res://assets/sprite_frames_super.tres" id="2_smehm"]
 [ext_resource type="SpriteFrames" uid="uid://b1nhs8gfb482q" path="res://assets/sprite_frames_default.tres" id="3_fjrip"]
-[ext_resource type="AudioStream" uid="uid://btdyctkkj7jng" path="res://audio/squirrel_audio_jump.wav" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://dtsi1s7jv542j" path="res://audio/squirrel_audio_jump.wav" id="3_qhqgy"]
 [ext_resource type="SpriteFrames" uid="uid://cjeeifiau4tt5" path="res://assets/sprite_frames_acorn_cap.tres" id="3_smehm"]
-[ext_resource type="AudioStream" uid="uid://cjblfalroo32l" path="res://audio/squirrel_audio_land.wav" id="4_dqkch"]
+[ext_resource type="AudioStream" uid="uid://brp4wumpojv1u" path="res://audio/squirrel_audio_land.wav" id="4_dqkch"]
 [ext_resource type="AudioStream" uid="uid://chpd4n5fwd7od" path="res://audio/squirrel_audio_footsteps.wav" id="5_qlg0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]

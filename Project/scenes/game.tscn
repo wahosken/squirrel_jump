@@ -14,17 +14,17 @@
 [ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="9_1kice"]
 [ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/buttons7.png" id="19_bhx41"]
 [ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
-[ext_resource type="Texture2D" uid="uid://div7lcnt10w6n" path="res://assets/pause_button.png" id="20_pl11u"]
+[ext_resource type="Texture2D" uid="uid://csbvdp6w4vhet" path="res://assets/pause_button.png" id="20_pl11u"]
 [ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/buttons8.png" id="20_qnb83"]
 [ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/buttons13.png" id="21_37s47"]
-[ext_resource type="Texture2D" uid="uid://cqijo7v5cmgcm" path="res://assets/pause_button_pressed.png" id="21_bhx41"]
+[ext_resource type="Texture2D" uid="uid://ixnjcmlbbvce" path="res://assets/pause_button_pressed.png" id="21_bhx41"]
 [ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/buttons3.png" id="21_sww3w"]
 [ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/buttons14.png" id="22_bt5mj"]
 [ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/buttons4.png" id="22_suyxu"]
 [ext_resource type="Script" uid="uid://bc0d2lrn8kr6w" path="res://scripts/pause_manager.gd" id="23_bt5mj"]
 [ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/buttons1.png" id="23_sgl2t"]
 [ext_resource type="PackedScene" uid="uid://d2trsyeyglxos" path="res://scenes/pause_menu.tscn" id="24_e1j6l"]
-[ext_resource type="Texture2D" uid="uid://cbpce4bcqgnrw" path="res://assets/buttons2.png" id="24_qouja"]
+[ext_resource type="Texture2D" uid="uid://cyg5m01t5f8u" path="res://assets/buttons2.png" id="24_qouja"]
 [ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/buttons5.png" id="25_wljb1"]
 [ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/buttons6.png" id="26_v2yb1"]
 
@@ -116,7 +116,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-64, -753)]
+"values": [Vector2(2272, -2480)]
 }
 
 [sub_resource type="Animation" id="Animation_bhx41"]
@@ -154,7 +154,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(224, -464)]
+"values": [Vector2(-176, -3760)]
 }
 
 [sub_resource type="Animation" id="Animation_1kice"]
@@ -180,6 +180,44 @@ _data = {
 &"move": SubResource("Animation_1kice")
 }
 
+[sub_resource type="Animation" id="Animation_suyxu"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-1020, -3212)]
+}
+
+[sub_resource type="Animation" id="Animation_sgl2t"]
+resource_name = "move"
+length = 5.0
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 4.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-961, -3212), Vector2(-961, -3212), Vector2(-506, -3212), Vector2(-506, -3212)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qouja"]
+_data = {
+&"RESET": SubResource("Animation_suyxu"),
+&"move": SubResource("Animation_sgl2t")
+}
+
 [sub_resource type="Animation" id="Animation_5newe"]
 length = 0.001
 tracks/0/type = "value"
@@ -192,7 +230,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-192, -144)]
+"values": [Vector2(-1216, -2160)]
 }
 
 [sub_resource type="Animation" id="Animation_37s47"]
@@ -359,7 +397,7 @@ position = Vector2(16, -2832)
 position = Vector2(48, -2832)
 
 [node name="platform3" parent="Level/DynamicObjects" unique_id=444516941 instance=ExtResource("5_twgab")]
-position = Vector2(-64, -753)
+position = Vector2(2272, -2480)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Level/DynamicObjects/platform3" unique_id=1561788664]
 libraries/ = SubResource("AnimationLibrary_qnb83")
@@ -429,7 +467,7 @@ position = Vector2(2160, -2160)
 position = Vector2(2192, -2160)
 
 [node name="platform4" parent="Level/DynamicObjects" unique_id=211304348 instance=ExtResource("5_twgab")]
-position = Vector2(224, -464)
+position = Vector2(-176, -3760)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Level/DynamicObjects/platform4" unique_id=711132291]
 libraries/ = SubResource("AnimationLibrary_5newe")
@@ -573,6 +611,13 @@ position = Vector2(-1440, -2256)
 [node name="bouncy_platform2" parent="Level/DynamicObjects" unique_id=301375126 instance=ExtResource("8_7025r")]
 position = Vector2(-689, -3289)
 
+[node name="platform6" parent="Level/DynamicObjects" unique_id=228512197 instance=ExtResource("5_twgab")]
+position = Vector2(-1020, -3212)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Level/DynamicObjects/platform6" unique_id=488544254]
+libraries/ = SubResource("AnimationLibrary_qouja")
+autoplay = &"move"
+
 [node name="falling_platform_leaf65" parent="Level/DynamicObjects" unique_id=1834397402 instance=ExtResource("7_nepv3")]
 position = Vector2(-976, -3312)
 
@@ -598,7 +643,7 @@ position = Vector2(-1200, -3471)
 position = Vector2(-416, -3793)
 
 [node name="platform5" parent="Level/DynamicObjects" unique_id=1917580576 instance=ExtResource("5_twgab")]
-position = Vector2(-192, -144)
+position = Vector2(-1216, -2160)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Level/DynamicObjects/platform5" unique_id=799822999]
 libraries/ = SubResource("AnimationLibrary_bt5mj")
@@ -737,7 +782,7 @@ script = ExtResource("4_qnb83")
 
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
 z_index = 5
-position = Vector2(-432, -1728)
+position = Vector2(-433, -1728)
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -60)
