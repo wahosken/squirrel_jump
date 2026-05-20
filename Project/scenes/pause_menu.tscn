@@ -42,7 +42,7 @@ vertical_alignment = 1
 
 [node name="CosmeticDropdownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=822561794]
 layout_mode = 2
-text = "Skin"
+text = "Apparel"
 
 [node name="CosmeticOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1914356526]
 visible = false
@@ -62,9 +62,10 @@ text = "Super Squirrel"
 
 [node name="ColorDropdownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=224950072]
 layout_mode = 2
-text = "Color"
+text = "Squirrel Color"
 
 [node name="ColorOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1605884769]
+visible = false
 layout_mode = 2
 
 [node name="BrownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=1843485110]

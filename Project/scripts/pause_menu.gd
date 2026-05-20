@@ -42,8 +42,8 @@ const SQUIRREL_ID := "squirrel"
 const SQUIRREL_WHITE_ID := "squirrel_white"
 
 const NO_APPAREL_ID := ""
-const ACORN_HAT_ID := "acorn_hat"
-const SUPER_ID := "super"
+const ACORN_HAT_ID := "acorn_cap"
+const SUPER_ID := "super_squirrel"
 
 
 func _ready() -> void:
@@ -87,7 +87,7 @@ func _ready() -> void:
 	_update_fullscreen_button_text()
 	update_inventory_display()
 
-	color_dropdown_button.grab_focus()
+	cosmetic_dropdown_button.grab_focus()
 
 	is_initializing_ui = false
 
@@ -278,9 +278,9 @@ func update_inventory_display() -> void:
 
 	match GameState.equipped_squirrel_color:
 		SQUIRREL_WHITE_ID:
-			color_dropdown_button.text = "Squirrel: White"
+			color_dropdown_button.text = "Squirrel Color: White"
 		_:
-			color_dropdown_button.text = "Squirrel: Brown"
+			color_dropdown_button.text = "Squirrel Color: Brown"
 
 	brown_button.text = "Brown"
 	brown_button.disabled = false
