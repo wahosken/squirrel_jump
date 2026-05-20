@@ -52,13 +52,28 @@ layout_mode = 2
 layout_mode = 2
 text = "Default"
 
-[node name="AcornCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1996013499]
+[node name="AcornHatButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1996013499]
 layout_mode = 2
 text = "Acorn Cap"
 
-[node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1634841393]
+[node name="SuperButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1634841393]
 layout_mode = 2
 text = "Super Squirrel"
+
+[node name="ColorDropdownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=224950072]
+layout_mode = 2
+text = "Color"
+
+[node name="ColorOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1605884769]
+layout_mode = 2
+
+[node name="BrownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=1843485110]
+layout_mode = 2
+text = "Brown"
+
+[node name="WhiteButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=178782809]
+layout_mode = 2
+text = "White"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=378404116]
 layout_mode = 2

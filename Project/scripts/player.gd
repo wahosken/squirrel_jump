@@ -98,7 +98,8 @@ var movement_locked := false
 # --- NODE REFERENCES ---
 # ======================================================
 @onready var visuals: Node2D = $Visuals
-@onready var animated_sprite_2d: AnimatedSprite2D = $Visuals/AnimatedSprite2D
+@onready var squirrel_sprite: AnimatedSprite2D = $Visuals/SquirrelSprite
+@onready var apparel_sprite: AnimatedSprite2D = $Visuals/ApparelSprite
 @onready var jump_sound: AudioStreamPlayer2D = $JumpSound
 @onready var land_sound: AudioStreamPlayer2D = $LandSound
 @onready var run_sound: AudioStreamPlayer2D = $RunSound
@@ -110,11 +111,13 @@ var movement_locked := false
 @onready var camera_controller: Node = $PlayerCameraController
 
 # ======================================================
-# --- COSMETICS ---
+# --- COSMETICS / APPEARANCE ---
 # ======================================================
-@export var default_sprite_frames: SpriteFrames
-@export var acorn_cap_sprite_frames: SpriteFrames
-@export var super_squirrel_sprite_frames: SpriteFrames
+@export var squirrel_frames: SpriteFrames
+@export var squirrel_white_frames: SpriteFrames
+
+@export var acorn_hat_frames: SpriteFrames
+@export var super_frames: SpriteFrames
 
 # ======================================================
 # --- READY FUNCTION ---
@@ -122,41 +125,145 @@ var movement_locked := false
 func _ready():
 	swing.grab_point = grab_point
 	visuals_normal_position = visuals.position
-	
-	GameState.cosmetic_equipped.connect(_on_cosmetic_equipped)
-	_apply_equipped_cosmetic()
+
+	if not GameState.cosmetic_equipped.is_connected(_on_cosmetic_equipped):
+		GameState.cosmetic_equipped.connect(_on_cosmetic_equipped)
+
+	if not GameState.squirrel_color_equipped.is_connected(_on_squirrel_color_equipped):
+		GameState.squirrel_color_equipped.connect(_on_squirrel_color_equipped)
+
+	_apply_equipped_appearance()
+
 
 func _on_cosmetic_equipped(_item_id: String) -> void:
-	_apply_equipped_cosmetic()
+	_apply_equipped_appearance()
+
+func _on_squirrel_color_equipped(_color_id: String) -> void:
+	_apply_equipped_appearance()
 
 
-func _apply_equipped_cosmetic() -> void:
-	var current_anim := animated_sprite_2d.animation
-	var current_frame := animated_sprite_2d.frame
+func set_squirrel_color(color_id: String) -> void:
+	var current_anim := squirrel_sprite.animation
+	var current_frame := squirrel_sprite.frame
 
-	match GameState.equipped_cosmetic:
-		"acorn_cap":
-			if acorn_cap_sprite_frames != null:
-				animated_sprite_2d.sprite_frames = acorn_cap_sprite_frames
+	match color_id:
+		"squirrel":
+			if squirrel_frames != null:
+				squirrel_sprite.sprite_frames = squirrel_frames
 
-		"super_squirrel":
-			if super_squirrel_sprite_frames != null:
-				animated_sprite_2d.sprite_frames = super_squirrel_sprite_frames
+		"squirrel_white":
+			if squirrel_white_frames != null:
+				squirrel_sprite.sprite_frames = squirrel_white_frames
 
 		_:
-			if default_sprite_frames != null:
-				animated_sprite_2d.sprite_frames = default_sprite_frames
+			if squirrel_frames != null:
+				squirrel_sprite.sprite_frames = squirrel_frames
 
-	if animated_sprite_2d.sprite_frames.has_animation(current_anim):
-		animated_sprite_2d.play(current_anim)
-		animated_sprite_2d.frame = current_frame
+	if squirrel_sprite.sprite_frames != null and squirrel_sprite.sprite_frames.has_animation(current_anim):
+		squirrel_sprite.play(current_anim)
+		squirrel_sprite.frame = current_frame
+
+	_sync_apparel_animation()
+
+
+func set_apparel(apparel_id: String) -> void:
+	var current_anim := squirrel_sprite.animation
+	var current_frame := squirrel_sprite.frame
+
+	match apparel_id:
+		"none", "":
+			apparel_sprite.visible = false
+			apparel_sprite.sprite_frames = null
+
+		"acorn_hat", "acorn_cap":
+			if acorn_hat_frames != null:
+				apparel_sprite.visible = true
+				apparel_sprite.sprite_frames = acorn_hat_frames
+			else:
+				apparel_sprite.visible = false
+				apparel_sprite.sprite_frames = null
+
+		"super", "super_squirrel":
+			if super_frames != null:
+				apparel_sprite.visible = true
+				apparel_sprite.sprite_frames = super_frames
+			else:
+				apparel_sprite.visible = false
+				apparel_sprite.sprite_frames = null
+
+		_:
+			apparel_sprite.visible = false
+			apparel_sprite.sprite_frames = null
+
+	if apparel_sprite.visible and apparel_sprite.sprite_frames != null:
+		if apparel_sprite.sprite_frames.has_animation(current_anim):
+			apparel_sprite.play(current_anim)
+			apparel_sprite.frame = current_frame
+
+
+func _sync_apparel_animation() -> void:
+	if not apparel_sprite.visible:
+		return
+
+	if apparel_sprite.sprite_frames == null:
+		return
+
+	if squirrel_sprite.sprite_frames == null:
+		return
+
+	var current_anim := squirrel_sprite.animation
+
+	if apparel_sprite.sprite_frames.has_animation(current_anim):
+		apparel_sprite.play(current_anim)
+		apparel_sprite.frame = squirrel_sprite.frame
+	else:
+		apparel_sprite.stop()
+
+
+func _sync_apparel_frame() -> void:
+	if not apparel_sprite.visible:
+		return
+
+	if apparel_sprite.sprite_frames == null:
+		return
+
+	if squirrel_sprite.sprite_frames == null:
+		return
+
+	if apparel_sprite.animation != squirrel_sprite.animation:
+		return
+
+	apparel_sprite.frame = squirrel_sprite.frame
+
+
+func _apply_equipped_appearance() -> void:
+	set_squirrel_color(GameState.equipped_squirrel_color)
+
+	match GameState.equipped_cosmetic:
+		"acorn_hat", "acorn_cap":
+			set_apparel("acorn_hat")
+
+		"super", "super_squirrel":
+			set_apparel("super")
+
+		_:
+			set_apparel("none")
 
 # ======================================================
 # --- ANIMATION HELPERS ---
 # ======================================================
-func play_anim(anim_name):
-	if animated_sprite_2d.animation != anim_name:
-		animated_sprite_2d.play(anim_name)
+func play_anim(anim_name: String) -> void:
+	if squirrel_sprite.sprite_frames == null:
+		return
+
+	if squirrel_sprite.animation != anim_name:
+		squirrel_sprite.play(anim_name)
+
+	if apparel_sprite.visible and apparel_sprite.sprite_frames != null:
+		if apparel_sprite.sprite_frames.has_animation(anim_name):
+			if apparel_sprite.animation != anim_name:
+				apparel_sprite.play(anim_name)
+			apparel_sprite.frame = squirrel_sprite.frame
 
 func change_state(new_state):
 	if state == new_state:
@@ -263,21 +370,20 @@ func update_leaf_collision():
 		
 # --- Placeholder shake effect ---
 func landing_feedback() -> void:
-	# Only trigger if falling fast enough to be in "shake" state
 	if fall_state != "shake":
 		return
 
-	# Squash/stretch effect
 	visuals.scale.y = 0.7
 	visuals.scale.x = 1.2 if facing_right else -1.2
 
-	# Quick color flash for extra feedback
-	animated_sprite_2d.modulate = Color(1, 0.8, 0.6)
+	squirrel_sprite.modulate = Color(1, 0.8, 0.6)
+	apparel_sprite.modulate = Color(1, 0.8, 0.6)
 
-	# Return to normal after a short delay
 	await get_tree().create_timer(0.1).timeout
+
 	visuals.scale = Vector2(1 if facing_right else -1, 1)
-	animated_sprite_2d.modulate = Color(1, 1, 1)
+	squirrel_sprite.modulate = Color(1, 1, 1)
+	apparel_sprite.modulate = Color(1, 1, 1)
 
 
 # ======================================================
@@ -573,6 +679,8 @@ func _physics_process(delta: float) -> void:
 		level.update_horizontal_player_wrap()
 
 	just_jumped = false
+
+	_sync_apparel_frame()
 	
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)

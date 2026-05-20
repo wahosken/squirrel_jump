@@ -3,11 +3,12 @@ extends Node
 signal nuts_changed(new_amount: int)
 signal inventory_changed
 signal cosmetic_equipped(item_id: String)
+signal squirrel_color_equipped(color_id: String)
 signal menu_state_changed(is_open: bool)
 signal mute_changed(is_muted: bool)
 signal camera_zoom_settings_changed
 
-var nuts: int = 0
+var nuts: int = 35
 
 var is_muted := false
 var previous_volume := 100.0
@@ -18,6 +19,7 @@ var menu_open_cooldown := false
 
 var owned_cosmetics: Dictionary = {}
 var equipped_cosmetic: String = ""
+var equipped_squirrel_color: String = "squirrel"
 
 var invert_camera_zoom := false
 var toggle_camera_zoom := false
@@ -66,6 +68,11 @@ func equip_cosmetic(item_id: String) -> bool:
 	cosmetic_equipped.emit(item_id)
 	return true
 
+
+func equip_squirrel_color(color_id: String) -> void:
+	equipped_squirrel_color = color_id
+	squirrel_color_equipped.emit(color_id)
+	
 
 func request_menu_open(menu_id: String) -> bool:
 	if menu_open:
