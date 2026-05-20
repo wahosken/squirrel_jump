@@ -58,7 +58,7 @@ region = Rect2(128, 32, 64, 32)
 atlas = ExtResource("2_4rm8w")
 region = Rect2(0, 128, 64, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_q7cv4"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4e5hj"]
 atlas = ExtResource("2_4rm8w")
 region = Rect2(128, 128, 64, 32)
 
@@ -151,7 +151,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_q7cv4")
+"texture": SubResource("AtlasTexture_4e5hj")
 }],
 "loop": true,
 "name": &"wall_cling",
