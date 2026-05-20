@@ -5,6 +5,7 @@ signal inventory_changed
 signal cosmetic_equipped(item_id: String)
 signal menu_state_changed(is_open: bool)
 signal mute_changed(is_muted: bool)
+signal camera_zoom_settings_changed
 
 var nuts: int = 0
 
@@ -17,6 +18,9 @@ var menu_open_cooldown := false
 
 var owned_cosmetics: Dictionary = {}
 var equipped_cosmetic: String = ""
+
+var invert_camera_zoom := false
+var toggle_camera_zoom := false
 
 
 func add_nuts(amount: int) -> void:
@@ -117,3 +121,12 @@ func set_muted(value: bool) -> void:
 
 func toggle_mute() -> void:
 	set_muted(not is_muted)
+
+
+func set_invert_camera_zoom(value: bool) -> void:
+	invert_camera_zoom = value
+	camera_zoom_settings_changed.emit()
+
+func set_toggle_camera_zoom(value: bool) -> void:
+	toggle_camera_zoom = value
+	camera_zoom_settings_changed.emit()

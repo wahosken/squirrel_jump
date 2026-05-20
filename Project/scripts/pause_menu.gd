@@ -12,11 +12,15 @@ signal menu_closed
 @onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/SuperSquirrelButton
 
 
-@onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/FullscreenButton
-@onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/MuteButton
+@onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/FullscreenButton
+@onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/MuteButton
 @onready var volume_container: HBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer
 @onready var volume_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/VolumeLabel
 @onready var volume_slider: HSlider = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/VolumeSlider
+
+
+@onready var invert_camera_zoom_button: CheckButton = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/InvertCameraZoomCheckButton
+@onready var toggle_camera_zoom_button: CheckButton = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ToggleCameraZoomCheckButton
 
 @onready var resume_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ResumeButton
 
@@ -34,6 +38,13 @@ const SUPER_SQUIRREL_ID := "super_squirrel"
 
 
 func _ready() -> void:
+	
+	invert_camera_zoom_button.button_pressed = GameState.invert_camera_zoom
+	toggle_camera_zoom_button.button_pressed = GameState.toggle_camera_zoom
+
+	invert_camera_zoom_button.toggled.connect(_on_invert_camera_zoom_toggled)
+	toggle_camera_zoom_button.toggled.connect(_on_toggle_camera_zoom_toggled)
+	
 	is_initializing_ui = true
 
 	cosmetic_dropdown_button.pressed.connect(toggle_cosmetic_dropdown)
@@ -242,3 +253,11 @@ func close_menu() -> void:
 	is_closing = true
 	menu_closed.emit()
 	queue_free()
+
+
+func _on_invert_camera_zoom_toggled(value: bool) -> void:
+	GameState.set_invert_camera_zoom(value)
+
+
+func _on_toggle_camera_zoom_toggled(value: bool) -> void:
+	GameState.set_toggle_camera_zoom(value)

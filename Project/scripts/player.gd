@@ -34,9 +34,6 @@ const LEAF_SHAKE_SPEED = 1000.0
 const LEAF_BREAK_SPEED = 1600.0
 const FAST_FALL_THROUGH_DURATION := 0.2
 
-const CAMERA_NORMAL_FOLLOW_SPEED := 10.0
-const CAMERA_FAST_FOLLOW_SPEED := 18.0
-
 # ======================================================
 # --- ENUMS & STATES ---
 # ======================================================
@@ -51,8 +48,6 @@ var jump_buffer_timer = 0.0
 var fall_timer = 0.0
 var was_on_floor = false
 var facing_right: bool = true
-var camera_normal_position := Vector2.ZERO
-var camera_swing_offset := Vector2(8, -5)
 var visuals_normal_position: Vector2
 var wall_coyote_timer = 0.0
 var last_wall_dir = 0
@@ -84,15 +79,6 @@ var is_gliding: bool = false
 var fall_state = "none"  # "none", "shake", "break"
 var fast_fall_through_timer := 0.0
 
-# Camera Zoom
-var base_zoom: float
-var manual_zoom := 0.0
-var glide_zoom_reset := false
-var zoom_target: Vector2
-var camera_snap_next_frame := false
-var camera_smoothing_restore_next_frame := false
-var camera_smoothing_was_enabled := false
-
 # Menu Interact
 var input_enabled := true
 var movement_locked := false
@@ -106,12 +92,6 @@ var movement_locked := false
 @export var wall_cling_grace_time: float = 0.13
 @export var wall_jump_horizontal_speed: float = 340.0
 @export var wall_jump_vertical_speed: float = -340.0
-@export var zoom_lerp_speed := 6.0
-@export var min_zoom_mult := 0.6   # max zoom OUT (big fall)
-@export var max_zoom_mult := 1.0   # normal zoom
-@export var zoom_start_speed := 600.0  # must exceed this before zooming starts
-@export var fall_speed_for_max_zoom := 1800.0
-@export var zoom_curve_power := 1.6  # shape of curve
 
 
 # ======================================================
@@ -127,7 +107,7 @@ var movement_locked := false
 @onready var collision_shape = $CollisionShape2D.shape
 @onready var swing: Node = $SwingComponent
 @onready var grab_point: Marker2D = $Visuals/GrabPoint
-@onready var camera: Camera2D = $Camera2D
+@onready var camera_controller: Node = $PlayerCameraController
 
 # ======================================================
 # --- COSMETICS ---
@@ -141,9 +121,7 @@ var movement_locked := false
 # ======================================================
 func _ready():
 	swing.grab_point = grab_point
-	camera_normal_position = camera.position
 	visuals_normal_position = visuals.position
-	base_zoom = camera.zoom.x
 	
 	GameState.cosmetic_equipped.connect(_on_cosmetic_equipped)
 	_apply_equipped_cosmetic()
@@ -307,10 +285,6 @@ func landing_feedback() -> void:
 # ======================================================
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
-	if camera_smoothing_restore_next_frame:
-		camera.position_smoothing_enabled = camera_smoothing_was_enabled
-		camera_smoothing_restore_next_frame = false
-
 	var menu_input_locked := movement_locked
 	
 	# --- Get Horizontal Input ---
@@ -330,72 +304,21 @@ func _physics_process(delta: float) -> void:
 
 	if is_on_floor():
 		last_fall_speed = 0.0
-		
-	# --- CAMERA ZOOM BASE ---
-	var cam_fall_speed := velocity.y
-	if is_gliding:
-		cam_fall_speed = min(cam_fall_speed, 120.0)
-		
-	# --- BASE ZOOM ---
-	zoom_target = Vector2(base_zoom, base_zoom)
-
-	# --- FALL ZOOM ---
-	if not is_on_floor():
-		var t = clamp(
-			(cam_fall_speed - zoom_start_speed) /
-			(fall_speed_for_max_zoom - zoom_start_speed),
-			0.0,
-			1.0
-		)
-
-		t = pow(t, zoom_curve_power)
-
-		var zoom_mult = lerp(max_zoom_mult, min_zoom_mult, t)
-		zoom_target *= zoom_mult
-
-	# --- MANUAL ZOOM ALWAYS WINS ---
-	if gameplay_action_pressed("camera_zoom"):
-		zoom_target = Vector2(base_zoom * min_zoom_mult, base_zoom * min_zoom_mult)
-
-	# --- APPLY ---
-	if camera_snap_next_frame:
-		camera.zoom = zoom_target
-	else:
-		camera.zoom = camera.zoom.lerp(
-			zoom_target,
-			zoom_lerp_speed * delta
-		)
 	
-		# --- Facing ---
+	# --- Facing ---
 	if not swing.is_swinging:
 		if direction > 0:
 			facing_right = true
 		elif direction < 0:
 			facing_right = false
 
-	# --- Swing Camera Position ---
-	var target_camera_pos = camera_normal_position
-
-	if swing.is_swinging:
-		var swing_x = camera_swing_offset.x if facing_right else -camera_swing_offset.x
-		target_camera_pos = Vector2(swing_x, camera_swing_offset.y)
-	
-		
-	# --- CAMERA FOLLOW SPEED BASED ON FALL SPEED ---
-	var fall_factor: float = clampf((velocity.y - 600.0) / 1000.0, 0.0, 1.0)
-	var cam_speed: float = lerpf(CAMERA_NORMAL_FOLLOW_SPEED, CAMERA_FAST_FOLLOW_SPEED, fall_factor)
-
-	if camera_snap_next_frame:
-		camera.position = target_camera_pos
-		camera.reset_smoothing()
-		camera.force_update_scroll()
-		camera_snap_next_frame = false
-	else:
-		camera.position = camera.position.lerp(
-			target_camera_pos,
-			cam_speed * delta
+	if camera_controller:
+		camera_controller.update_camera(
+			delta,
+			is_gliding,
+			facing_right,
+			is_on_floor()
 		)
-
 
 	# --- Swing Release ---
 	if swing.is_swinging and gameplay_action_just_pressed("move_down"):
@@ -460,9 +383,7 @@ func _physics_process(delta: float) -> void:
 				# --- GLIDE ---
 				is_gliding = true
 				glide_timer += delta
-				
-				if not glide_zoom_reset:
-					glide_zoom_reset = true
+
 
 				velocity.y = min(velocity.y, 120)
 				velocity += get_gravity() * GLIDE_GRAVITY_MULTIPLIER * delta
@@ -477,12 +398,10 @@ func _physics_process(delta: float) -> void:
 				if glide_timer >= max_glide_time:
 					can_glide = false
 					is_gliding = false
-					glide_zoom_reset = false
 			else:
 				# Normal fall
 				if is_gliding:
 					is_gliding = false
-					glide_zoom_reset = false
 				velocity += get_gravity() * FAST_FALL_MULTIPLIER * delta
 			
 	# --- Jump Buffer ---
@@ -644,10 +563,7 @@ func _physics_process(delta: float) -> void:
 			run_sound_timer.start()
 	else:
 		run_sound_timer.stop()
-		
-	if is_gliding:
-		cam_fall_speed = min(cam_fall_speed, 120.0)
-		
+
 
 	# --- Apply Movement ---
 	move_and_slide()
@@ -746,18 +662,8 @@ func gameplay_action_just_released(action_name: String) -> bool:
 	if movement_locked:
 		return false
 	return Input.is_action_just_released(action_name)
-	
+
+
 func snap_camera_after_world_wrap() -> void:
-	if camera == null:
-		return
-
-	camera_snap_next_frame = true
-
-	camera_smoothing_was_enabled = camera.position_smoothing_enabled
-	camera.position_smoothing_enabled = false
-
-	camera.position = camera_normal_position
-	camera.reset_smoothing()
-	camera.force_update_scroll()
-
-	camera_smoothing_restore_next_frame = true
+	if camera_controller:
+		camera_controller.snap_after_world_wrap()

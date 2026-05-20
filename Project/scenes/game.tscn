@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cowlcymhjuwxc" path="res://scenes/nut.tscn" id="8_264po"]
 [ext_resource type="PackedScene" uid="uid://fy1ryia7yph0" path="res://scenes/bouncy_platform.tscn" id="8_7025r"]
 [ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="9_1kice"]
+[ext_resource type="Script" uid="uid://11sjb73liy2a" path="res://scripts/player_camera_controller.gd" id="13_sww3w"]
 [ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/buttons7.png" id="19_bhx41"]
 [ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
 [ext_resource type="Texture2D" uid="uid://csbvdp6w4vhet" path="res://assets/pause_button.png" id="20_pl11u"]
@@ -782,7 +783,7 @@ script = ExtResource("4_qnb83")
 
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
 z_index = 5
-position = Vector2(-433, -1728)
+position = Vector2(-432, -1728)
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -60)
@@ -794,6 +795,9 @@ position_smoothing_enabled = true
 position_smoothing_speed = 6.0
 drag_top_margin = 0.3
 drag_bottom_margin = 0.6
+
+[node name="PlayerCameraController" type="Node" parent="player" unique_id=582892782]
+script = ExtResource("13_sww3w")
 
 [node name="Overlay" type="CanvasLayer" parent="." unique_id=1855333385]
 
