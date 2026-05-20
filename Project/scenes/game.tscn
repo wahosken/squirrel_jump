@@ -13,22 +13,22 @@
 [ext_resource type="PackedScene" uid="uid://fy1ryia7yph0" path="res://scenes/bouncy_platform.tscn" id="8_7025r"]
 [ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="9_1kice"]
 [ext_resource type="Script" uid="uid://11sjb73liy2a" path="res://scripts/player_camera_controller.gd" id="13_sww3w"]
-[ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/buttons7.png" id="19_bhx41"]
+[ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/ui/buttons7.png" id="15_suyxu"]
+[ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/ui/buttons8.png" id="16_sgl2t"]
+[ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/ui/buttons3.png" id="17_suyxu"]
+[ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/ui/buttons4.png" id="18_sgl2t"]
+[ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/ui/buttons1.png" id="19_suyxu"]
 [ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
-[ext_resource type="Texture2D" uid="uid://csbvdp6w4vhet" path="res://assets/pause_button.png" id="20_pl11u"]
-[ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/buttons8.png" id="20_qnb83"]
-[ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/buttons13.png" id="21_37s47"]
-[ext_resource type="Texture2D" uid="uid://ixnjcmlbbvce" path="res://assets/pause_button_pressed.png" id="21_bhx41"]
-[ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/buttons3.png" id="21_sww3w"]
-[ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/buttons14.png" id="22_bt5mj"]
-[ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/buttons4.png" id="22_suyxu"]
+[ext_resource type="Texture2D" uid="uid://cyg5m01t5f8u" path="res://assets/ui/buttons2.png" id="20_sgl2t"]
+[ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/ui/buttons5.png" id="21_suyxu"]
+[ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/ui/buttons6.png" id="22_sgl2t"]
 [ext_resource type="Script" uid="uid://bc0d2lrn8kr6w" path="res://scripts/pause_manager.gd" id="23_bt5mj"]
-[ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/buttons1.png" id="23_sgl2t"]
+[ext_resource type="Texture2D" uid="uid://csbvdp6w4vhet" path="res://assets/ui/pause_button.png" id="23_suyxu"]
 [ext_resource type="PackedScene" uid="uid://d2trsyeyglxos" path="res://scenes/pause_menu.tscn" id="24_e1j6l"]
-[ext_resource type="Texture2D" uid="uid://cyg5m01t5f8u" path="res://assets/buttons2.png" id="24_qouja"]
-[ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/buttons5.png" id="25_wljb1"]
-[ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/buttons6.png" id="26_v2yb1"]
-[ext_resource type="Texture2D" uid="uid://bwicchmnge8fi" path="res://assets/fullscreen_button.png" id="27_suyxu"]
+[ext_resource type="Texture2D" uid="uid://ixnjcmlbbvce" path="res://assets/ui/pause_button_pressed.png" id="24_sgl2t"]
+[ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/ui/buttons13.png" id="25_suyxu"]
+[ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/ui/buttons14.png" id="26_sgl2t"]
+[ext_resource type="Texture2D" uid="uid://bwicchmnge8fi" path="res://assets/ui/fullscreen_button.png" id="27_suyxu"]
 
 [sub_resource type="Animation" id="Animation_qnb83"]
 length = 0.001
@@ -834,15 +834,15 @@ metadata/_edit_use_anchors_ = true
 [node name="Left" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=419540657]
 modulate = Color(1, 1, 1, 0.8)
 scale = Vector2(1.5, 1.5)
-texture_normal = ExtResource("19_bhx41")
-texture_pressed = ExtResource("20_qnb83")
+texture_normal = ExtResource("15_suyxu")
+texture_pressed = ExtResource("16_sgl2t")
 
 [node name="Right" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=2090334822]
 modulate = Color(1, 1, 1, 0.8)
 position = Vector2(59.2, 0)
 scale = Vector2(1.5, 1.5)
-texture_normal = ExtResource("21_sww3w")
-texture_pressed = ExtResource("22_suyxu")
+texture_normal = ExtResource("17_suyxu")
+texture_pressed = ExtResource("18_sgl2t")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Overlay/UI" unique_id=401112681]
 custom_minimum_size = Vector2(50, 50)
@@ -864,15 +864,15 @@ scale = Vector2(2.5, 2.5)
 modulate = Color(1, 1, 1, 0.8)
 position = Vector2(0, -4.4000125)
 scale = Vector2(1.5, 1.5)
-texture_normal = ExtResource("23_sgl2t")
-texture_pressed = ExtResource("24_qouja")
+texture_normal = ExtResource("19_suyxu")
+texture_pressed = ExtResource("20_sgl2t")
 
 [node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
 modulate = Color(1, 1, 1, 0.8)
 position = Vector2(0, 55)
 scale = Vector2(1.4999999, 1.4999999)
-texture_normal = ExtResource("25_wljb1")
-texture_pressed = ExtResource("26_v2yb1")
+texture_normal = ExtResource("21_suyxu")
+texture_pressed = ExtResource("22_sgl2t")
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Overlay/UI" unique_id=660550458]
 layout_mode = 1
@@ -892,8 +892,8 @@ grow_vertical = 2
 modulate = Color(1, 1, 1, 0.8)
 position = Vector2(546, -294)
 scale = Vector2(3, 3)
-texture_normal = ExtResource("20_pl11u")
-texture_pressed = ExtResource("21_bhx41")
+texture_normal = ExtResource("23_suyxu")
+texture_pressed = ExtResource("24_sgl2t")
 action = "pause"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Overlay/UI" unique_id=802425429]
@@ -913,8 +913,8 @@ grow_vertical = 2
 [node name="InteractButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer4" unique_id=158781576]
 modulate = Color(1, 1, 1, 0.8)
 scale = Vector2(2, 2)
-texture_normal = ExtResource("21_37s47")
-texture_pressed = ExtResource("22_bt5mj")
+texture_normal = ExtResource("25_suyxu")
+texture_pressed = ExtResource("26_sgl2t")
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="Overlay/UI" unique_id=72474214]
 layout_mode = 1

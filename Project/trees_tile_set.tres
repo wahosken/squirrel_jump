@@ -1,6 +1,6 @@
 [gd_resource type="TileSet" format=3 uid="uid://8w40xyqma5f2"]
 
-[ext_resource type="Texture2D" uid="uid://cjsobt6r1anvt" path="res://assets/tree_textures.png" id="1_dob1o"]
+[ext_resource type="Texture2D" uid="uid://cjsobt6r1anvt" path="res://assets/world/tree_textures.png" id="1_dob1o"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wwbim"]
 resource_name = "Trees"

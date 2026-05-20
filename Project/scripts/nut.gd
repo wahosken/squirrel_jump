@@ -34,7 +34,6 @@ func _on_body_entered(_body: Node2D) -> void:
 
 	print("+! nut!")
 
-	# Disable collision immediately so it cannot be collected twice
 	for c in get_children():
 		if c is CollisionShape2D:
 			c.set_deferred("disabled", true)

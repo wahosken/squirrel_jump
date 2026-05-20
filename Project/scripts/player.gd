@@ -115,9 +115,10 @@ var movement_locked := false
 # ======================================================
 @export var squirrel_frames: SpriteFrames
 @export var squirrel_white_frames: SpriteFrames
+@export var squirrel_gold_frames: SpriteFrames
 
-@export var acorn_hat_frames: SpriteFrames
-@export var super_frames: SpriteFrames
+@export var acorn_cap_frames: SpriteFrames
+@export var super_squirrel_frames: SpriteFrames
 
 # ======================================================
 # --- READY FUNCTION ---
@@ -155,6 +156,10 @@ func set_squirrel_color(color_id: String) -> void:
 			if squirrel_white_frames != null:
 				squirrel_sprite.sprite_frames = squirrel_white_frames
 
+		"squirrel_gold":
+			if squirrel_gold_frames != null:
+				squirrel_sprite.sprite_frames = squirrel_gold_frames
+
 		_:
 			if squirrel_frames != null:
 				squirrel_sprite.sprite_frames = squirrel_frames
@@ -175,18 +180,18 @@ func set_apparel(apparel_id: String) -> void:
 			apparel_sprite.visible = false
 			apparel_sprite.sprite_frames = null
 
-		"acorn_hat", "acorn_cap":
-			if acorn_hat_frames != null:
+		"acorn_cap":
+			if acorn_cap_frames != null:
 				apparel_sprite.visible = true
-				apparel_sprite.sprite_frames = acorn_hat_frames
+				apparel_sprite.sprite_frames = acorn_cap_frames
 			else:
 				apparel_sprite.visible = false
 				apparel_sprite.sprite_frames = null
 
-		"super", "super_squirrel":
-			if super_frames != null:
+		"super_squirrel":
+			if super_squirrel_frames != null:
 				apparel_sprite.visible = true
-				apparel_sprite.sprite_frames = super_frames
+				apparel_sprite.sprite_frames = super_squirrel_frames
 			else:
 				apparel_sprite.visible = false
 				apparel_sprite.sprite_frames = null
@@ -240,11 +245,11 @@ func _apply_equipped_appearance() -> void:
 	set_squirrel_color(GameState.equipped_squirrel_color)
 
 	match GameState.equipped_cosmetic:
-		"acorn_hat", "acorn_cap":
-			set_apparel("acorn_hat")
+		"acorn_cap":
+			set_apparel("acorn_cap")
 
-		"super", "super_squirrel":
-			set_apparel("super")
+		"super_squirrel":
+			set_apparel("super_squirrel")
 
 		_:
 			set_apparel("none")

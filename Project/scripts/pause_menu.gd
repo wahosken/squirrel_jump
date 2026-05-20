@@ -9,13 +9,14 @@ signal menu_closed
 
 @onready var brown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/BrownButton
 @onready var white_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/WhiteButton
+@onready var gold_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/GoldButton
 
 @onready var cosmetic_dropdown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticDropdownButton
 @onready var cosmetic_options_menu: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer
 
 @onready var default_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/DefaultButton
-@onready var acorn_hat_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/AcornHatButton
-@onready var super_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/SuperButton
+@onready var acorn_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/AcornCapButton
+@onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/SuperSquirrelButton
 
 @onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/FullscreenButton
 @onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/MuteButton
@@ -40,10 +41,11 @@ var is_initializing_ui := false
 
 const SQUIRREL_ID := "squirrel"
 const SQUIRREL_WHITE_ID := "squirrel_white"
+const SQUIRREL_GOLD_ID := "squirrel_gold"
 
 const NO_APPAREL_ID := ""
-const ACORN_HAT_ID := "acorn_cap"
-const SUPER_ID := "super_squirrel"
+const ACORN_CAP_ID := "acorn_cap"
+const SUPER_SQUIRREL_ID := "super_squirrel"
 
 
 func _ready() -> void:
@@ -63,10 +65,11 @@ func _ready() -> void:
 
 	brown_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_ID))
 	white_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_WHITE_ID))
+	gold_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_GOLD_ID))
 
 	default_button.pressed.connect(func(): select_cosmetic(NO_APPAREL_ID))
-	acorn_hat_button.pressed.connect(func(): select_cosmetic(ACORN_HAT_ID))
-	super_button.pressed.connect(func(): select_cosmetic(SUPER_ID))
+	acorn_cap_button.pressed.connect(func(): select_cosmetic(ACORN_CAP_ID))
+	super_squirrel_button.pressed.connect(func(): select_cosmetic(SUPER_SQUIRREL_ID))
 
 	mute_button.pressed.connect(_on_mute_pressed)
 
@@ -188,6 +191,10 @@ func open_color_dropdown() -> void:
 	match GameState.equipped_squirrel_color:
 		SQUIRREL_WHITE_ID:
 			white_button.grab_focus()
+
+		SQUIRREL_GOLD_ID:
+			gold_button.grab_focus()
+
 		_:
 			brown_button.grab_focus()
 
@@ -220,15 +227,15 @@ func open_cosmetic_dropdown() -> void:
 	update_inventory_display()
 
 	match GameState.equipped_cosmetic:
-		ACORN_HAT_ID, "acorn_cap":
-			if not acorn_hat_button.disabled:
-				acorn_hat_button.grab_focus()
+		ACORN_CAP_ID, "acorn_cap":
+			if not acorn_cap_button.disabled:
+				acorn_cap_button.grab_focus()
 			else:
 				default_button.grab_focus()
 
-		SUPER_ID, "super_squirrel":
-			if not super_button.disabled:
-				super_button.grab_focus()
+		SUPER_SQUIRREL_ID:
+			if not super_squirrel_button.disabled:
+				super_squirrel_button.grab_focus()
 			else:
 				default_button.grab_focus()
 
@@ -278,9 +285,13 @@ func update_inventory_display() -> void:
 
 	match GameState.equipped_squirrel_color:
 		SQUIRREL_WHITE_ID:
-			color_dropdown_button.text = "Squirrel Color: White"
+			color_dropdown_button.text = "Squirrel: White"
+
+		SQUIRREL_GOLD_ID:
+			color_dropdown_button.text = "Squirrel: Gold"
+
 		_:
-			color_dropdown_button.text = "Squirrel Color: Brown"
+			color_dropdown_button.text = "Squirrel: Brown"
 
 	brown_button.text = "Brown"
 	brown_button.disabled = false
@@ -288,13 +299,16 @@ func update_inventory_display() -> void:
 	white_button.text = "White"
 	white_button.disabled = false
 
+	gold_button.text = "Gold"
+	gold_button.disabled = false
+
 
 	match GameState.equipped_cosmetic:
-		ACORN_HAT_ID, "acorn_cap":
-			cosmetic_dropdown_button.text = "Apparel: Acorn Hat"
+		ACORN_CAP_ID:
+			cosmetic_dropdown_button.text = "Apparel: Acorn Cap"
 
-		SUPER_ID, "super_squirrel":
-			cosmetic_dropdown_button.text = "Apparel: Super"
+		SUPER_SQUIRREL_ID:
+			cosmetic_dropdown_button.text = "Apparel: Super Squirrel"
 
 		_:
 			cosmetic_dropdown_button.text = "Apparel: None"
@@ -302,19 +316,19 @@ func update_inventory_display() -> void:
 	default_button.text = "None"
 	default_button.disabled = false
 
-	if GameState.owns_cosmetic(ACORN_HAT_ID) or GameState.owns_cosmetic("acorn_cap"):
-		acorn_hat_button.text = "Acorn Hat"
-		acorn_hat_button.disabled = false
+	if GameState.owns_cosmetic(ACORN_CAP_ID):
+		acorn_cap_button.text = "Acorn Cap"
+		acorn_cap_button.disabled = false
 	else:
-		acorn_hat_button.text = "Acorn Hat (Locked)"
-		acorn_hat_button.disabled = true
+		acorn_cap_button.text = "Acorn Cap (Locked)"
+		acorn_cap_button.disabled = true
 
-	if GameState.owns_cosmetic(SUPER_ID) or GameState.owns_cosmetic("super_squirrel"):
-		super_button.text = "Super"
-		super_button.disabled = false
+	if GameState.owns_cosmetic(SUPER_SQUIRREL_ID):
+		super_squirrel_button.text = "Super Squirrel"
+		super_squirrel_button.disabled = false
 	else:
-		super_button.text = "Super (Locked)"
-		super_button.disabled = true
+		super_squirrel_button.text = "Super Squirrel (Locked)"
+		super_squirrel_button.disabled = true
 
 func _on_fullscreen_button_pressed() -> void:
 	var current_mode = DisplayServer.window_get_mode()

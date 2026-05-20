@@ -52,11 +52,11 @@ layout_mode = 2
 layout_mode = 2
 text = "Default"
 
-[node name="AcornHatButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1996013499]
+[node name="AcornCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1996013499]
 layout_mode = 2
 text = "Acorn Cap"
 
-[node name="SuperButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1634841393]
+[node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1634841393]
 layout_mode = 2
 text = "Super Squirrel"
 
@@ -75,6 +75,10 @@ text = "Brown"
 [node name="WhiteButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=178782809]
 layout_mode = 2
 text = "White"
+
+[node name="GoldButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=598451712]
+layout_mode = 2
+text = "Gold"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=378404116]
 layout_mode = 2

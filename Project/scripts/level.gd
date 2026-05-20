@@ -9,8 +9,6 @@ extends Node2D
 # ======================================================
 # --- CAMERA WRAP GUARD CONFIG ---
 # ======================================================
-# Outer distance: camera begins easing into seam-safe behavior.
-# Inner distance: camera smoothing turns fully off before teleport.
 @export var camera_guard_outer_distance := 192.0
 @export var camera_guard_inner_distance := 24.0
 @export var camera_guard_max_smoothing_speed := 80.0
@@ -144,7 +142,6 @@ func _update_soft_camera_wrap_guard() -> void:
 	var distance_to_right: float = abs(world_right_x - player_x)
 	var distance_to_nearest_edge: float = min(distance_to_left, distance_to_right)
 
-	# Outside the guard zone: restore the normal camera behavior.
 	if distance_to_nearest_edge > camera_guard_outer_distance:
 		if camera_in_soft_guard:
 			_restore_normal_camera_smoothing()
@@ -153,16 +150,12 @@ func _update_soft_camera_wrap_guard() -> void:
 
 	camera_in_soft_guard = true
 
-	# Inner guard zone: turn smoothing fully off.
-	# The outer guard zone should have already sped up the camera,
-	# so this should feel less abrupt than a hard on/off switch.
 	if distance_to_nearest_edge <= camera_guard_inner_distance:
 		camera.position_smoothing_enabled = false
 		camera.reset_smoothing()
 		camera.force_update_scroll()
 		return
 
-	# Outer guard zone: keep smoothing enabled, but gradually increase speed.
 	camera.position_smoothing_enabled = true
 
 	var t: float = inverse_lerp(
@@ -205,8 +198,6 @@ func _finish_camera_after_wrap() -> void:
 	if camera == null:
 		return
 
-	# Keep smoothing off immediately after teleport.
-	# The soft guard restores smoothing only after the player leaves the seam area.
 	camera.position_smoothing_enabled = false
 	camera.reset_smoothing()
 	camera.force_update_scroll()

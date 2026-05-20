@@ -11,6 +11,8 @@ signal menu_closed
 var showing_shop_message := false
 var is_closing := false
 
+var purchased_this_session: Dictionary = {}
+
 var shop_items := {
 	"acorn_cap": {
 		"name": "Acorn Cap",
@@ -71,12 +73,11 @@ func _on_shop_item_pressed(item_id: String) -> void:
 		return
 
 	var item: Dictionary = shop_items[item_id]
-	var item_name: String = str(item["name"])
+	var _item_name: String = str(item["name"])
 	var item_price: int = int(item["price"])
 	var button: Button = item["button"]
 
 	if GameState.owns_cosmetic(item_id):
-		button.text = "%s Owned" % item_name
 		return
 
 	if GameState.nuts < item_price:
@@ -95,18 +96,19 @@ func _on_shop_item_pressed(item_id: String) -> void:
 	var bought := GameState.buy_cosmetic(item_id, item_price)
 
 	if bought:
-		showing_shop_message = true
+		purchased_this_session[item_id] = true
 		button.text = "Item Purchased"
-
-		await get_tree().create_timer(0.8).timeout
-
-		showing_shop_message = false
-
-		if not is_closing:
-			update_shop_display()
+		button.disabled = true
 
 
 func _on_nuts_changed(_new_amount: int) -> void:
+	if showing_shop_message:
+		return
+
+	update_shop_display()
+
+
+func _on_inventory_changed() -> void:
 	if showing_shop_message:
 		return
 
@@ -122,18 +124,16 @@ func update_shop_display() -> void:
 		var item_price: int = int(item["price"])
 		var button: Button = item["button"]
 
-		if GameState.owns_cosmetic(item_id):
+		if purchased_this_session.has(item_id):
+			button.text = "Item Purchased"
+			button.disabled = true
+		elif GameState.owns_cosmetic(item_id):
 			button.text = "%s Owned" % item_name
 			button.disabled = true
 		else:
 			button.text = "Buy %s - %d Nuts" % [item_name, item_price]
 			button.disabled = false
 
-func _on_inventory_changed() -> void:
-	if showing_shop_message:
-		return
-
-	update_shop_display()
 
 func close_menu() -> void:
 	if is_closing:
