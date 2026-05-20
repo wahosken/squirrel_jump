@@ -104,3 +104,11 @@ func _on_interact_pressed() -> void:
 func _on_interact_released() -> void:
 	release_action("interact")
 	release_action("ui_accept")
+
+
+func _on_zoom_button_pressed() -> void:
+	press_action("camera_zoom")
+
+
+func _on_zoom_button_released() -> void:
+	release_action("camera_zoom")
