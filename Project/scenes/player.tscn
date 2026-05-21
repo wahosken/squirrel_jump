@@ -25,7 +25,7 @@ acorn_cap_frames = ExtResource("2_y4r1p")
 super_squirrel_frames = ExtResource("5_ur7pv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1692399753]
-position = Vector2(0.49999976, -7.5)
+position = Vector2(0.5, -6.5)
 rotation = -1.5707964
 shape = SubResource("RectangleShape2D_qlg0r")
 
