@@ -13,22 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://fy1ryia7yph0" path="res://scenes/bouncy_platform.tscn" id="8_7025r"]
 [ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="9_1kice"]
 [ext_resource type="Script" uid="uid://11sjb73liy2a" path="res://scripts/player_camera_controller.gd" id="13_sww3w"]
-[ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/ui/buttons7.png" id="15_suyxu"]
-[ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/ui/buttons8.png" id="16_sgl2t"]
-[ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/ui/buttons3.png" id="17_suyxu"]
-[ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/ui/buttons4.png" id="18_sgl2t"]
-[ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/ui/buttons1.png" id="19_suyxu"]
-[ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="20_5newe"]
-[ext_resource type="Texture2D" uid="uid://cyg5m01t5f8u" path="res://assets/ui/buttons2.png" id="20_sgl2t"]
-[ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/ui/buttons5.png" id="21_suyxu"]
-[ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/ui/buttons6.png" id="22_sgl2t"]
+[ext_resource type="PackedScene" uid="uid://otjpeqr4gr44" path="res://scenes/overlay.tscn" id="14_ca42v"]
 [ext_resource type="Script" uid="uid://bc0d2lrn8kr6w" path="res://scripts/pause_manager.gd" id="23_bt5mj"]
-[ext_resource type="Texture2D" uid="uid://csbvdp6w4vhet" path="res://assets/ui/pause_button.png" id="23_suyxu"]
 [ext_resource type="PackedScene" uid="uid://d2trsyeyglxos" path="res://scenes/pause_menu.tscn" id="24_e1j6l"]
-[ext_resource type="Texture2D" uid="uid://ixnjcmlbbvce" path="res://assets/ui/pause_button_pressed.png" id="24_sgl2t"]
-[ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/ui/buttons13.png" id="25_suyxu"]
-[ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/ui/buttons14.png" id="26_sgl2t"]
-[ext_resource type="Texture2D" uid="uid://bwicchmnge8fi" path="res://assets/ui/fullscreen_button.png" id="27_suyxu"]
 
 [sub_resource type="Animation" id="Animation_qnb83"]
 length = 0.001
@@ -651,8 +638,8 @@ position = Vector2(-1216, -2160)
 libraries/ = SubResource("AnimationLibrary_bt5mj")
 autoplay = &"move"
 
-[node name="falling_platform_leaf93" parent="Level/DynamicObjects/platform5" unique_id=790708076 instance=ExtResource("7_nepv3")]
-position = Vector2(368, -1408)
+[node name="falling_platform_leaf94" parent="Level/DynamicObjects" unique_id=790708076 instance=ExtResource("7_nepv3")]
+position = Vector2(-848, -3568)
 
 [node name="nut14" parent="Level/DynamicObjects" unique_id=1411522456 instance=ExtResource("8_264po")]
 position = Vector2(-896, -2256)
@@ -818,7 +805,6 @@ position = Vector2(-432, -1728)
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -60)
-zoom = Vector2(2, 2)
 process_callback = 0
 limit_bottom = 300
 limit_smoothed = true
@@ -830,170 +816,9 @@ drag_bottom_margin = 0.6
 [node name="PlayerCameraController" type="Node" parent="player" unique_id=582892782]
 script = ExtResource("13_sww3w")
 
-[node name="Overlay" type="CanvasLayer" parent="." unique_id=1855333385]
-
-[node name="UI" type="Control" parent="Overlay" unique_id=1387734739]
-z_index = 1
-layout_mode = 3
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -640.0
-offset_top = -720.0
-offset_right = 640.0
-grow_horizontal = 2
-grow_vertical = 0
-script = ExtResource("20_5newe")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Overlay/UI" unique_id=529509077]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 63.0
-offset_top = -176.99994
-offset_right = 173.0
-offset_bottom = -126.99994
-grow_vertical = 0
-scale = Vector2(2.5, 2.5)
-metadata/_edit_use_anchors_ = true
-
-[node name="Left" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=419540657]
-modulate = Color(1, 1, 1, 0.8)
-scale = Vector2(1.5, 1.5)
-texture_normal = ExtResource("15_suyxu")
-texture_pressed = ExtResource("16_sgl2t")
-
-[node name="Right" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer" unique_id=2090334822]
-modulate = Color(1, 1, 1, 0.8)
-position = Vector2(59.2, 0)
-scale = Vector2(1.5, 1.5)
-texture_normal = ExtResource("17_suyxu")
-texture_pressed = ExtResource("18_sgl2t")
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Overlay/UI" unique_id=401112681]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -179.0
-offset_top = -312.99997
-offset_right = -129.0
-offset_bottom = -209.4
-grow_horizontal = 0
-grow_vertical = 0
-scale = Vector2(2.5, 2.5)
-
-[node name="Up" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=907483779]
-modulate = Color(1, 1, 1, 0.8)
-position = Vector2(0, -4.4000125)
-scale = Vector2(1.5, 1.5)
-texture_normal = ExtResource("19_suyxu")
-texture_pressed = ExtResource("20_sgl2t")
-
-[node name="Down" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer2" unique_id=596409105]
-modulate = Color(1, 1, 1, 0.8)
-position = Vector2(0, 55)
-scale = Vector2(1.4999999, 1.4999999)
-texture_normal = ExtResource("21_suyxu")
-texture_pressed = ExtResource("22_sgl2t")
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="Overlay/UI" unique_id=660550458]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -34.0
-offset_top = -34.0
-offset_right = 88.0
-offset_bottom = 96.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PauseButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer3" unique_id=713726282]
-modulate = Color(1, 1, 1, 0.8)
-position = Vector2(546, -294)
-scale = Vector2(3, 3)
-texture_normal = ExtResource("23_suyxu")
-texture_pressed = ExtResource("24_sgl2t")
-action = "pause"
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="Overlay/UI" unique_id=802425429]
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -40.0
-offset_right = -20.0
-offset_bottom = 40.0
-grow_horizontal = 0
-grow_vertical = 2
-
-[node name="InteractButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer4" unique_id=158781576]
-modulate = Color(1, 1, 1, 0.8)
-scale = Vector2(2, 2)
-texture_normal = ExtResource("25_suyxu")
-texture_pressed = ExtResource("26_sgl2t")
-
-[node name="HBoxContainer5" type="HBoxContainer" parent="Overlay/UI" unique_id=72474214]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.49400002
-anchor_top = 0.49
-anchor_right = 0.49400002
-anchor_bottom = 0.49
-offset_left = -32.320007
-offset_top = -32.80002
-offset_right = 32.679993
-offset_bottom = 33.19998
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ZoomButton" type="TouchScreenButton" parent="Overlay/UI/HBoxContainer5" unique_id=1595792653]
-position = Vector2(-508, 139)
-scale = Vector2(2, 2)
-texture_normal = ExtResource("27_suyxu")
-
-[node name="NutCounterLabel" type="Label" parent="Overlay" unique_id=1285863482]
-unique_name_in_owner = true
-anchors_preset = -1
-anchor_left = 0.044000003
-anchor_top = 0.042000003
-anchor_right = 0.14500001
-anchor_bottom = 0.104
-offset_left = 0.47999573
-offset_top = -0.24000168
-offset_right = 0.3999939
-offset_bottom = 0.11999512
-theme_override_font_sizes/font_size = 32
-text = "Nuts: 0"
-metadata/_edit_use_anchors_ = true
+[node name="Overlay" parent="." unique_id=183187612 instance=ExtResource("14_ca42v")]
 
 [node name="PauseManager" type="Node" parent="." unique_id=1630957555 node_paths=PackedStringArray("player")]
 script = ExtResource("23_bt5mj")
 pause_menu_scene = ExtResource("24_e1j6l")
 player = NodePath("../player")
-
-[connection signal="pressed" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_pressed"]
-[connection signal="released" from="Overlay/UI/HBoxContainer/Left" to="Overlay/UI" method="_on_left_released"]
-[connection signal="pressed" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_pressed"]
-[connection signal="released" from="Overlay/UI/HBoxContainer/Right" to="Overlay/UI" method="_on_right_released"]
-[connection signal="pressed" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_pressed"]
-[connection signal="released" from="Overlay/UI/HBoxContainer2/Up" to="Overlay/UI" method="_on_up_released"]
-[connection signal="pressed" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_pressed"]
-[connection signal="released" from="Overlay/UI/HBoxContainer2/Down" to="Overlay/UI" method="_on_down_released"]
-[connection signal="pressed" from="Overlay/UI/HBoxContainer4/InteractButton" to="Overlay/UI" method="_on_interact_pressed"]
-[connection signal="released" from="Overlay/UI/HBoxContainer4/InteractButton" to="Overlay/UI" method="_on_interact_released"]
-[connection signal="pressed" from="Overlay/UI/HBoxContainer5/ZoomButton" to="Overlay/UI" method="_on_zoom_button_pressed"]
-[connection signal="released" from="Overlay/UI/HBoxContainer5/ZoomButton" to="Overlay/UI" method="_on_zoom_button_released"]

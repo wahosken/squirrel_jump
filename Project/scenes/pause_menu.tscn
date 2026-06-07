@@ -19,9 +19,9 @@ layout_mode = 2
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=1173367603]
 layout_mode = 2
 theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
+theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_bottom = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer" unique_id=331002842]
 layout_mode = 2
@@ -29,7 +29,6 @@ theme_override_constants/separation = 12
 
 [node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=766556941]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "Paused"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -37,11 +36,13 @@ vertical_alignment = 1
 [node name="NutsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1219507630]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
 text = "Nuts:"
 vertical_alignment = 1
 
 [node name="CosmeticDropdownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=822561794]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Apparel"
 
 [node name="CosmeticOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1914356526]
@@ -50,18 +51,22 @@ layout_mode = 2
 
 [node name="DefaultButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=179423693]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Default"
 
 [node name="AcornCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1996013499]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Acorn Cap"
 
 [node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1634841393]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Super Squirrel"
 
 [node name="ColorDropdownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=224950072]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Squirrel Color"
 
 [node name="ColorOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1605884769]
@@ -70,14 +75,17 @@ layout_mode = 2
 
 [node name="BrownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=1843485110]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Brown"
 
 [node name="WhiteButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=178782809]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "White"
 
 [node name="GoldButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=598451712]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Gold"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=378404116]
@@ -86,11 +94,13 @@ layout_mode = 2
 [node name="InvertCameraZoomCheckButton" type="CheckButton" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=816244704]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
 text = "Invert Zoom"
 
 [node name="ToggleCameraZoomCheckButton" type="CheckButton" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=616504099]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
 text = "Toggle Zoom"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1975548044]
@@ -99,11 +109,13 @@ layout_mode = 2
 [node name="FullscreenButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=728669560]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
 text = "Toggle Fullscreen"
 
 [node name="MuteButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2000789571]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
 text = "Mute"
 
 [node name="VolumeContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1723462411]
@@ -113,6 +125,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+theme_override_font_sizes/font_size = 12
 text = "Volume:"
 
 [node name="VolumeSlider" type="HSlider" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer" unique_id=226910430]
@@ -122,4 +135,5 @@ size_flags_vertical = 1
 
 [node name="ResumeButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=683945781]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Resume"

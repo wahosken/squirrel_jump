@@ -1,0 +1,162 @@
+[gd_scene format=3 uid="uid://otjpeqr4gr44"]
+
+[ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="1_rqwgw"]
+[ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/ui/buttons7.png" id="2_lot3u"]
+[ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/ui/buttons8.png" id="3_ubex6"]
+[ext_resource type="Texture2D" uid="uid://bqj7ps10s2lm8" path="res://assets/ui/buttons3.png" id="4_4jgic"]
+[ext_resource type="Texture2D" uid="uid://ceh4bd0jx3ho0" path="res://assets/ui/buttons4.png" id="5_76wxp"]
+[ext_resource type="Texture2D" uid="uid://dags22qq8fgxd" path="res://assets/ui/buttons1.png" id="6_8rtgm"]
+[ext_resource type="Texture2D" uid="uid://cyg5m01t5f8u" path="res://assets/ui/buttons2.png" id="7_p5rgw"]
+[ext_resource type="Texture2D" uid="uid://b7y7s2vsrnomq" path="res://assets/ui/buttons5.png" id="8_vg6n2"]
+[ext_resource type="Texture2D" uid="uid://blwrctpo137ma" path="res://assets/ui/buttons6.png" id="9_vkldo"]
+[ext_resource type="Texture2D" uid="uid://csbvdp6w4vhet" path="res://assets/ui/pause_button.png" id="10_2m6gh"]
+[ext_resource type="Texture2D" uid="uid://ixnjcmlbbvce" path="res://assets/ui/pause_button_pressed.png" id="11_k5uol"]
+[ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/ui/buttons13.png" id="12_7d5h0"]
+[ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/ui/buttons14.png" id="13_x4gx8"]
+[ext_resource type="Texture2D" uid="uid://bwicchmnge8fi" path="res://assets/ui/fullscreen_button.png" id="14_u7l8p"]
+
+[node name="Overlay" type="CanvasLayer" unique_id=183187612]
+
+[node name="UI" type="Control" parent="." unique_id=402755030]
+z_index = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rqwgw")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI" unique_id=1527719088]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -100.0
+offset_right = 101.0
+grow_vertical = 0
+alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/HBoxContainer" unique_id=1655977816]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Left" type="TouchScreenButton" parent="UI/HBoxContainer/CenterContainer" unique_id=1247280356]
+modulate = Color(1, 1, 1, 0.8)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("2_lot3u")
+texture_pressed = ExtResource("3_ubex6")
+
+[node name="Right" type="TouchScreenButton" parent="UI/HBoxContainer/CenterContainer" unique_id=1927191664]
+modulate = Color(1, 1, 1, 0.8)
+position = Vector2(88, 0)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("4_4jgic")
+texture_pressed = ExtResource("5_76wxp")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI" unique_id=776764698]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -205.0
+offset_top = -141.0
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/HBoxContainer2" unique_id=327052061]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Up" type="TouchScreenButton" parent="UI/HBoxContainer2/CenterContainer" unique_id=46413604]
+modulate = Color(1, 1, 1, 0.8)
+position = Vector2(0, -28.000002)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("6_8rtgm")
+texture_pressed = ExtResource("7_p5rgw")
+
+[node name="Down" type="TouchScreenButton" parent="UI/HBoxContainer2/CenterContainer" unique_id=618835995]
+modulate = Color(1, 1, 1, 0.8)
+position = Vector2(0, 55)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("8_vg6n2")
+texture_pressed = ExtResource("9_vkldo")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UI" unique_id=562433868]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_top = 17.0
+offset_bottom = 130.0
+grow_horizontal = 0
+
+[node name="PauseButton" type="TouchScreenButton" parent="UI/HBoxContainer3" unique_id=971477884]
+modulate = Color(1, 1, 1, 0.8)
+scale = Vector2(1.5, 1.5)
+texture_normal = ExtResource("10_2m6gh")
+texture_pressed = ExtResource("11_k5uol")
+action = "pause"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="UI" unique_id=1915549014]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -41.0
+offset_right = -20.0
+offset_bottom = 40.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="InteractButton" type="TouchScreenButton" parent="UI/HBoxContainer4" unique_id=554425371]
+modulate = Color(1, 1, 1, 0.8)
+texture_normal = ExtResource("12_7d5h0")
+texture_pressed = ExtResource("13_x4gx8")
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="UI" unique_id=1979401564]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 51.0
+offset_top = -156.0
+offset_right = 200.0
+grow_vertical = 0
+
+[node name="ZoomButton" type="TouchScreenButton" parent="UI/HBoxContainer5" unique_id=2103255708]
+scale = Vector2(1.5, 1.5)
+texture_normal = ExtResource("14_u7l8p")
+
+[node name="NutCounterLabel" type="Label" parent="." unique_id=513977676]
+unique_name_in_owner = true
+anchors_preset = -1
+anchor_left = 0.044000003
+anchor_top = 0.042000003
+anchor_right = 0.14500001
+anchor_bottom = 0.104
+offset_left = 0.47999573
+offset_top = -0.24000168
+offset_right = 0.3999939
+offset_bottom = 0.11999512
+text = "Nuts: 0"
+metadata/_edit_use_anchors_ = true
+
+[connection signal="pressed" from="UI/HBoxContainer/CenterContainer/Left" to="UI" method="_on_left_pressed"]
+[connection signal="released" from="UI/HBoxContainer/CenterContainer/Left" to="UI" method="_on_left_released"]
+[connection signal="pressed" from="UI/HBoxContainer/CenterContainer/Right" to="UI" method="_on_right_pressed"]
+[connection signal="released" from="UI/HBoxContainer/CenterContainer/Right" to="UI" method="_on_right_released"]
+[connection signal="pressed" from="UI/HBoxContainer2/CenterContainer/Up" to="UI" method="_on_up_pressed"]
+[connection signal="released" from="UI/HBoxContainer2/CenterContainer/Up" to="UI" method="_on_up_released"]
+[connection signal="pressed" from="UI/HBoxContainer2/CenterContainer/Down" to="UI" method="_on_down_pressed"]
+[connection signal="released" from="UI/HBoxContainer2/CenterContainer/Down" to="UI" method="_on_down_released"]
+[connection signal="pressed" from="UI/HBoxContainer4/InteractButton" to="UI" method="_on_interact_pressed"]
+[connection signal="released" from="UI/HBoxContainer4/InteractButton" to="UI" method="_on_interact_released"]
+[connection signal="pressed" from="UI/HBoxContainer5/ZoomButton" to="UI" method="_on_zoom_button_pressed"]
+[connection signal="released" from="UI/HBoxContainer5/ZoomButton" to="UI" method="_on_zoom_button_released"]

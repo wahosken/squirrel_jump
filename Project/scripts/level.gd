@@ -31,7 +31,7 @@ extends Node2D
 # ======================================================
 @onready var player: CharacterBody2D = $"../player"
 @onready var camera: Camera2D = $"../player/Camera2D"
-@onready var nut_counter_label: Label = %NutCounterLabel
+@onready var nut_counter_label: Label = $"../Overlay/NutCounterLabel"
 
 # ======================================================
 # --- STATE ---
