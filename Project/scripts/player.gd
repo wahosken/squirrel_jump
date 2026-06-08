@@ -116,6 +116,7 @@ var movement_locked := false
 @export var squirrel_frames: SpriteFrames
 @export var squirrel_white_frames: SpriteFrames
 @export var squirrel_gold_frames: SpriteFrames
+@export var squirrel_skeleton_frames: SpriteFrames
 
 @export var acorn_cap_frames: SpriteFrames
 @export var super_squirrel_frames: SpriteFrames
@@ -159,6 +160,10 @@ func set_squirrel_color(color_id: String) -> void:
 		"squirrel_gold":
 			if squirrel_gold_frames != null:
 				squirrel_sprite.sprite_frames = squirrel_gold_frames
+
+		"squirrel_skeleton":
+			if squirrel_skeleton_frames != null:
+				squirrel_sprite.sprite_frames = squirrel_skeleton_frames
 
 		_:
 			if squirrel_frames != null:

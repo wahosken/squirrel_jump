@@ -22,7 +22,7 @@ grow_vertical = 2
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=863515799]
-custom_minimum_size = Vector2(300, 200)
+custom_minimum_size = Vector2(250, 200)
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
@@ -36,21 +36,26 @@ alignment = 1
 
 [node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1512194633]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Merchant"
 horizontal_alignment = 1
 
 [node name="NutsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=899437560]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Nuts: 0"
 
 [node name="AcornCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=593653182]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Acorn Hat - 10 Nuts"
 
 [node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=504400778]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Superhero Cape - 25 Nuts"
 
 [node name="CloseButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1852865729]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Close"

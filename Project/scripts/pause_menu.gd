@@ -10,6 +10,7 @@ signal menu_closed
 @onready var brown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/BrownButton
 @onready var white_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/WhiteButton
 @onready var gold_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/GoldButton
+@onready var skeleton_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/SkeletonButton
 
 @onready var cosmetic_dropdown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticDropdownButton
 @onready var cosmetic_options_menu: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer
@@ -42,6 +43,7 @@ var is_initializing_ui := false
 const SQUIRREL_ID := "squirrel"
 const SQUIRREL_WHITE_ID := "squirrel_white"
 const SQUIRREL_GOLD_ID := "squirrel_gold"
+const SQUIRREL_SKELETON_ID := "squirrel_skeleton"
 
 const NO_APPAREL_ID := ""
 const ACORN_CAP_ID := "acorn_cap"
@@ -66,6 +68,7 @@ func _ready() -> void:
 	brown_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_ID))
 	white_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_WHITE_ID))
 	gold_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_GOLD_ID))
+	skeleton_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_SKELETON_ID))
 
 	default_button.pressed.connect(func(): select_cosmetic(NO_APPAREL_ID))
 	acorn_cap_button.pressed.connect(func(): select_cosmetic(ACORN_CAP_ID))
@@ -195,6 +198,9 @@ func open_color_dropdown() -> void:
 		SQUIRREL_GOLD_ID:
 			gold_button.grab_focus()
 
+		SQUIRREL_SKELETON_ID:
+			skeleton_button.grab_focus()
+
 		_:
 			brown_button.grab_focus()
 
@@ -290,6 +296,9 @@ func update_inventory_display() -> void:
 		SQUIRREL_GOLD_ID:
 			color_dropdown_button.text = "Squirrel: Gold"
 
+		SQUIRREL_SKELETON_ID:
+			color_dropdown_button.text = "Squirrel: Skeleton"
+
 		_:
 			color_dropdown_button.text = "Squirrel: Brown"
 
@@ -301,6 +310,9 @@ func update_inventory_display() -> void:
 
 	gold_button.text = "Gold"
 	gold_button.disabled = false
+
+	skeleton_button.text = "Skeleton"
+	skeleton_button.disabled = false
 
 
 	match GameState.equipped_cosmetic:
