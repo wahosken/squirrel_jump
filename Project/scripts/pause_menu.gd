@@ -372,3 +372,11 @@ func _on_invert_camera_zoom_toggled(value: bool) -> void:
 
 func _on_toggle_camera_zoom_toggled(value: bool) -> void:
 	GameState.set_toggle_camera_zoom(value)
+
+
+func _on_return_to_title_button_pressed() -> void:
+	SaveManager.save_current_player()
+
+	menu_closed.emit()
+
+	get_tree().change_scene_to_file("res://scenes/ui/title_screen.tscn")

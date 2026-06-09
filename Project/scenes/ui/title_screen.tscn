@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://bybiesv5vttq1"]
+
+[ext_resource type="Script" uid="uid://b5hcmwypsb1ua" path="res://scripts/ui/title_screen.gd" id="1_eb34j"]
+
+[node name="TitleScreen" type="Control" unique_id=1338521823]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_eb34j")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1209243766]
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer" unique_id=1819172284]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer" unique_id=418000972]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="CanvasLayer/CenterContainer/VBoxContainer" unique_id=1584594213]
+layout_mode = 2
+text = "Squirrel Summit"
+
+[node name="PlayButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer" unique_id=159833584]
+layout_mode = 2
+text = "Play"
+
+[node name="SettingsButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer" unique_id=1086073703]
+layout_mode = 2
+text = "Settings"
+
+[node name="CreditsButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer" unique_id=566438696]
+layout_mode = 2
+text = "Credits
+"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer" unique_id=416950742]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

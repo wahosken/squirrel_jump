@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://dp0gd7t21fhkt"]
+
+[ext_resource type="Script" uid="uid://dxvym5cvnmmq3" path="res://scripts/ui/resume_overlay.gd" id="1_c53pr"]
+
+[sub_resource type="Animation" id="Animation_t66mn"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CenterContainer/ColorRect:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CenterContainer/Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_c53pr"]
+resource_name = "resume_fade"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CenterContainer/ColorRect:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CenterContainer/Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.0666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t66mn"]
+_data = {
+&"RESET": SubResource("Animation_t66mn"),
+&"resume_fade": SubResource("Animation_c53pr")
+}
+
+[node name="ResumeOverlay" type="CanvasLayer" unique_id=1199843555]
+script = ExtResource("1_c53pr")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=2089546251]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -30.0
+offset_top = -20.0
+offset_right = 30.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CenterContainer" unique_id=2095644491]
+custom_minimum_size = Vector2(700, 400)
+layout_mode = 2
+color = Color(0, 0, 0, 0.5921569)
+
+[node name="Label" type="Label" parent="CenterContainer" unique_id=1313157359]
+layout_mode = 2
+text = "Resuming..."
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1840484433]
+libraries/ = SubResource("AnimationLibrary_t66mn")

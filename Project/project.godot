@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="squirrel_jump"
-run/main_scene="uid://c72cjfghigg42"
+run/main_scene="uid://bybiesv5vttq1"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -23,6 +23,8 @@ driver/mix_rate=48000
 [autoload]
 
 GameState="*uid://bb4caqma3thxs"
+SaveManager="*uid://d1bikja7hi7s1"
+ResumeManager="*uid://oh8x208qjav8"
 
 [display]
 

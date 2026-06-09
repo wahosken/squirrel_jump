@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name Player
 
 # ======================================================
 # --- CONSTANTS ---
@@ -55,6 +56,9 @@ var just_jumped = false
 var jump_cooldown = 0.0
 var last_fall_speed := 0.0
 
+var fall_save_triggered := false
+var physics_locked := false
+var resumed_in_air: bool = false
 
 # Crouch / Fall-through
 var crouch_timer := 0.0
@@ -122,6 +126,22 @@ var movement_locked := false
 # --- READY FUNCTION ---
 # ======================================================
 func _ready():
+	add_to_group("player")
+
+	global_position = SaveManager.save_data.player_position
+	velocity = Vector2.ZERO
+
+	resumed_in_air = !SaveManager.save_data.player_grounded
+
+	physics_locked = true
+	set_input_enabled(false)
+
+	if resumed_in_air:
+		change_state(PlayerState.FALL)
+
+	if not ResumeManager.resume_finished.is_connected(_on_resume_finished):
+		ResumeManager.resume_finished.connect(_on_resume_finished)
+	
 	swing.grab_point = grab_point
 	visuals_normal_position = visuals.position
 
@@ -132,6 +152,12 @@ func _ready():
 		GameState.squirrel_color_equipped.connect(_on_squirrel_color_equipped)
 
 	_apply_equipped_appearance()
+
+
+func _on_resume_finished():
+	physics_locked = false
+	set_input_enabled(true)
+
 
 func _on_cosmetic_equipped(_item_id: String) -> void:
 	_apply_equipped_appearance()
@@ -320,6 +346,9 @@ func landing_feedback() -> void:
 # ======================================================
 # --- Main Physics Loop ---
 func _physics_process(delta: float) -> void:
+	if physics_locked:
+		return
+
 	var menu_input_locked := movement_locked
 	
 	# --- Get Horizontal Input ---
@@ -602,6 +631,8 @@ func _physics_process(delta: float) -> void:
 	# --- Apply Movement ---
 	move_and_slide()
 
+	var landed_this_frame := is_on_floor() and !was_on_floor
+
 	var level := get_parent().get_node_or_null("Level")
 	if level and level.has_method("update_horizontal_player_wrap"):
 		level.update_horizontal_player_wrap()
@@ -635,6 +666,24 @@ func _physics_process(delta: float) -> void:
 					collider.play_squash()
 				break
 
+	if landed_this_frame:
+		SaveManager.save_data.player_position = global_position
+		SaveManager.save_data.player_grounded = true
+		SaveManager.mark_dirty()
+
+		was_on_floor = is_on_floor()
+
+	if velocity.y > 1000 and !fall_save_triggered:
+		SaveManager.save_data.player_position = global_position
+		SaveManager.save_data.player_velocity = velocity
+		SaveManager.save_data.player_grounded = false
+
+		SaveManager.mark_dirty()
+
+		fall_save_triggered = true
+
+	if is_on_floor():
+		fall_save_triggered = false
 
 # ======================================================
 # --- RUN SOUND TIMER CALLBACK ---

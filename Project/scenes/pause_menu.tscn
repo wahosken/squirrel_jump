@@ -70,6 +70,7 @@ theme_override_font_sizes/font_size = 12
 text = "Squirrel Color"
 
 [node name="ColorOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1605884769]
+visible = false
 layout_mode = 2
 
 [node name="BrownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=1843485110]
@@ -141,3 +142,10 @@ size_flags_vertical = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Resume"
+
+[node name="ReturnToTitleButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=549494906]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Return To Title"
+
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ReturnToTitleButton" to="." method="_on_return_to_title_button_pressed"]

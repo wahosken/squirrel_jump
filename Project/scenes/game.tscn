@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://c72cjfghigg42"]
 
+[ext_resource type="Script" uid="uid://d35kgjk6pd41p" path="res://scripts/game.gd" id="1_37s47"]
 [ext_resource type="Script" uid="uid://4p6vgtemvhj0" path="res://scripts/level.gd" id="1_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://dlcdc4mkobg10" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="Texture2D" uid="uid://cl4j8xvunyxmq" path="res://assets/world/parralax_section1_layer3.png" id="2_264po"]
@@ -17,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="9_1kice"]
 [ext_resource type="Script" uid="uid://11sjb73liy2a" path="res://scripts/player_camera_controller.gd" id="13_sww3w"]
 [ext_resource type="PackedScene" uid="uid://otjpeqr4gr44" path="res://scenes/overlay.tscn" id="14_ca42v"]
+[ext_resource type="PackedScene" uid="uid://dp0gd7t21fhkt" path="res://scenes/ui/resume_overlay.tscn" id="18_1kice"]
 [ext_resource type="Script" uid="uid://bc0d2lrn8kr6w" path="res://scripts/pause_manager.gd" id="23_bt5mj"]
 [ext_resource type="PackedScene" uid="uid://d2trsyeyglxos" path="res://scenes/pause_menu.tscn" id="24_e1j6l"]
 
@@ -249,14 +251,15 @@ _data = {
 }
 
 [node name="Game" type="Node2D" unique_id=1617569227]
+script = ExtResource("1_37s47")
 
 [node name="Background" type="Node2D" parent="." unique_id=2075935842]
 position = Vector2(-432, -1968)
 
 [node name="Parallax2D" type="Parallax2D" parent="Background" unique_id=506644025]
 z_index = -10
-scroll_scale = Vector2(0.9, 0.9)
-scroll_offset = Vector2(0, 250)
+scroll_scale = Vector2(0.7, 0.7)
+scroll_offset = Vector2(0, 650)
 repeat_size = Vector2(720, 0)
 repeat_times = 5
 
@@ -275,8 +278,8 @@ texture = ExtResource("3_1kice")
 
 [node name="Parallax2D3" type="Parallax2D" parent="Background" unique_id=1829152342]
 z_index = -10
-scroll_scale = Vector2(0.7, 0.7)
-scroll_offset = Vector2(0, 650)
+scroll_scale = Vector2(0.9, 0.9)
+scroll_offset = Vector2(0, 250)
 repeat_size = Vector2(720, 0)
 repeat_times = 5
 
@@ -838,6 +841,8 @@ script = ExtResource("4_qnb83")
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
 z_index = 5
 position = Vector2(-432, -1728)
+acorn_cap_texture = null
+super_squirrel_texture = null
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -60)
@@ -852,9 +857,10 @@ drag_bottom_margin = 0.6
 [node name="PlayerCameraController" type="Node" parent="player" unique_id=582892782]
 script = ExtResource("13_sww3w")
 
+[node name="ResumeOverlay" parent="player" unique_id=1199843555 instance=ExtResource("18_1kice")]
+
 [node name="Overlay" parent="." unique_id=183187612 instance=ExtResource("14_ca42v")]
 
-[node name="PauseManager" type="Node" parent="." unique_id=1630957555 node_paths=PackedStringArray("player")]
+[node name="PauseManager" type="Node" parent="." unique_id=1630957555]
 script = ExtResource("23_bt5mj")
 pause_menu_scene = ExtResource("24_e1j6l")
-player = NodePath("../player")

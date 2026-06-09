@@ -1,7 +1,6 @@
 extends Node
 
 @export var pause_menu_scene: PackedScene
-@export var player: Node
 
 var pause_menu_instance: Node = null
 var waiting_for_pause_release := false
@@ -78,8 +77,19 @@ func cleanup_pause_menu() -> void:
 
 
 func set_player_input_enabled(enabled: bool) -> void:
+	var player = get_tree().get_first_node_in_group("player")
+
 	if player != null and player.has_method("set_input_enabled"):
 		player.set_input_enabled(enabled)
+
+
+func reset_pause_state() -> void:
+	pause_menu_instance = null
+	waiting_for_pause_release = false
+	waiting_to_unlock_player = false
+
+	GameState.close_menu_state("pause")
+
 
 func menu_inputs_released() -> bool:
 	var actions := [
