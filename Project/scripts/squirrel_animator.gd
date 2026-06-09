@@ -2,6 +2,7 @@ extends Node
 class_name SquirrelAnimator
 
 @export var sprite: Sprite2D
+@export var apparel_sprite: Sprite2D
 
 const FRAME_SIZE := Vector2i(64, 48)
 const SPRITE_OFFSET := Vector2(-11, -8)
@@ -139,9 +140,8 @@ var animations := {
 
 
 func _ready() -> void:
-	if sprite:
-		sprite.position = SPRITE_OFFSET
 
+	setup_visual_layers()
 	setup_shader()
 	apply_appearance("squirrel")
 
@@ -161,8 +161,21 @@ func _process(delta: float) -> void:
 		if current_frame_index >= anim.frames.size():
 			current_frame_index = 0
 
+	var region := get_region_rect()
+
 	if sprite:
-		sprite.region_rect = get_region_rect()
+		sprite.region_rect = region
+
+	if apparel_sprite and apparel_sprite.visible:
+		apparel_sprite.region_rect = region
+
+
+func setup_visual_layers() -> void:
+	if sprite:
+		sprite.position = SPRITE_OFFSET
+
+	if apparel_sprite:
+		apparel_sprite.position = SPRITE_OFFSET
 
 
 func setup_shader() -> void:

@@ -99,7 +99,7 @@ var movement_locked := false
 # ======================================================
 @onready var visuals: Node2D = $Visuals
 @onready var squirrel_sprite: Sprite2D = $Visuals/SquirrelSprite
-@onready var apparel_sprite: AnimatedSprite2D = $Visuals/ApparelSprite
+@onready var apparel_sprite: Sprite2D = $Visuals/ApparelSprite
 @onready var jump_sound: AudioStreamPlayer2D = $JumpSound
 @onready var land_sound: AudioStreamPlayer2D = $LandSound
 @onready var run_sound: AudioStreamPlayer2D = $RunSound
@@ -115,8 +115,8 @@ var movement_locked := false
 # ======================================================
 @onready var animator: SquirrelAnimator = $Visuals/SquirrelAnimator
 
-@export var acorn_cap_frames: SpriteFrames
-@export var super_squirrel_frames: SpriteFrames
+@export var acorn_cap_texture: Texture2D
+@export var super_squirrel_texture: Texture2D
 
 # ======================================================
 # --- READY FUNCTION ---
@@ -141,58 +141,22 @@ func _on_squirrel_color_equipped(_color_id: String) -> void:
 
 
 func set_apparel(apparel_id: String) -> void:
-	var current_anim: String = animator.current_animation
-	var current_frame: int = animator.get_current_frame()
-
 	match apparel_id:
 		"none", "":
 			apparel_sprite.visible = false
-			apparel_sprite.sprite_frames = null
+			apparel_sprite.texture = null
 
 		"acorn_cap":
-			if acorn_cap_frames != null:
-				apparel_sprite.visible = true
-				apparel_sprite.sprite_frames = acorn_cap_frames
-			else:
-				apparel_sprite.visible = false
-				apparel_sprite.sprite_frames = null
+			apparel_sprite.visible = true
+			apparel_sprite.texture = acorn_cap_texture
 
 		"super_squirrel":
-			if super_squirrel_frames != null:
-				apparel_sprite.visible = true
-				apparel_sprite.sprite_frames = super_squirrel_frames
-			else:
-				apparel_sprite.visible = false
-				apparel_sprite.sprite_frames = null
+			apparel_sprite.visible = true
+			apparel_sprite.texture = super_squirrel_texture
 
 		_:
 			apparel_sprite.visible = false
-			apparel_sprite.sprite_frames = null
-
-	if apparel_sprite.visible and apparel_sprite.sprite_frames != null:
-		if apparel_sprite.sprite_frames.has_animation(current_anim):
-			apparel_sprite.play(current_anim)
-			apparel_sprite.frame = current_frame
-
-
-func _sync_apparel_animation() -> void:
-	if not apparel_sprite.visible:
-		return
-
-	var current_anim: String = animator.current_animation
-
-	if apparel_sprite.sprite_frames.has_animation(current_anim):
-		apparel_sprite.play(current_anim)
-		apparel_sprite.frame = animator.get_current_frame()
-	else:
-		apparel_sprite.stop()
-
-
-func _sync_apparel_frame() -> void:
-	if not apparel_sprite.visible:
-		return
-
-	apparel_sprite.frame = animator.get_current_frame()
+			apparel_sprite.texture = null
 
 
 func _apply_equipped_appearance() -> void:
@@ -643,8 +607,6 @@ func _physics_process(delta: float) -> void:
 		level.update_horizontal_player_wrap()
 
 	just_jumped = false
-
-	_sync_apparel_frame()
 	
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
