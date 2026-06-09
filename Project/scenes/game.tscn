@@ -841,8 +841,6 @@ script = ExtResource("4_qnb83")
 [node name="player" parent="." unique_id=131994215 instance=ExtResource("1_uwrxv")]
 z_index = 5
 position = Vector2(-432, -1728)
-acorn_cap_texture = null
-super_squirrel_texture = null
 
 [node name="Camera2D" type="Camera2D" parent="player" unique_id=1353524138]
 position = Vector2(0, -60)

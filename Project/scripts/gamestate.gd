@@ -8,7 +8,7 @@ signal menu_state_changed(is_open: bool)
 signal mute_changed(is_muted: bool)
 signal camera_zoom_settings_changed
 
-var nuts: int = 30
+var nuts: int = 15
 
 var is_muted := false
 var previous_volume := 100.0
@@ -25,8 +25,46 @@ var invert_camera_zoom := false
 var toggle_camera_zoom := false
 
 
+func save_to_save() -> void:
+	SaveManager.save_data["nuts"] = nuts
+
+	SaveManager.save_data["owned_cosmetics"] = owned_cosmetics
+
+	SaveManager.save_data["equipped_cosmetic"] = equipped_cosmetic
+
+	SaveManager.save_data["equipped_squirrel_color"] = equipped_squirrel_color
+
+
+func load_from_save() -> void:
+	nuts = SaveManager.save_data.get("nuts", 0)
+
+	owned_cosmetics = SaveManager.save_data.get(
+		"owned_cosmetics",
+		{}
+	)
+
+	equipped_cosmetic = SaveManager.save_data.get(
+		"equipped_cosmetic",
+		""
+	)
+
+	equipped_squirrel_color = SaveManager.save_data.get(
+		"equipped_squirrel_color",
+		"squirrel"
+	)
+
+	nuts_changed.emit(nuts)
+	inventory_changed.emit()
+
+	cosmetic_equipped.emit(equipped_cosmetic)
+	squirrel_color_equipped.emit(equipped_squirrel_color)
+
+
 func add_nuts(amount: int) -> void:
 	nuts += amount
+
+	SaveManager.save_game()
+
 	nuts_changed.emit(nuts)
 
 
@@ -35,7 +73,11 @@ func spend_nuts(amount: int) -> bool:
 		return false
 
 	nuts -= amount
+
+	SaveManager.save_game()
+
 	nuts_changed.emit(nuts)
+
 	return true
 
 
@@ -51,6 +93,7 @@ func buy_cosmetic(item_id: String, price: int) -> bool:
 		return false
 
 	owned_cosmetics[item_id] = true
+	SaveManager.save_game()
 	inventory_changed.emit()
 	return true
 
@@ -66,13 +109,15 @@ func equip_cosmetic(item_id: String) -> bool:
 
 	equipped_cosmetic = item_id
 	cosmetic_equipped.emit(item_id)
+	SaveManager.save_game()
 	return true
 
 
 func equip_squirrel_color(color_id: String) -> void:
 	equipped_squirrel_color = color_id
 	squirrel_color_equipped.emit(color_id)
-	
+	SaveManager.save_game()
+
 
 func request_menu_open(menu_id: String) -> bool:
 	if menu_open:

@@ -6,6 +6,19 @@ signal collected(nut)
 
 var is_collected := false
 
+@export var collectible_id := ""
+
+func _ready() -> void:
+	if SaveManager.has_collectible(get_save_id()):
+		queue_free()
+
+
+func get_save_id() -> String:
+	if collectible_id != "":
+		return collectible_id
+
+	return name
+
 
 func set_active(active: bool) -> void:
 	if is_collected:
@@ -31,6 +44,8 @@ func _on_body_entered(_body: Node2D) -> void:
 		return
 
 	is_collected = true
+
+	SaveManager.collect_collectible(get_save_id())
 
 	print("")
 	print("+! nut!")

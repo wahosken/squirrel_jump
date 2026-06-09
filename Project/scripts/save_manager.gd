@@ -52,6 +52,8 @@ func save_current_player() -> void:
 
 
 func save_game() -> void:
+	GameState.save_to_save()
+
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 
 	if file == null:
@@ -82,6 +84,8 @@ func load_game() -> void:
 	save_data = file.get_var()
 	file.close()
 
+	GameState.load_from_save()
+
 
 func reset_save() -> void:
 	save_data = get_default_save()
@@ -104,10 +108,17 @@ func get_default_save() -> Dictionary:
 		"highest_height_reached": 0.0,
 		"highest_fall_start_height": 0.0,
 
+		# Currency
+		"nuts": 0,
+
+		# Cosmetics
+		"owned_cosmetics": {},
+		"equipped_cosmetic": "",
+		"equipped_squirrel_color": "squirrel",
+
 		# Collections
 		"collectibles": [],
 		"areas_discovered": [],
-		"unlocked_cosmetics": [],
 
 		# Lifetime statistics
 		"total_height_climbed": 0.0,
@@ -135,3 +146,15 @@ func get_default_save() -> Dictionary:
 
 func mark_dirty() -> void:
 	save_dirty = true
+
+
+func has_collectible(id: String) -> bool:
+	return id in save_data.collectibles
+
+
+func collect_collectible(id: String) -> void:
+	if id in save_data.collectibles:
+		return
+
+	save_data.collectibles.append(id)
+	save_game()
