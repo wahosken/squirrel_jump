@@ -98,7 +98,7 @@ var movement_locked := false
 # --- NODE REFERENCES ---
 # ======================================================
 @onready var visuals: Node2D = $Visuals
-@onready var squirrel_sprite: AnimatedSprite2D = $Visuals/SquirrelSprite
+@onready var squirrel_sprite: Sprite2D = $Visuals/SquirrelSprite
 @onready var apparel_sprite: AnimatedSprite2D = $Visuals/ApparelSprite
 @onready var jump_sound: AudioStreamPlayer2D = $JumpSound
 @onready var land_sound: AudioStreamPlayer2D = $LandSound
@@ -113,10 +113,7 @@ var movement_locked := false
 # ======================================================
 # --- COSMETICS / APPEARANCE ---
 # ======================================================
-@export var squirrel_frames: SpriteFrames
-@export var squirrel_white_frames: SpriteFrames
-@export var squirrel_gold_frames: SpriteFrames
-@export var squirrel_skeleton_frames: SpriteFrames
+@onready var animator: SquirrelAnimator = $Visuals/SquirrelAnimator
 
 @export var acorn_cap_frames: SpriteFrames
 @export var super_squirrel_frames: SpriteFrames
@@ -136,7 +133,6 @@ func _ready():
 
 	_apply_equipped_appearance()
 
-
 func _on_cosmetic_equipped(_item_id: String) -> void:
 	_apply_equipped_appearance()
 
@@ -144,41 +140,9 @@ func _on_squirrel_color_equipped(_color_id: String) -> void:
 	_apply_equipped_appearance()
 
 
-func set_squirrel_color(color_id: String) -> void:
-	var current_anim := squirrel_sprite.animation
-	var current_frame := squirrel_sprite.frame
-
-	match color_id:
-		"squirrel":
-			if squirrel_frames != null:
-				squirrel_sprite.sprite_frames = squirrel_frames
-
-		"squirrel_white":
-			if squirrel_white_frames != null:
-				squirrel_sprite.sprite_frames = squirrel_white_frames
-
-		"squirrel_gold":
-			if squirrel_gold_frames != null:
-				squirrel_sprite.sprite_frames = squirrel_gold_frames
-
-		"squirrel_skeleton":
-			if squirrel_skeleton_frames != null:
-				squirrel_sprite.sprite_frames = squirrel_skeleton_frames
-
-		_:
-			if squirrel_frames != null:
-				squirrel_sprite.sprite_frames = squirrel_frames
-
-	if squirrel_sprite.sprite_frames != null and squirrel_sprite.sprite_frames.has_animation(current_anim):
-		squirrel_sprite.play(current_anim)
-		squirrel_sprite.frame = current_frame
-
-	_sync_apparel_animation()
-
-
 func set_apparel(apparel_id: String) -> void:
-	var current_anim := squirrel_sprite.animation
-	var current_frame := squirrel_sprite.frame
+	var current_anim: String = animator.current_animation
+	var current_frame: int = animator.get_current_frame()
 
 	match apparel_id:
 		"none", "":
@@ -215,17 +179,11 @@ func _sync_apparel_animation() -> void:
 	if not apparel_sprite.visible:
 		return
 
-	if apparel_sprite.sprite_frames == null:
-		return
-
-	if squirrel_sprite.sprite_frames == null:
-		return
-
-	var current_anim := squirrel_sprite.animation
+	var current_anim: String = animator.current_animation
 
 	if apparel_sprite.sprite_frames.has_animation(current_anim):
 		apparel_sprite.play(current_anim)
-		apparel_sprite.frame = squirrel_sprite.frame
+		apparel_sprite.frame = animator.get_current_frame()
 	else:
 		apparel_sprite.stop()
 
@@ -234,20 +192,11 @@ func _sync_apparel_frame() -> void:
 	if not apparel_sprite.visible:
 		return
 
-	if apparel_sprite.sprite_frames == null:
-		return
-
-	if squirrel_sprite.sprite_frames == null:
-		return
-
-	if apparel_sprite.animation != squirrel_sprite.animation:
-		return
-
-	apparel_sprite.frame = squirrel_sprite.frame
+	apparel_sprite.frame = animator.get_current_frame()
 
 
 func _apply_equipped_appearance() -> void:
-	set_squirrel_color(GameState.equipped_squirrel_color)
+	animator.apply_appearance(GameState.equipped_squirrel_color)
 
 	match GameState.equipped_cosmetic:
 		"acorn_cap":
@@ -262,33 +211,39 @@ func _apply_equipped_appearance() -> void:
 # ======================================================
 # --- ANIMATION HELPERS ---
 # ======================================================
-func play_anim(anim_name: String) -> void:
-	if squirrel_sprite.sprite_frames == null:
-		return
-
-	if squirrel_sprite.animation != anim_name:
-		squirrel_sprite.play(anim_name)
-
-	if apparel_sprite.visible and apparel_sprite.sprite_frames != null:
-		if apparel_sprite.sprite_frames.has_animation(anim_name):
-			if apparel_sprite.animation != anim_name:
-				apparel_sprite.play(anim_name)
-			apparel_sprite.frame = squirrel_sprite.frame
-
 func change_state(new_state):
 	if state == new_state:
 		return
+
 	state = new_state
+
 	match state:
-		PlayerState.IDLE: play_anim("idle")
-		PlayerState.RUN: play_anim("run")
-		PlayerState.JUMP: play_anim("jump")
-		PlayerState.FALL: play_anim("fall")
-		PlayerState.GLIDE: play_anim("glide")
-		PlayerState.GLIDE_LOW: play_anim("glide_low")
-		PlayerState.CROUCH: play_anim("crouch")
-		PlayerState.SWING: play_anim("swing")
-		PlayerState.WALL_CLING: play_anim("wall_cling")
+		PlayerState.IDLE:
+			animator.play("idle")
+
+		PlayerState.RUN:
+			animator.play("run")
+
+		PlayerState.JUMP:
+			animator.play("jump")
+
+		PlayerState.FALL:
+			animator.play("fall")
+
+		PlayerState.GLIDE:
+			animator.play("glide")
+
+		PlayerState.GLIDE_LOW:
+			animator.play("glide_low")
+
+		PlayerState.CROUCH:
+			animator.play("crouch")
+
+		PlayerState.SWING:
+			animator.play("swing")
+
+		PlayerState.WALL_CLING:
+			animator.play("wall_cling")
 
 # ======================================================
 # --- WALL CLING CHECK ---
@@ -717,6 +672,7 @@ func _physics_process(delta: float) -> void:
 				if collider.has_method("play_squash"):
 					collider.play_squash()
 				break
+
 
 # ======================================================
 # --- RUN SOUND TIMER CALLBACK ---

@@ -2,27 +2,37 @@
 
 [ext_resource type="Script" uid="uid://b07c68xctjies" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://bslbo67tno0pw" path="res://scripts/swing_component.gd" id="1_qlg0r"]
-[ext_resource type="SpriteFrames" uid="uid://dss0pnhh6c5tw" path="res://assets/player/color/squirrel_skeleton_frames.tres" id="2_d2wvv"]
-[ext_resource type="SpriteFrames" uid="uid://c74j8is8ed8yr" path="res://assets/player/color/squirrel_white_frames.tres" id="2_smehm"]
-[ext_resource type="SpriteFrames" uid="uid://b1h5emmljnadq" path="res://assets/player/color/squirrel_gold_frames.tres" id="2_ur7pv"]
 [ext_resource type="SpriteFrames" uid="uid://b1h1w0mvgqu6y" path="res://assets/player/apparel/acorn_cap_frames.tres" id="2_y4r1p"]
 [ext_resource type="AudioStream" uid="uid://dtsi1s7jv542j" path="res://audio/squirrel_audio_jump.wav" id="3_qhqgy"]
 [ext_resource type="AudioStream" uid="uid://brp4wumpojv1u" path="res://audio/squirrel_audio_land.wav" id="4_dqkch"]
+[ext_resource type="Shader" uid="uid://cq215d5xlat4h" path="res://shaders/palette_swap.gdshader" id="5_d2wvv"]
 [ext_resource type="AudioStream" uid="uid://chpd4n5fwd7od" path="res://audio/squirrel_audio_footsteps.wav" id="5_qlg0r"]
 [ext_resource type="SpriteFrames" uid="uid://cnoosar6dxiki" path="res://assets/player/apparel/super_squirrel_frames.tres" id="5_ur7pv"]
-[ext_resource type="SpriteFrames" uid="uid://54fql0kyw12a" path="res://assets/player/color/squirrel_frames.tres" id="6_y4r1p"]
+[ext_resource type="Script" uid="uid://v177ff7wegga" path="res://scripts/squirrel_animator.gd" id="8_3v2ag"]
+[ext_resource type="Texture2D" uid="uid://dpe8ua81qjdj1" path="res://assets/player/color/squirrel.png" id="8_jej6c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
 size = Vector2(13, 15)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3v2ag"]
+shader = ExtResource("5_d2wvv")
+shader_parameter/source_body = Color(0, 0, 0, 1)
+shader_parameter/source_shade = Color(0, 0, 0, 1)
+shader_parameter/source_belly = Color(0, 0, 0, 1)
+shader_parameter/source_nose = Color(0, 0, 0, 1)
+shader_parameter/source_shadow = Color(0, 0, 0, 1)
+shader_parameter/source_eye = Color(0, 0, 0, 1)
+shader_parameter/target_body = Color(0, 0, 0, 1)
+shader_parameter/target_shade = Color(0, 0, 0, 1)
+shader_parameter/target_belly = Color(0, 0, 0, 1)
+shader_parameter/target_nose = Color(0, 0, 0, 1)
+shader_parameter/target_shadow = Color(0, 0, 0, 1)
+shader_parameter/target_eye = Color(0, 0, 0, 1)
 
 [node name="player" type="CharacterBody2D" unique_id=131994215 groups=["player"]]
 collision_layer = 18
 collision_mask = 17
 script = ExtResource("1_3vyb7")
-squirrel_frames = ExtResource("6_y4r1p")
-squirrel_white_frames = ExtResource("2_smehm")
-squirrel_gold_frames = ExtResource("2_ur7pv")
-squirrel_skeleton_frames = ExtResource("2_d2wvv")
 acorn_cap_frames = ExtResource("2_y4r1p")
 super_squirrel_frames = ExtResource("5_ur7pv")
 
@@ -33,11 +43,10 @@ shape = SubResource("RectangleShape2D_qlg0r")
 
 [node name="Visuals" type="Node2D" parent="." unique_id=417112224]
 
-[node name="SquirrelSprite" type="AnimatedSprite2D" parent="Visuals" unique_id=203799251]
-position = Vector2(-11, -16)
-sprite_frames = ExtResource("6_y4r1p")
-animation = &"idle"
-autoplay = "idle"
+[node name="SquirrelSprite" type="Sprite2D" parent="Visuals" unique_id=1127007677]
+material = SubResource("ShaderMaterial_3v2ag")
+texture = ExtResource("8_jej6c")
+region_enabled = true
 
 [node name="ApparelSprite" type="AnimatedSprite2D" parent="Visuals" unique_id=1344030509]
 visible = false
@@ -48,6 +57,10 @@ autoplay = "idle"
 
 [node name="GrabPoint" type="Marker2D" parent="Visuals" unique_id=990645229]
 position = Vector2(8, -5)
+
+[node name="SquirrelAnimator" type="Node" parent="Visuals" unique_id=253837938 node_paths=PackedStringArray("sprite")]
+script = ExtResource("8_3v2ag")
+sprite = NodePath("../SquirrelSprite")
 
 [node name="JumpSound" type="AudioStreamPlayer2D" parent="." unique_id=1443708414]
 position = Vector2(2, -1)

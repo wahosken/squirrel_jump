@@ -8,7 +8,7 @@ signal menu_state_changed(is_open: bool)
 signal mute_changed(is_muted: bool)
 signal camera_zoom_settings_changed
 
-var nuts: int = 0
+var nuts: int = 30
 
 var is_muted := false
 var previous_volume := 100.0
