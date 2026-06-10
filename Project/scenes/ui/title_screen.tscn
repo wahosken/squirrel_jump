@@ -1,11 +1,17 @@
 [gd_scene format=3 uid="uid://bybiesv5vttq1"]
 
 [ext_resource type="Script" uid="uid://b5hcmwypsb1ua" path="res://scripts/ui/title_screen.gd" id="1_eb34j"]
+[ext_resource type="PackedScene" uid="uid://c8euo5kpxh7mv" path="res://scenes/ui/title_settings.tscn" id="2_aqpy5"]
 
 [node name="TitleScreen" type="Control" unique_id=1338521823]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_eb34j")
+title_settings_scene = ExtResource("2_aqpy5")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1209243766]
 
@@ -41,4 +47,5 @@ layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

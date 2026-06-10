@@ -89,6 +89,9 @@ func load_game() -> void:
 
 func reset_save() -> void:
 	save_data = get_default_save()
+
+	GameState.load_from_save()
+
 	save_game()
 
 
