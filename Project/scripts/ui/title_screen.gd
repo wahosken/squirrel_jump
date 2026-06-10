@@ -9,14 +9,10 @@ func _ready() -> void:
 	call_deferred("grab_default_focus")
 
 
-func _on_visibility_changed() -> void:
-	if visible:
-		call_deferred("grab_default_focus")
-
-
 func grab_default_focus() -> void:
 	if is_instance_valid(play_button):
 		play_button.grab_focus()
+
 
 
 func _on_play_button_pressed() -> void:
@@ -35,7 +31,8 @@ func _on_settings_button_pressed() -> void:
 
 	get_tree().root.add_child(settings)
 
-	settings.tree_exited.connect(
-		func():
-			call_deferred("grab_default_focus")
-	)
+	settings.settings_closed.connect(_on_settings_closed)
+
+
+func _on_settings_closed() -> void:
+	call_deferred("grab_default_focus")

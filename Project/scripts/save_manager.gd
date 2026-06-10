@@ -1,6 +1,8 @@
 extends Node
 
 const SAVE_PATH := "user://savegame.json"
+const PREVIOUS_SAVE_PATH := "user://previous_save.json"
+
 const DEFAULT_SPAWN := Vector2(-432, -1728)
 
 const SAVE_TIMER = 0.25
@@ -88,11 +90,39 @@ func load_game() -> void:
 
 
 func reset_save() -> void:
+	backup_current_save()
+
 	save_data = get_default_save()
 
 	GameState.load_from_save()
 
 	save_game()
+
+	print("Progress reset.")
+
+
+func backup_current_save() -> void:
+	if not has_save():
+		return
+
+	var source := FileAccess.open(SAVE_PATH, FileAccess.READ)
+
+	if source == null:
+		return
+
+	var data = source.get_var()
+	source.close()
+
+	var backup := FileAccess.open(
+		PREVIOUS_SAVE_PATH,
+		FileAccess.WRITE
+	)
+
+	if backup == null:
+		return
+
+	backup.store_var(data)
+	backup.close()
 
 
 func get_default_save() -> Dictionary:
