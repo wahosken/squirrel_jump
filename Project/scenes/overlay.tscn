@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://btn6mxgv8tw23" path="res://assets/ui/buttons13.png" id="12_7d5h0"]
 [ext_resource type="Texture2D" uid="uid://jrwytkqx4s5d" path="res://assets/ui/buttons14.png" id="13_x4gx8"]
 [ext_resource type="Texture2D" uid="uid://bwicchmnge8fi" path="res://assets/ui/fullscreen_button.png" id="14_u7l8p"]
+[ext_resource type="Texture2D" uid="uid://dwf3o33ixatqr" path="res://assets/ui/button_cycle.png" id="14_ubex6"]
+[ext_resource type="Texture2D" uid="uid://dised0650v2xm" path="res://assets/ui/button_cycle_pressed.png" id="15_4jgic"]
 
 [node name="Overlay" type="CanvasLayer" unique_id=183187612]
 
@@ -120,6 +122,12 @@ modulate = Color(1, 1, 1, 0.8)
 texture_normal = ExtResource("12_7d5h0")
 texture_pressed = ExtResource("13_x4gx8")
 
+[node name="CycleButton" type="TouchScreenButton" parent="UI/HBoxContainer4" unique_id=1868688391]
+modulate = Color(1, 1, 1, 0.8)
+position = Vector2(48.235, 0)
+texture_normal = ExtResource("14_ubex6")
+texture_pressed = ExtResource("15_4jgic")
+
 [node name="HBoxContainer5" type="HBoxContainer" parent="UI" unique_id=1979401564]
 layout_mode = 1
 anchors_preset = 2
@@ -158,5 +166,7 @@ metadata/_edit_use_anchors_ = true
 [connection signal="released" from="UI/HBoxContainer2/CenterContainer/Down" to="UI" method="_on_down_released"]
 [connection signal="pressed" from="UI/HBoxContainer4/InteractButton" to="UI" method="_on_interact_pressed"]
 [connection signal="released" from="UI/HBoxContainer4/InteractButton" to="UI" method="_on_interact_released"]
+[connection signal="pressed" from="UI/HBoxContainer4/CycleButton" to="UI" method="_on_cycle_button_pressed"]
+[connection signal="released" from="UI/HBoxContainer4/CycleButton" to="UI" method="_on_cycle_button_released"]
 [connection signal="pressed" from="UI/HBoxContainer5/ZoomButton" to="UI" method="_on_zoom_button_pressed"]
 [connection signal="released" from="UI/HBoxContainer5/ZoomButton" to="UI" method="_on_zoom_button_released"]

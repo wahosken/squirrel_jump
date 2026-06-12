@@ -762,3 +762,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("jump"):
 		jump_buffer_timer = JUMP_BUFFER_TIME
+
+	if event.is_action_pressed("debug_random_squirrel"):
+
+		var random_id: String = AppearanceDatabase.get_random_appearance_id_except(
+			GameState.equipped_squirrel_color
+		)
+
+		GameState.equip_squirrel_color(random_id)
+
+		print("Random Squirrel: ", random_id)

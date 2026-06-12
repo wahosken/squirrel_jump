@@ -69,29 +69,9 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Squirrel Color"
 
-[node name="ColorOptionsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1605884769]
-visible = false
+[node name="ColorOptionsContainer" type="GridContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=11076873]
 layout_mode = 2
-
-[node name="BrownButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=1843485110]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Brown"
-
-[node name="WhiteButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=178782809]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "White"
-
-[node name="GoldButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=598451712]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Gold"
-
-[node name="SkeletonButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer" unique_id=845348180]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Skeleton"
+columns = 6
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=378404116]
 layout_mode = 2

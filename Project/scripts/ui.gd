@@ -112,3 +112,11 @@ func _on_zoom_button_pressed() -> void:
 
 func _on_zoom_button_released() -> void:
 	release_action("camera_zoom")
+
+
+func _on_cycle_button_pressed() -> void:
+	press_action("debug_random_squirrel")
+
+
+func _on_cycle_button_released() -> void:
+	release_action("debug_random_squirrel")

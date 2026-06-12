@@ -5,12 +5,8 @@ signal menu_closed
 @onready var nuts_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/NutsLabel
 
 @onready var color_dropdown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorDropdownButton
-@onready var color_options_container: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer
+@onready var color_options_container: GridContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer
 
-@onready var brown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/BrownButton
-@onready var white_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/WhiteButton
-@onready var gold_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/GoldButton
-@onready var skeleton_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorOptionsContainer/SkeletonButton
 
 @onready var cosmetic_dropdown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticDropdownButton
 @onready var cosmetic_options_menu: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer
@@ -49,6 +45,40 @@ const NO_APPAREL_ID := ""
 const ACORN_CAP_ID := "acorn_cap"
 const SUPER_SQUIRREL_ID := "super_squirrel"
 
+var color_buttons: Dictionary = {}
+
+
+func build_color_buttons() -> void:
+
+	color_buttons.clear()
+
+	for child in color_options_container.get_children():
+		child.queue_free()
+
+	for appearance_id in AppearanceDatabase.APPEARANCES.keys():
+
+		var appearance: Dictionary = AppearanceDatabase.APPEARANCES[appearance_id]
+
+		var button := Button.new()
+
+		button.text = appearance["display_name"]
+
+		button.add_theme_font_size_override(
+			"font_size",
+			12
+		)
+
+		var id: String = appearance_id
+
+		button.pressed.connect(
+			func():
+				select_squirrel_color(id)
+		)
+
+		color_options_container.add_child(button)
+
+		color_buttons[id] = button
+
 
 func _ready() -> void:
 	
@@ -60,15 +90,12 @@ func _ready() -> void:
 	
 	is_initializing_ui = true
 
+	build_color_buttons()
+
 	color_dropdown_button.pressed.connect(toggle_color_dropdown)
 	cosmetic_dropdown_button.pressed.connect(toggle_cosmetic_dropdown)
 
 	master_bus_index = AudioServer.get_bus_index("Master")
-
-	brown_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_ID))
-	white_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_WHITE_ID))
-	gold_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_GOLD_ID))
-	skeleton_button.pressed.connect(func(): select_squirrel_color(SQUIRREL_SKELETON_ID))
 
 	default_button.pressed.connect(func(): select_cosmetic(NO_APPAREL_ID))
 	acorn_cap_button.pressed.connect(func(): select_cosmetic(ACORN_CAP_ID))
@@ -102,7 +129,7 @@ func _on_mute_pressed() -> void:
 	if GameState.is_muted:
 		GameState.set_muted(false)
 
-		var restore_volume := GameState.previous_volume
+		var restore_volume: float = GameState.previous_volume
 		if restore_volume <= 0.0:
 			restore_volume = 100.0
 
@@ -119,7 +146,7 @@ func _on_mute_changed(is_muted: bool) -> void:
 	if is_muted:
 		volume_slider.value = 0.0
 	else:
-		var restore_volume := GameState.previous_volume
+		var restore_volume: float = GameState.previous_volume
 		if restore_volume <= 0.0:
 			restore_volume = 100.0
 
@@ -191,18 +218,12 @@ func open_color_dropdown() -> void:
 
 	update_inventory_display()
 
-	match GameState.equipped_squirrel_color:
-		SQUIRREL_WHITE_ID:
-			white_button.grab_focus()
+	await get_tree().process_frame
 
-		SQUIRREL_GOLD_ID:
-			gold_button.grab_focus()
-
-		SQUIRREL_SKELETON_ID:
-			skeleton_button.grab_focus()
-
-		_:
-			brown_button.grab_focus()
+	if color_buttons.has(GameState.equipped_squirrel_color):
+		color_buttons[GameState.equipped_squirrel_color].grab_focus()
+	elif color_options_container.get_child_count() > 0:
+		color_options_container.get_child(0).grab_focus()
 
 
 func close_color_dropdown() -> void:
@@ -289,30 +310,16 @@ func select_cosmetic(item_id: String) -> void:
 func update_inventory_display() -> void:
 	nuts_label.text = "Nuts: %d" % GameState.nuts
 
-	match GameState.equipped_squirrel_color:
-		SQUIRREL_WHITE_ID:
-			color_dropdown_button.text = "Squirrel: White"
+	var appearance: Dictionary = AppearanceDatabase.APPEARANCES.get(
+		GameState.equipped_squirrel_color
+	)
 
-		SQUIRREL_GOLD_ID:
-			color_dropdown_button.text = "Squirrel: Gold"
-
-		SQUIRREL_SKELETON_ID:
-			color_dropdown_button.text = "Squirrel: Skeleton"
-
-		_:
-			color_dropdown_button.text = "Squirrel: Brown"
-
-	brown_button.text = "Brown"
-	brown_button.disabled = false
-
-	white_button.text = "White"
-	white_button.disabled = false
-
-	gold_button.text = "Gold"
-	gold_button.disabled = false
-
-	skeleton_button.text = "Skeleton"
-	skeleton_button.disabled = false
+	if appearance:
+		color_dropdown_button.text = (
+			"Squirrel: " + appearance["display_name"]
+		)
+	else:
+		color_dropdown_button.text = "Squirrel: Brown"
 
 
 	match GameState.equipped_cosmetic:

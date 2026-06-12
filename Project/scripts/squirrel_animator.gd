@@ -29,51 +29,7 @@ var current_animation := "idle"
 var current_frame_index := 0
 var frame_timer := 0.0
 
-var appearances := {
-	"squirrel": {
-		"skin": "squirrel",
-
-		"body": Color("bd967e"),
-		"shade": Color("9a605b"),
-		"belly": Color("fcf1d7"),
-		"nose": Color("2e2931"),
-		"shadow": Color("533d3f"),
-		"eye": Color("fef9e8")
-	},
-
-	"squirrel_gold": {
-		"skin": "squirrel",
-
-		"body": Color("e4ac34"),
-		"shade": Color("875a07"),
-		"belly": Color("fcf8b0"),
-		"nose": Color("1a1f38"),
-		"shadow": Color("503917"),
-		"eye": Color("fef9e8")
-	},
-
-	"squirrel_white": {
-		"skin": "squirrel",
-
-		"body": Color("dbd8fc"),
-		"shade": Color("8681c5"),
-		"belly": Color("f0f0f7"),
-		"nose": Color("271731"),
-		"shadow": Color("474190"),
-		"eye": Color("fef9e8")
-	},
-
-	"squirrel_skeleton": {
-		"skin": "squirrel_skeleton",
-
-		"body": Color("bd967e"),
-		"shade": Color("9a605b"),
-		"belly": Color("fcf1d7"),
-		"nose": Color("2e2931"),
-		"shadow": Color("533d3f"),
-		"eye": Color("fef9e8")
-	}
-}
+var appearances: Dictionary = AppearanceDatabase.APPEARANCES
 
 var skin_offsets := {
 	"squirrel": 0,
@@ -161,13 +117,11 @@ func _process(delta: float) -> void:
 		if current_frame_index >= anim.frames.size():
 			current_frame_index = 0
 
-	var region := get_region_rect()
-
 	if sprite:
-		sprite.region_rect = region
+		sprite.region_rect = get_region_rect()
 
 	if apparel_sprite and apparel_sprite.visible:
-		apparel_sprite.region_rect = region
+		apparel_sprite.region_rect = get_apparel_region_rect()
 
 
 func setup_visual_layers() -> void:
@@ -225,6 +179,18 @@ func get_region_rect() -> Rect2:
 	)
 
 
+func get_apparel_region_rect() -> Rect2:
+	var frame = get_current_frame()
+	var row = animations[current_animation].row
+
+	return Rect2(
+		frame * FRAME_SIZE.x,
+		row * FRAME_SIZE.y,
+		FRAME_SIZE.x,
+		FRAME_SIZE.y
+	)
+
+
 func set_skin(skin_id: String) -> void:
 	if skin_offsets.has(skin_id):
 		skin_offset = skin_offsets[skin_id]
@@ -256,3 +222,14 @@ func apply_palette(appearance: Dictionary) -> void:
 			"target_" + key,
 			appearance[key]
 		)
+
+
+func get_appearance_ids() -> Array:
+	return appearances.keys()
+
+
+func get_appearance_display_name(id: String) -> String:
+	if not appearances.has(id):
+		return id
+
+	return appearances[id].get("display_name", id)
