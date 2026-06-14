@@ -7,6 +7,7 @@ signal collected(nut)
 var is_collected := false
 
 @export var collectible_id := ""
+@export var nut_value := 1
 
 func _ready() -> void:
 	if SaveManager.has_collectible(get_save_id()):
@@ -48,7 +49,7 @@ func _on_body_entered(_body: Node2D) -> void:
 	SaveManager.collect_collectible(get_save_id())
 
 	print("")
-	print("+! nut!")
+	print("+", nut_value, " nut(s)!")
 
 	for c in get_children():
 		if c is CollisionShape2D:

@@ -5,6 +5,7 @@ signal menu_closed
 @onready var title_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
 @onready var nuts_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/NutsLabel
 @onready var acorn_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/AcornCapButton
+@onready var baseball_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/BaseballCapButton
 @onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SuperSquirrelButton
 @onready var close_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CloseButton
 
@@ -13,28 +14,27 @@ var is_closing := false
 
 var purchased_this_session: Dictionary = {}
 
-var shop_items := {
-	"acorn_cap": {
-		"name": "Acorn Cap",
-		"price": 5,
-		"button": null
-	},
-	"super_squirrel": {
-		"name": "Super Squirrel",
-		"price": 10,
-		"button": null
-	}
-}
+var shop_items := {}
 
 
 func _ready() -> void:
-	shop_items["acorn_cap"]["button"] = acorn_cap_button
-	shop_items["super_squirrel"]["button"] = super_squirrel_button
+	shop_items = {
+		"acorn_cap": {
+			"button": acorn_cap_button
+		},
+		"baseball_cap": {
+			"button": baseball_cap_button
+		},
+		"super_squirrel": {
+			"button": super_squirrel_button
+		}
+	}
 
 	for item_id in shop_items.keys():
 		button_message_active[item_id] = false
 
 	acorn_cap_button.pressed.connect(func(): _on_shop_item_pressed("acorn_cap"))
+	baseball_cap_button.pressed.connect(func(): _on_shop_item_pressed("baseball_cap"))
 	super_squirrel_button.pressed.connect(func(): _on_shop_item_pressed("super_squirrel"))
 	close_button.pressed.connect(close_menu)
 
@@ -75,9 +75,11 @@ func _on_shop_item_pressed(item_id: String) -> void:
 	if button_message_active.get(item_id, false):
 		return
 
-	var item: Dictionary = shop_items[item_id]
-	var item_price: int = int(item["price"])
-	var button: Button = item["button"]
+	var apparel: Dictionary = ApparelDatabase.APPAREL[item_id]
+	var item_price: int = apparel["price"]
+
+	var shop_item: Dictionary = shop_items[item_id]
+	var button: Button = shop_item["button"]
 
 	if GameState.owns_cosmetic(item_id):
 		return
@@ -126,10 +128,13 @@ func update_shop_display() -> void:
 		if button_message_active.get(item_id, false):
 			continue
 
-		var item: Dictionary = shop_items[item_id]
-		var item_name: String = str(item["name"])
-		var item_price: int = int(item["price"])
-		var button: Button = item["button"]
+		var shop_item: Dictionary = shop_items[item_id]
+		var apparel: Dictionary = ApparelDatabase.APPAREL[item_id]
+
+		var item_name: String = apparel["display_name"]
+		var item_price: int = apparel["price"]
+
+		var button: Button = shop_item["button"]
 
 		if purchased_this_session.has(item_id):
 			button.text = "Item Purchased"

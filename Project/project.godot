@@ -26,6 +26,7 @@ GameState="*uid://bb4caqma3thxs"
 SaveManager="*uid://d1bikja7hi7s1"
 ResumeManager="*uid://oh8x208qjav8"
 AppearanceDatabase="*uid://bqopc60am8h3j"
+ApparelDatabase="*uid://b2yy3r50kd8xu"
 
 [display]
 

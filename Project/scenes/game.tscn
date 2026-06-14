@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://fy1ryia7yph0" path="res://scenes/bouncy_platform.tscn" id="8_7025r"]
 [ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="9_1kice"]
 [ext_resource type="Script" uid="uid://11sjb73liy2a" path="res://scripts/player_camera_controller.gd" id="13_sww3w"]
+[ext_resource type="PackedScene" uid="uid://bi2wgvpf3ftto" path="res://scenes/golden_nut.tscn" id="14_37s47"]
 [ext_resource type="PackedScene" uid="uid://otjpeqr4gr44" path="res://scenes/overlay.tscn" id="14_ca42v"]
 [ext_resource type="PackedScene" uid="uid://dp0gd7t21fhkt" path="res://scenes/ui/resume_overlay.tscn" id="18_1kice"]
 [ext_resource type="Script" uid="uid://bc0d2lrn8kr6w" path="res://scripts/pause_manager.gd" id="23_bt5mj"]
@@ -823,6 +824,9 @@ position = Vector2(16, -4496)
 
 [node name="nut19" parent="Level/DynamicObjects" unique_id=1434891663 instance=ExtResource("8_264po")]
 position = Vector2(1696, -4847)
+
+[node name="GoldenNut" parent="Level/DynamicObjects" unique_id=874709448 instance=ExtResource("14_37s47")]
+position = Vector2(-288, -1745)
 
 [node name="EdgeProjectionManager" type="Node2D" parent="Level" unique_id=1176663138]
 script = ExtResource("3_bhx41")

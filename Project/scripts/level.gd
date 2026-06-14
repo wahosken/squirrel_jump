@@ -91,8 +91,8 @@ func _connect_nuts() -> void:
 			nut.connect("collected", Callable(self, "_on_nut_collected"))
 
 
-func _on_nut_collected(_nut) -> void:
-	GameState.add_nuts(1)
+func _on_nut_collected(nut) -> void:
+	GameState.add_nuts(nut.nut_value)
 
 
 func _on_nuts_changed(new_amount: int) -> void:

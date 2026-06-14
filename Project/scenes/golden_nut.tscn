@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://bi2wgvpf3ftto"]
+
+[ext_resource type="Script" uid="uid://6nu2dmhr2c45" path="res://scripts/nut.gd" id="1_lskmn"]
+[ext_resource type="Texture2D" uid="uid://b2uv88omyhq7f" path="res://assets/collectables/nut.png" id="2_21pue"]
+[ext_resource type="AudioStream" uid="uid://6s5w77lacg1q" path="res://audio/squirrel_audio_crunch.wav" id="3_777r3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1t6dd"]
+atlas = ExtResource("2_21pue")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5cbsx"]
+atlas = ExtResource("2_21pue")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fies8"]
+atlas = ExtResource("2_21pue")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6k8lo"]
+animations = [{
+"frames": [{
+"duration": 5.0,
+"texture": SubResource("AtlasTexture_1t6dd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5cbsx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fies8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ifhf5"]
+
+[node name="GoldenNut" type="Area2D" unique_id=1734965692 groups=["managed_entities", "nuts"]]
+collision_mask = 2
+script = ExtResource("1_lskmn")
+nut_value = 50
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=827177737]
+sprite_frames = SubResource("SpriteFrames_6k8lo")
+autoplay = "default"
+frame_progress = 0.77492434
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1767519260]
+position = Vector2(0, 1)
+shape = SubResource("CircleShape2D_ifhf5")
+
+[node name="NutSound" type="AudioStreamPlayer2D" parent="." unique_id=1187201319]
+stream = ExtResource("3_777r3")
+volume_db = -24.388
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -13,6 +13,7 @@ signal menu_closed
 
 @onready var default_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/DefaultButton
 @onready var acorn_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/AcornCapButton
+@onready var baseball_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/BaseballCapButton
 @onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/SuperSquirrelButton
 
 @onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/FullscreenButton
@@ -43,6 +44,7 @@ const SQUIRREL_SKELETON_ID := "squirrel_skeleton"
 
 const NO_APPAREL_ID := ""
 const ACORN_CAP_ID := "acorn_cap"
+const BASEBALL_CAP_ID := "baseball_cap"
 const SUPER_SQUIRREL_ID := "super_squirrel"
 
 var color_buttons: Dictionary = {}
@@ -99,6 +101,7 @@ func _ready() -> void:
 
 	default_button.pressed.connect(func(): select_cosmetic(NO_APPAREL_ID))
 	acorn_cap_button.pressed.connect(func(): select_cosmetic(ACORN_CAP_ID))
+	baseball_cap_button.pressed.connect(func(): select_cosmetic(BASEBALL_CAP_ID))
 	super_squirrel_button.pressed.connect(func(): select_cosmetic(SUPER_SQUIRREL_ID))
 
 	mute_button.pressed.connect(_on_mute_pressed)
@@ -260,7 +263,13 @@ func open_cosmetic_dropdown() -> void:
 			else:
 				default_button.grab_focus()
 
-		SUPER_SQUIRREL_ID:
+		BASEBALL_CAP_ID, "baseball_cap":
+			if not baseball_cap_button.disabled:
+				baseball_cap_button.grab_focus()
+			else:
+				default_button.grab_focus()
+
+		SUPER_SQUIRREL_ID, "super_squirrel":
 			if not super_squirrel_button.disabled:
 				super_squirrel_button.grab_focus()
 			else:
@@ -326,6 +335,9 @@ func update_inventory_display() -> void:
 		ACORN_CAP_ID:
 			cosmetic_dropdown_button.text = "Apparel: Acorn Cap"
 
+		BASEBALL_CAP_ID:
+			cosmetic_dropdown_button.text = "Apparel: Baseball Cap"
+
 		SUPER_SQUIRREL_ID:
 			cosmetic_dropdown_button.text = "Apparel: Super Squirrel"
 
@@ -341,6 +353,13 @@ func update_inventory_display() -> void:
 	else:
 		acorn_cap_button.text = "Acorn Cap (Locked)"
 		acorn_cap_button.disabled = true
+
+	if GameState.owns_cosmetic(BASEBALL_CAP_ID):
+		baseball_cap_button.text = "Baseball Cap"
+		baseball_cap_button.disabled = false
+	else:
+		baseball_cap_button.text = "Baseball Cap (Locked)"
+		baseball_cap_button.disabled = true
 
 	if GameState.owns_cosmetic(SUPER_SQUIRREL_ID):
 		super_squirrel_button.text = "Super Squirrel"

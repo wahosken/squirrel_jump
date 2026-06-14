@@ -121,6 +121,7 @@ var movement_locked := false
 
 @export var acorn_cap_texture: Texture2D
 @export var super_squirrel_texture: Texture2D
+@export var baseball_cap_texture: Texture2D
 
 # ======================================================
 # --- READY FUNCTION ---
@@ -167,22 +168,21 @@ func _on_squirrel_color_equipped(_color_id: String) -> void:
 
 
 func set_apparel(apparel_id: String) -> void:
-	match apparel_id:
-		"none", "":
-			apparel_sprite.visible = false
-			apparel_sprite.texture = null
 
-		"acorn_cap":
-			apparel_sprite.visible = true
-			apparel_sprite.texture = acorn_cap_texture
+	if apparel_id == "" or apparel_id == "none":
+		apparel_sprite.visible = false
+		apparel_sprite.texture = null
+		return
 
-		"super_squirrel":
-			apparel_sprite.visible = true
-			apparel_sprite.texture = super_squirrel_texture
+	if not ApparelDatabase.APPAREL.has(apparel_id):
+		apparel_sprite.visible = false
+		apparel_sprite.texture = null
+		return
 
-		_:
-			apparel_sprite.visible = false
-			apparel_sprite.texture = null
+	var apparel: Dictionary = ApparelDatabase.APPAREL[apparel_id]
+
+	apparel_sprite.visible = true
+	apparel_sprite.texture = load(apparel["texture_path"])
 
 
 func _apply_equipped_appearance() -> void:
@@ -194,6 +194,9 @@ func _apply_equipped_appearance() -> void:
 
 		"super_squirrel":
 			set_apparel("super_squirrel")
+
+		"baseball_cap":
+			set_apparel("baseball_cap")
 
 		_:
 			set_apparel("none")

@@ -59,6 +59,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Acorn Cap"
 
+[node name="BaseballCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1479454107]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Baseball Cap"
+
 [node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer" unique_id=1634841393]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
