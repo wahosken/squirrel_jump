@@ -3,13 +3,15 @@ extends Area2D
 signal collected(nut)
 
 @onready var nut_sound: AudioStreamPlayer2D = $NutSound
-
-var is_collected := false
+@onready var animated_sprite: AnimatedSprite2D = $animatedSprite2D
 
 @export var collectible_id := ""
 @export var nut_value := 1
 
+var is_collected := false
+
 func _ready() -> void:
+
 	if SaveManager.has_collectible(get_save_id()):
 		queue_free()
 

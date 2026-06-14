@@ -2,7 +2,23 @@
 
 [ext_resource type="Script" uid="uid://6nu2dmhr2c45" path="res://scripts/nut.gd" id="1_lskmn"]
 [ext_resource type="Texture2D" uid="uid://b2uv88omyhq7f" path="res://assets/collectables/nut.png" id="2_21pue"]
+[ext_resource type="Shader" uid="uid://cq215d5xlat4h" path="res://shaders/palette_swap.gdshader" id="2_777r3"]
 [ext_resource type="AudioStream" uid="uid://6s5w77lacg1q" path="res://audio/squirrel_audio_crunch.wav" id="3_777r3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hq75e"]
+shader = ExtResource("2_777r3")
+shader_parameter/source_body = Color(0.7411765, 0.5882353, 0.49411765, 1)
+shader_parameter/source_shade = Color(0.3254902, 0.23921569, 0.24705882, 1)
+shader_parameter/source_belly = Color(0.9882353, 0.94509804, 0.84313726, 1)
+shader_parameter/source_nose = Color(0, 0, 0, 1)
+shader_parameter/source_shadow = Color(0.18039216, 0.16078432, 0.19215687, 1)
+shader_parameter/source_eye = Color(0, 0, 0, 1)
+shader_parameter/target_body = Color(0.89411765, 0.6745098, 0.20392157, 1)
+shader_parameter/target_shade = Color(0.5294118, 0.3529412, 0.02745098, 1)
+shader_parameter/target_belly = Color(0.9882353, 0.972549, 0.6901961, 1)
+shader_parameter/target_nose = Color(0, 0, 0, 1)
+shader_parameter/target_shadow = Color(0.3137255, 0.22352941, 0.09019608, 1)
+shader_parameter/target_eye = Color(0, 0, 0, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1t6dd"]
 atlas = ExtResource("2_21pue")
@@ -35,12 +51,13 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ifhf5"]
 
-[node name="GoldenNut" type="Area2D" unique_id=1734965692 groups=["managed_entities", "nuts"]]
+[node name="golden_nut" type="Area2D" unique_id=1734965692 groups=["managed_entities", "nuts"]]
 collision_mask = 2
 script = ExtResource("1_lskmn")
 nut_value = 50
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=827177737]
+material = SubResource("ShaderMaterial_hq75e")
 sprite_frames = SubResource("SpriteFrames_6k8lo")
 autoplay = "default"
 frame_progress = 0.77492434

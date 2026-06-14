@@ -825,8 +825,8 @@ position = Vector2(16, -4496)
 [node name="nut19" parent="Level/DynamicObjects" unique_id=1434891663 instance=ExtResource("8_264po")]
 position = Vector2(1696, -4847)
 
-[node name="GoldenNut" parent="Level/DynamicObjects" unique_id=874709448 instance=ExtResource("14_37s47")]
-position = Vector2(-288, -1745)
+[node name="golden_nut" parent="Level/DynamicObjects" unique_id=526189952 instance=ExtResource("14_37s47")]
+position = Vector2(-287, -1745)
 
 [node name="EdgeProjectionManager" type="Node2D" parent="Level" unique_id=1176663138]
 script = ExtResource("3_bhx41")

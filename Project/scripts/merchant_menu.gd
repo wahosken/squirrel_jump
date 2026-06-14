@@ -4,9 +4,7 @@ signal menu_closed
 
 @onready var title_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/TitleLabel
 @onready var nuts_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/NutsLabel
-@onready var acorn_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/AcornCapButton
-@onready var baseball_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/BaseballCapButton
-@onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SuperSquirrelButton
+@onready var shop_items_container: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ShopItemsContainer
 @onready var close_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CloseButton
 
 var button_message_active := {}
@@ -14,35 +12,51 @@ var is_closing := false
 
 var purchased_this_session: Dictionary = {}
 
-var shop_items := {}
+var shop_buttons: Dictionary = {}
+
+
+func build_shop_buttons() -> void:
+	shop_buttons.clear()
+
+	for child in shop_items_container.get_children():
+		child.queue_free()
+
+	for item_id in ApparelDatabase.APPAREL.keys():
+
+		if item_id == "default":
+			continue
+
+		var button := Button.new()
+
+		button.add_theme_font_size_override("font_size", 12)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		button.pressed.connect(
+			func():
+				_on_shop_item_pressed(item_id)
+		)
+
+		shop_items_container.add_child(button)
+
+		shop_buttons[item_id] = button
 
 
 func _ready() -> void:
-	shop_items = {
-		"acorn_cap": {
-			"button": acorn_cap_button
-		},
-		"baseball_cap": {
-			"button": baseball_cap_button
-		},
-		"super_squirrel": {
-			"button": super_squirrel_button
-		}
-	}
 
-	for item_id in shop_items.keys():
+	build_shop_buttons()
+
+	for item_id in shop_buttons.keys():
 		button_message_active[item_id] = false
 
-	acorn_cap_button.pressed.connect(func(): _on_shop_item_pressed("acorn_cap"))
-	baseball_cap_button.pressed.connect(func(): _on_shop_item_pressed("baseball_cap"))
-	super_squirrel_button.pressed.connect(func(): _on_shop_item_pressed("super_squirrel"))
 	close_button.pressed.connect(close_menu)
 
 	GameState.nuts_changed.connect(_on_nuts_changed)
 	GameState.inventory_changed.connect(_on_inventory_changed)
 
 	update_shop_display()
-	acorn_cap_button.grab_focus()
+
+	if shop_items_container.get_child_count() > 0:
+		shop_items_container.get_child(0).grab_focus()
 
 
 func setup(npc_name: String) -> void:
@@ -78,8 +92,7 @@ func _on_shop_item_pressed(item_id: String) -> void:
 	var apparel: Dictionary = ApparelDatabase.APPAREL[item_id]
 	var item_price: int = apparel["price"]
 
-	var shop_item: Dictionary = shop_items[item_id]
-	var button: Button = shop_item["button"]
+	var button: Button = shop_buttons[item_id]
 
 	if GameState.owns_cosmetic(item_id):
 		return
@@ -97,8 +110,7 @@ func _on_shop_item_pressed(item_id: String) -> void:
 
 
 func show_button_message(item_id: String, message: String, duration: float = 0.8) -> void:
-	var item: Dictionary = shop_items[item_id]
-	var button: Button = item["button"]
+	var button: Button = shop_buttons[item_id]
 
 	button_message_active[item_id] = true
 
@@ -124,17 +136,17 @@ func _on_inventory_changed() -> void:
 func update_shop_display() -> void:
 	nuts_label.text = "Nuts: %d" % GameState.nuts
 
-	for item_id in shop_items.keys():
+	for item_id in shop_buttons.keys():
+
 		if button_message_active.get(item_id, false):
 			continue
 
-		var shop_item: Dictionary = shop_items[item_id]
 		var apparel: Dictionary = ApparelDatabase.APPAREL[item_id]
 
 		var item_name: String = apparel["display_name"]
 		var item_price: int = apparel["price"]
 
-		var button: Button = shop_item["button"]
+		var button: Button = shop_buttons[item_id]
 
 		if purchased_this_session.has(item_id):
 			button.text = "Item Purchased"

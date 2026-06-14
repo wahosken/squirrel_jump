@@ -3,7 +3,7 @@ extends Node
 const APPAREL := {
 	"default": {
 		"display_name": "None",
-		"texture_path": null,
+		"texture_path": "",
 		"price": 0
 	},
 

@@ -45,20 +45,8 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Nuts: 0"
 
-[node name="AcornCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=593653182]
+[node name="ShopItemsContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=207604863]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Acorn Hat - 10 Nuts"
-
-[node name="BaseballCapButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=193227909]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Baseball Cap - 10 Nuts"
-
-[node name="SuperSquirrelButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=504400778]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Superhero Cape - 15 Nuts"
 
 [node name="CloseButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1852865729]
 layout_mode = 2

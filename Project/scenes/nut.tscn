@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cowlcymhjuwxc"]
 
 [ext_resource type="Script" uid="uid://6nu2dmhr2c45" path="res://scripts/nut.gd" id="1_1t6dd"]
-[ext_resource type="Texture2D" uid="uid://b2uv88omyhq7f" path="res://assets/nut.png" id="1_e8gc1"]
+[ext_resource type="Texture2D" uid="uid://b2uv88omyhq7f" path="res://assets/collectables/nut.png" id="1_e8gc1"]
 [ext_resource type="AudioStream" uid="uid://6s5w77lacg1q" path="res://audio/squirrel_audio_crunch.wav" id="3_5cbsx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1t6dd"]

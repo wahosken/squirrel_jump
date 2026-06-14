@@ -11,10 +11,6 @@ signal menu_closed
 @onready var cosmetic_dropdown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticDropdownButton
 @onready var cosmetic_options_menu: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer
 
-@onready var default_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/DefaultButton
-@onready var acorn_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/AcornCapButton
-@onready var baseball_cap_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/BaseballCapButton
-@onready var super_squirrel_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer/SuperSquirrelButton
 
 @onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/FullscreenButton
 @onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/MuteButton
@@ -48,6 +44,7 @@ const BASEBALL_CAP_ID := "baseball_cap"
 const SUPER_SQUIRREL_ID := "super_squirrel"
 
 var color_buttons: Dictionary = {}
+var cosmetic_buttons: Dictionary = {}
 
 
 func build_color_buttons() -> void:
@@ -82,6 +79,51 @@ func build_color_buttons() -> void:
 		color_buttons[id] = button
 
 
+func build_cosmetic_buttons() -> void:
+
+	cosmetic_buttons.clear()
+
+	for child in cosmetic_options_menu.get_children():
+		child.queue_free()
+
+	var none_button := Button.new()
+
+	none_button.text = "None"
+	none_button.add_theme_font_size_override("font_size", 12)
+
+	none_button.pressed.connect(
+		func():
+			select_cosmetic("")
+	)
+
+	cosmetic_options_menu.add_child(none_button)
+
+	cosmetic_buttons[""] = none_button
+
+	for item_id in ApparelDatabase.APPAREL.keys():
+
+		if item_id == "default":
+			continue
+
+		var apparel: Dictionary = ApparelDatabase.APPAREL[item_id]
+
+		var button := Button.new()
+
+		button.text = apparel["display_name"]
+		button.add_theme_font_size_override("font_size", 12)
+
+		var id: String = item_id
+
+		button.pressed.connect(
+			func():
+				select_cosmetic(id)
+		)
+
+		cosmetic_options_menu.add_child(button)
+
+		cosmetic_buttons[id] = button
+
+
 func _ready() -> void:
 	
 	invert_camera_zoom_button.button_pressed = GameState.invert_camera_zoom
@@ -93,16 +135,12 @@ func _ready() -> void:
 	is_initializing_ui = true
 
 	build_color_buttons()
+	build_cosmetic_buttons()
 
 	color_dropdown_button.pressed.connect(toggle_color_dropdown)
 	cosmetic_dropdown_button.pressed.connect(toggle_cosmetic_dropdown)
 
 	master_bus_index = AudioServer.get_bus_index("Master")
-
-	default_button.pressed.connect(func(): select_cosmetic(NO_APPAREL_ID))
-	acorn_cap_button.pressed.connect(func(): select_cosmetic(ACORN_CAP_ID))
-	baseball_cap_button.pressed.connect(func(): select_cosmetic(BASEBALL_CAP_ID))
-	super_squirrel_button.pressed.connect(func(): select_cosmetic(SUPER_SQUIRREL_ID))
 
 	mute_button.pressed.connect(_on_mute_pressed)
 
@@ -256,27 +294,12 @@ func open_cosmetic_dropdown() -> void:
 
 	update_inventory_display()
 
-	match GameState.equipped_cosmetic:
-		ACORN_CAP_ID, "acorn_cap":
-			if not acorn_cap_button.disabled:
-				acorn_cap_button.grab_focus()
-			else:
-				default_button.grab_focus()
+	await get_tree().process_frame
 
-		BASEBALL_CAP_ID, "baseball_cap":
-			if not baseball_cap_button.disabled:
-				baseball_cap_button.grab_focus()
-			else:
-				default_button.grab_focus()
-
-		SUPER_SQUIRREL_ID, "super_squirrel":
-			if not super_squirrel_button.disabled:
-				super_squirrel_button.grab_focus()
-			else:
-				default_button.grab_focus()
-
-		_:
-			default_button.grab_focus()
+	if cosmetic_buttons.has(GameState.equipped_cosmetic):
+		cosmetic_buttons[GameState.equipped_cosmetic].grab_focus()
+	elif cosmetic_buttons.has(""):
+		cosmetic_buttons[""].grab_focus()
 
 
 func close_cosmetic_dropdown() -> void:
@@ -331,42 +354,38 @@ func update_inventory_display() -> void:
 		color_dropdown_button.text = "Squirrel: Brown"
 
 
-	match GameState.equipped_cosmetic:
-		ACORN_CAP_ID:
-			cosmetic_dropdown_button.text = "Apparel: Acorn Cap"
+	if GameState.equipped_cosmetic == "":
+		cosmetic_dropdown_button.text = "Apparel: None"
+	else:
+		var apparel: Dictionary = ApparelDatabase.APPAREL.get(
+			GameState.equipped_cosmetic
+		)
 
-		BASEBALL_CAP_ID:
-			cosmetic_dropdown_button.text = "Apparel: Baseball Cap"
-
-		SUPER_SQUIRREL_ID:
-			cosmetic_dropdown_button.text = "Apparel: Super Squirrel"
-
-		_:
+		if apparel:
+			cosmetic_dropdown_button.text = (
+				"Apparel: " + apparel["display_name"]
+			)
+		else:
 			cosmetic_dropdown_button.text = "Apparel: None"
 
-	default_button.text = "None"
-	default_button.disabled = false
 
-	if GameState.owns_cosmetic(ACORN_CAP_ID):
-		acorn_cap_button.text = "Acorn Cap"
-		acorn_cap_button.disabled = false
-	else:
-		acorn_cap_button.text = "Acorn Cap (Locked)"
-		acorn_cap_button.disabled = true
+	for item_id in cosmetic_buttons.keys():
 
-	if GameState.owns_cosmetic(BASEBALL_CAP_ID):
-		baseball_cap_button.text = "Baseball Cap"
-		baseball_cap_button.disabled = false
-	else:
-		baseball_cap_button.text = "Baseball Cap (Locked)"
-		baseball_cap_button.disabled = true
+		var button: Button = cosmetic_buttons[item_id]
 
-	if GameState.owns_cosmetic(SUPER_SQUIRREL_ID):
-		super_squirrel_button.text = "Super Squirrel"
-		super_squirrel_button.disabled = false
-	else:
-		super_squirrel_button.text = "Super Squirrel (Locked)"
-		super_squirrel_button.disabled = true
+		if item_id == "":
+			button.text = "None"
+			button.disabled = false
+			continue
+
+		var apparel: Dictionary = ApparelDatabase.APPAREL[item_id]
+
+		if GameState.owns_cosmetic(item_id):
+			button.text = apparel["display_name"]
+			button.disabled = false
+		else:
+			button.text = apparel["display_name"] + " (Locked)"
+			button.disabled = true
 
 func _on_fullscreen_button_pressed() -> void:
 	var current_mode = DisplayServer.window_get_mode()
