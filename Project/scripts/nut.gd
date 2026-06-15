@@ -3,7 +3,7 @@ extends Area2D
 signal collected(nut)
 
 @onready var nut_sound: AudioStreamPlayer2D = $NutSound
-@onready var animated_sprite: AnimatedSprite2D = $animatedSprite2D
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 @export var collectible_id := ""
 @export var nut_value := 1

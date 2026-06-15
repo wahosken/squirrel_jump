@@ -10,8 +10,8 @@ extends Node2D
 # --- CAMERA WRAP GUARD CONFIG ---
 # ======================================================
 @export var camera_guard_outer_distance := 192.0
-@export var camera_guard_inner_distance := 24.0
-@export var camera_guard_max_smoothing_speed := 80.0
+@export var camera_guard_inner_distance := 1.0
+@export var camera_guard_max_smoothing_speed := 40.0
 
 # ======================================================
 # --- ENTITY ACTIVATION CONFIG ---
@@ -119,6 +119,12 @@ func update_horizontal_player_wrap() -> void:
 	_prepare_camera_for_wrap()
 
 	player.global_position.x = new_x
+
+	var wrap_delta := new_x - old_x
+
+	for layer in get_tree().get_nodes_in_group("parallax_layers"):
+		layer.scroll_offset.x += wrap_delta * layer.scroll_scale.x
+
 	_reset_wrap_interpolation()
 
 	_finish_camera_after_wrap()

@@ -43,6 +43,7 @@ bouncy=""
 moving_platform=""
 leaf=""
 managed_entities=""
+parallax_layers=""
 
 [input]
 
