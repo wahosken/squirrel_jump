@@ -32,6 +32,11 @@ func run_branch_generation() -> void:
 	platforms.append_array(
 		get_falling_platforms()
 	)
+
+	platforms.append_array(
+		get_bouncy_platforms()
+	)
+
 	var trunks = get_trunk_edges(bkg_layer)
 	var trunk_tiles = get_trunk_tiles(bkg_layer)
 
@@ -723,6 +728,34 @@ func get_falling_platforms() -> Array:
 		"Total Falling Platforms: ",
 		result.size()
 	)
+
+	return result
+
+
+func get_bouncy_platforms() -> Array:
+
+	var result := []
+
+	var level = get_parent().get_parent()
+
+	if level == null:
+		return result
+
+	for node in level.get_tree().get_nodes_in_group("bouncy"):
+
+		var tile_pos = local_to_map(
+			to_local(node.global_position)
+		)
+
+		if tile_pos.y > MIN_BRANCH_ROW:
+			continue
+
+		result.append({
+			"cell": tile_pos,
+			"is_leaf": true,
+			"is_bouncy": true,
+			"node": node
+		})
 
 	return result
 
