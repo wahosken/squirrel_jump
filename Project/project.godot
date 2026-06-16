@@ -44,6 +44,7 @@ moving_platform=""
 leaf=""
 managed_entities=""
 parallax_layers=""
+swing_branch=""
 
 [input]
 

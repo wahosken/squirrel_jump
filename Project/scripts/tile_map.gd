@@ -2,7 +2,7 @@
 extends TileMap
 
 const TILESET_SOURCE_ID := 1
-const MAX_PLATFORM_GAP := 4
+const MAX_PLATFORM_GAP := 5
 const MIN_BRANCH_ROW := -55
 
 @export var generate_branches := false:
@@ -23,8 +23,6 @@ func run_branch_generation() -> void:
 
 	var platforms = []
 
-	print("Total Platforms: ", platforms.size())
-
 	platforms.append_array(
 		get_platform_tiles(mid_layer)
 	)
@@ -37,10 +35,12 @@ func run_branch_generation() -> void:
 		get_bouncy_platforms()
 	)
 
+	platforms.append_array(
+		get_swing_branches()
+	)
+
 	var trunks = get_trunk_edges(bkg_layer)
 	var trunk_tiles = get_trunk_tiles(bkg_layer)
-
-	print("Platforms Found: ", platforms.size())
 
 	var lookup = get_platform_lookup(platforms)
 
@@ -50,14 +50,7 @@ func run_branch_generation() -> void:
 		trunk_tiles
 	)
 
-	print("Clusters Found: ", clusters.size())
-
 	for cluster in clusters:
-
-		print(
-			"Drawing Cluster:",
-			get_cluster_id(cluster)
-		)
 
 		draw_cluster_support(
 			branch_layer,
@@ -88,14 +81,12 @@ func get_platform_tiles(mid_layer: int) -> Array:
 		)
 
 		if atlas == Vector2i(1, 6):
-			print("PLATFORM FOUND: ", cell)
 			platforms.append({
 				"cell": cell,
 				"is_leaf": false
 			})
 
 		elif atlas == Vector2i(3, 6):
-			print("PLATFORM FOUND: ", cell)
 			platforms.append({
 				"cell": cell,
 				"is_leaf": true
@@ -311,7 +302,6 @@ func find_platform_cluster(
 			cell,
 			trunk_tiles
 		):
-			print("SKIPPING TRUNK TOP PLATFORM: ", cell)
 			continue
 
 		cluster.append(current)
@@ -487,15 +477,8 @@ func draw_cluster_support(
 			):
 				support_tiles[fill_x] = true
 
-	print("RAW SUPPORT BEFORE SORT:", support_tiles.keys())
-
 	var support_positions = support_tiles.keys()
 	support_positions.sort()
-
-	print("LEFT:", left_platform)
-	print("RIGHT:", right_platform)
-	print("TRUNK:", trunk_x)
-	print("SUPPORT:", support_positions)
 
 	var left_x = support_positions[0]
 	var right_x = support_positions[
@@ -724,10 +707,6 @@ func get_falling_platforms() -> Array:
 					"node": node
 				})
 
-	print(
-		"Total Falling Platforms: ",
-		result.size()
-	)
 
 	return result
 
@@ -785,13 +764,34 @@ func find_best_trunk_for_cluster(
 				best_distance = distance
 				best_trunk = trunk_x
 
-	print(
-		"CLUSTER ",
-		get_cluster_id(cluster),
-		" BEST TRUNK ",
-		best_trunk,
-		" ROW TRUNKS ",
-		trunks[row_y]
-	)
-
 	return best_trunk
+
+
+func get_swing_branches() -> Array:
+
+	var result := []
+
+	var level = get_parent().get_parent()
+
+	if level == null:
+		return result
+
+	for node in level.get_tree().get_nodes_in_group("swing_branch"):
+
+		var tile_pos = local_to_map(
+			to_local(node.global_position)
+		)
+
+		tile_pos += Vector2i(0, -1)
+
+		if tile_pos.y > MIN_BRANCH_ROW:
+			continue
+
+		result.append({
+			"cell": tile_pos,
+			"is_leaf": true,
+			"is_swing_branch": true,
+			"node": node
+		})
+
+	return result
