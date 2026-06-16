@@ -3,6 +3,7 @@ extends TileMap
 
 const TILESET_SOURCE_ID := 1
 const MAX_PLATFORM_GAP := 4
+const MIN_BRANCH_ROW := -55
 
 @export var generate_branches := false:
 	set(value):
@@ -68,18 +69,28 @@ func get_layer_index_by_name(layer_name: String) -> int:
 
 
 func get_platform_tiles(mid_layer: int) -> Array:
-	var platforms = []
+
+	var platforms := []
 
 	for cell in get_used_cells(mid_layer):
-		var atlas = get_cell_atlas_coords(mid_layer, cell)
+
+		if cell.y > MIN_BRANCH_ROW:
+			continue
+
+		var atlas = get_cell_atlas_coords(
+			mid_layer,
+			cell
+		)
 
 		if atlas == Vector2i(1, 6):
+			print("PLATFORM FOUND: ", cell)
 			platforms.append({
 				"cell": cell,
 				"is_leaf": false
 			})
 
 		elif atlas == Vector2i(3, 6):
+			print("PLATFORM FOUND: ", cell)
 			platforms.append({
 				"cell": cell,
 				"is_leaf": true
@@ -295,6 +306,7 @@ func find_platform_cluster(
 			cell,
 			trunk_tiles
 		):
+			print("SKIPPING TRUNK TOP PLATFORM: ", cell)
 			continue
 
 		cluster.append(current)
@@ -329,6 +341,41 @@ func find_platform_cluster(
 			):
 				continue
 
+			var gap_distance = abs(
+				neighbor_pos.x - cell.x
+			)
+
+			var nearest_trunk_current = find_nearest_trunk(
+				cell.x,
+				cell.y,
+				trunks
+			)
+
+			var nearest_trunk_neighbor = find_nearest_trunk(
+				neighbor_pos.x,
+				neighbor_pos.y,
+				trunks
+			)
+
+			var current_trunk_distance = INF
+			var neighbor_trunk_distance = INF
+
+
+			var trunk_between_platforms = false
+
+			if trunks.has(cell.y):
+
+				for trunk_x in trunks[cell.y]:
+
+					if trunk_x > min(cell.x, neighbor_pos.x) \
+					and trunk_x < max(cell.x, neighbor_pos.x):
+
+						trunk_between_platforms = true
+						break
+
+			if trunk_between_platforms:
+				continue
+
 			open.append(
 				lookup[neighbor_pos]
 			)
@@ -358,6 +405,11 @@ func draw_cluster_support(
 	trunks: Dictionary
 ) -> void:
 
+	var row_y = cluster[0]["cell"].y
+
+	if row_y > MIN_BRANCH_ROW:
+		return
+
 	var positions := []
 
 	for platform in cluster:
@@ -365,39 +417,30 @@ func draw_cluster_support(
 
 	positions.sort()
 
-	print("Drawing cluster: ", positions)
+	var trunk_x = find_best_trunk_for_cluster(
+		cluster,
+		trunks
+	)
 
-	var row_y = cluster[0]["cell"].y
-
-	var connector_options = [
+	var connector = [
 		Vector2i(14, 7),
 		Vector2i(14, 8)
-	]
+	].pick_random()
 
-	var connector = connector_options.pick_random()
-
-	var end_cap_options = [
+	var end_cap = [
 		Vector2i(18, 7),
 		Vector2i(18, 8)
-	]
-
-	var end_cap = end_cap_options.pick_random()
+	].pick_random()
 
 	var left_platform = positions[0]
 	var right_platform = positions[positions.size() - 1]
-
-	var trunk_x = find_nearest_trunk(
-		left_platform,
-		row_y,
-		trunks
-	)
 
 	var has_trunk = trunk_x != null
 
 	var support_tiles := {}
 
 	#
-	# Build support from trunk -> cluster
+	# Build support span
 	#
 	if has_trunk:
 
@@ -418,13 +461,13 @@ func draw_cluster_support(
 				support_tiles[x] = true
 
 	#
-	# Add actual platform tiles
+	# Add platforms
 	#
 	for pos in positions:
 		support_tiles[pos] = true
 
 	#
-	# Fill gaps between platforms
+	# Fill gaps inside cluster
 	#
 	for i in range(positions.size() - 1):
 
@@ -439,22 +482,20 @@ func draw_cluster_support(
 			):
 				support_tiles[fill_x] = true
 
+	print("RAW SUPPORT BEFORE SORT:", support_tiles.keys())
+
 	var support_positions = support_tiles.keys()
 	support_positions.sort()
 
-	print("Support tiles: ", support_positions)
+	print("LEFT:", left_platform)
+	print("RIGHT:", right_platform)
+	print("TRUNK:", trunk_x)
+	print("SUPPORT:", support_positions)
 
 	var left_x = support_positions[0]
 	var right_x = support_positions[
 		support_positions.size() - 1
 	]
-
-	var cluster_is_right_of_trunk = true
-
-	if has_trunk:
-		cluster_is_right_of_trunk = (
-			left_platform > trunk_x
-		)
 
 	var platform_positions := {}
 
@@ -463,18 +504,33 @@ func draw_cluster_support(
 			platform["cell"].x
 		] = true
 
+	var connector_x = null
+
+	if has_trunk:
+		if left_platform > trunk_x:
+			connector_x = trunk_x + 1
+		else:
+			connector_x = trunk_x - 1
+
+	var cluster_is_right_of_trunk = true
+
+	if has_trunk:
+		cluster_is_right_of_trunk = (
+			left_platform > trunk_x
+		)
+
 	if cluster_is_right_of_trunk:
 
 		for x in support_positions:
 
 			var atlas : Vector2i
 
-			if has_trunk and x == left_x:
+			if has_trunk and x == connector_x:
 
-				if x in platform_positions:
+				if platform_positions.has(x):
 					atlas = connector
 				else:
-					atlas = Vector2i(14, 9)
+					atlas = get_gap_branch_tile()
 
 			elif platform_positions.has(x):
 				atlas = get_random_branch_tile()
@@ -502,12 +558,12 @@ func draw_cluster_support(
 
 			var atlas : Vector2i
 
-			if has_trunk and x == right_x:
+			if has_trunk and x == connector_x:
 
-				if x in platform_positions:
+				if platform_positions.has(x):
 					atlas = connector
 				else:
-					atlas = Vector2i(14, 9)
+					atlas = get_gap_connector_tile()
 
 			elif platform_positions.has(x):
 				atlas = get_random_branch_tile()
@@ -529,8 +585,7 @@ func draw_cluster_support(
 			TILESET_SOURCE_ID,
 			end_cap,
 			TileSetAtlasSource.TRANSFORM_FLIP_H
-		)
-
+			)
 
 func get_gap_connector_tile() -> Vector2i:
 	return Vector2i(14, 9)
@@ -654,6 +709,9 @@ func get_falling_platforms() -> Array:
 					to_local(node.global_position)
 				)
 
+				if tile_pos.y > MIN_BRANCH_ROW:
+					continue
+
 				result.append({
 					"cell": tile_pos,
 					"is_leaf": node.name.contains("leaf"),
@@ -661,6 +719,46 @@ func get_falling_platforms() -> Array:
 					"node": node
 				})
 
-	print("Total Falling Platforms: ", result.size())
+	print(
+		"Total Falling Platforms: ",
+		result.size()
+	)
 
 	return result
+
+
+func find_best_trunk_for_cluster(
+	cluster: Array,
+	trunks: Dictionary
+):
+
+	var row_y = cluster[0]["cell"].y
+
+	if not trunks.has(row_y):
+		return null
+
+	var best_trunk = null
+	var best_distance = INF
+
+	for platform in cluster:
+
+		var x = platform["cell"].x
+
+		for trunk_x in trunks[row_y]:
+
+			var distance = abs(x - trunk_x)
+
+			if distance < best_distance:
+				best_distance = distance
+				best_trunk = trunk_x
+
+	print(
+		"CLUSTER ",
+		get_cluster_id(cluster),
+		" BEST TRUNK ",
+		best_trunk,
+		" ROW TRUNKS ",
+		trunks[row_y]
+	)
+
+	return best_trunk
