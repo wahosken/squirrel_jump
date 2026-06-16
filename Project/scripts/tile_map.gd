@@ -113,27 +113,6 @@ func get_trunk_edges(bkg_layer: int) -> Dictionary:
 	return rows
 
 
-func find_nearest_trunk(
-	platform_x: int,
-	row: int,
-	trunks: Dictionary
-):
-	if not trunks.has(row):
-		return null
-
-	var nearest = null
-	var nearest_distance = INF
-
-	for trunk_x in trunks[row]:
-		var distance = abs(trunk_x - platform_x)
-
-		if distance < nearest_distance:
-			nearest_distance = distance
-			nearest = trunk_x
-
-	return nearest
-
-
 
 func get_trunk_tiles(bkg_layer: int) -> Dictionary:
 	var rows := {}
@@ -155,49 +134,6 @@ func get_trunk_tiles(bkg_layer: int) -> Dictionary:
 			rows[cell.y].append(cell.x)
 
 	return rows
-
-
-func place_test_branches(
-	branch_layer: int,
-	platforms: Array,
-	trunks: Dictionary,
-	trunk_tiles: Dictionary
-) -> void:
-
-
-
-	for platform in platforms:
-		var cell = platform["cell"]
-		var is_leaf = platform["is_leaf"]
-
-		if is_on_top_of_trunk(cell, trunk_tiles):
-			continue
-
-		var atlas: Vector2i
-
-		if is_adjacent_to_trunk(cell, trunks):
-			atlas = Vector2i(14, 7) if is_leaf else Vector2i(14, 8)
-		else:
-			atlas = get_random_branch_tile()
-
-		set_cell(
-			branch_layer,
-			cell,
-			TILESET_SOURCE_ID,
-			atlas
-		)
-
-
-func get_random_branch_tile() -> Vector2i:
-	return [
-		Vector2i(15, 7),
-		Vector2i(16, 7),
-		Vector2i(17, 7),
-
-		Vector2i(15, 8),
-		Vector2i(16, 8),
-		Vector2i(17, 8)
-	].pick_random()
 
 
 func is_adjacent_to_trunk(
@@ -226,25 +162,6 @@ func is_on_top_of_trunk(
 	return cell.x in trunk_tiles[cell.y]
 
 
-func get_adjacent_trunk_direction(
-	cell: Vector2i,
-	trunks: Dictionary
-) -> int:
-
-	if not trunks.has(cell.y):
-		return 0
-
-	for trunk_x in trunks[cell.y]:
-
-		if trunk_x == cell.x - 1:
-			return -1
-
-		if trunk_x == cell.x + 1:
-			return 1
-
-	return 0
-
-
 func get_platform_lookup(platforms: Array) -> Dictionary:
 	var lookup := {}
 
@@ -252,26 +169,6 @@ func get_platform_lookup(platforms: Array) -> Dictionary:
 		lookup[platform["cell"]] = platform
 
 	return lookup
-
-
-func get_trunk_connected_platforms(
-	platforms: Array,
-	trunks: Dictionary,
-	trunk_tiles: Dictionary
-) -> Array:
-
-	var result := []
-
-	for platform in platforms:
-		var cell = platform["cell"]
-
-		if is_on_top_of_trunk(cell, trunk_tiles):
-			continue
-
-		if is_adjacent_to_trunk(cell, trunks):
-			result.append(platform)
-
-	return result
 
 
 func find_platform_cluster(
@@ -336,62 +233,11 @@ func find_platform_cluster(
 			):
 				continue
 
-			var gap_distance = abs(
-				neighbor_pos.x - cell.x
-			)
-
-			var nearest_trunk_current = find_nearest_trunk(
-				cell.x,
-				cell.y,
-				trunks
-			)
-
-			var nearest_trunk_neighbor = find_nearest_trunk(
-				neighbor_pos.x,
-				neighbor_pos.y,
-				trunks
-			)
-
-			var current_trunk_distance = INF
-			var neighbor_trunk_distance = INF
-
-
-			var trunk_between_platforms = false
-
-			if trunks.has(cell.y):
-
-				for trunk_x in trunks[cell.y]:
-
-					if trunk_x > min(cell.x, neighbor_pos.x) \
-					and trunk_x < max(cell.x, neighbor_pos.x):
-
-						trunk_between_platforms = true
-						break
-
-			if trunk_between_platforms:
-				continue
-
 			open.append(
 				lookup[neighbor_pos]
 			)
 
 	return cluster
-
-
-func get_cluster_bounds(cluster: Array) -> Dictionary:
-	var left = 999999
-	var right = -999999
-
-	for platform in cluster:
-		var cell = platform["cell"]
-
-		left = min(left, cell.x)
-		right = max(right, cell.x)
-
-	return {
-		"left": left,
-		"right": right
-	}
 
 
 func draw_cluster_support(
@@ -419,12 +265,14 @@ func draw_cluster_support(
 
 	var connector = [
 		Vector2i(14, 7),
-		Vector2i(14, 8)
+		Vector2i(14, 8),
+		Vector2i(14, 9)
 	].pick_random()
 
 	var end_cap = [
 		Vector2i(18, 7),
-		Vector2i(18, 8)
+		Vector2i(18, 8),
+		Vector2i(18, 9)
 	].pick_random()
 
 	var left_platform = positions[0]
@@ -485,13 +333,6 @@ func draw_cluster_support(
 		support_positions.size() - 1
 	]
 
-	var platform_positions := {}
-
-	for platform in cluster:
-		platform_positions[
-			platform["cell"].x
-		] = true
-
 	var connector_x = null
 
 	if has_trunk:
@@ -514,17 +355,9 @@ func draw_cluster_support(
 			var atlas : Vector2i
 
 			if has_trunk and x == connector_x:
-
-				if platform_positions.has(x):
-					atlas = connector
-				else:
-					atlas = get_gap_branch_tile()
-
-			elif platform_positions.has(x):
-				atlas = get_random_branch_tile()
-
+				atlas = connector
 			else:
-				atlas = get_gap_branch_tile()
+				atlas = get_branch_tile()
 
 			set_cell(
 				branch_layer,
@@ -547,17 +380,9 @@ func draw_cluster_support(
 			var atlas : Vector2i
 
 			if has_trunk and x == connector_x:
-
-				if platform_positions.has(x):
-					atlas = connector
-				else:
-					atlas = get_gap_connector_tile()
-
-			elif platform_positions.has(x):
-				atlas = get_random_branch_tile()
-
+				atlas = connector
 			else:
-				atlas = get_gap_branch_tile()
+				atlas = get_branch_tile()
 
 			set_cell(
 				branch_layer,
@@ -575,24 +400,21 @@ func draw_cluster_support(
 			TileSetAtlasSource.TRANSFORM_FLIP_H
 			)
 
-func get_gap_connector_tile() -> Vector2i:
-	return Vector2i(14, 9)
 
+func get_branch_tile() -> Vector2i:
+	return [
+		Vector2i(15, 7),
+		Vector2i(16, 7),
+		Vector2i(17, 7),
 
-func get_cluster_id(cluster: Array) -> String:
+		Vector2i(15, 8),
+		Vector2i(16, 8),
+		Vector2i(17, 8),
 
-	var positions := []
-
-	for platform in cluster:
-		positions.append(platform["cell"].x)
-
-	positions.sort()
-
-	return str(
-		cluster[0]["cell"].y,
-		":",
-		positions
-	)
+		Vector2i(15, 9),
+		Vector2i(16, 9),
+		Vector2i(17, 9)
+	].pick_random()
 
 
 func trunk_between(
@@ -613,14 +435,6 @@ func trunk_between(
 			return true
 
 	return false
-
-
-func get_gap_branch_tile() -> Vector2i:
-	return [
-		Vector2i(15, 9),
-		Vector2i(16, 9),
-		Vector2i(17, 9)
-	].pick_random()
 
 
 func get_all_clusters(
@@ -654,22 +468,6 @@ func get_all_clusters(
 		clusters.append(cluster)
 
 	return clusters
-
-
-func cluster_has_trunk_connection(
-	cluster: Array,
-	trunks: Dictionary
-) -> bool:
-
-	for platform in cluster:
-
-		if is_adjacent_to_trunk(
-			platform["cell"],
-			trunks
-		):
-			return true
-
-	return false
 
 
 func get_falling_platforms() -> Array:
