@@ -2,6 +2,8 @@ extends CanvasLayer
 
 signal menu_closed
 
+@export var stats_overlay_scene: PackedScene
+
 @onready var nuts_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/NutsLabel
 
 @onready var color_dropdown_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ColorDropdownButton
@@ -12,17 +14,22 @@ signal menu_closed
 @onready var cosmetic_options_menu: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CosmeticOptionsContainer
 
 
-@onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/FullscreenButton
-@onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/MuteButton
-@onready var volume_container: HBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer
-@onready var volume_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/VolumeLabel
-@onready var volume_slider: HSlider = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/VolumeSlider
+@onready var fullscreen_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer/HBoxContainer2/FullscreenButton
+@onready var mute_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer/HBoxContainer2/MuteButton
+@onready var volume_container: HBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer/VolumeContainer
+@onready var volume_label: Label = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer/VolumeContainer/VolumeLabel
+@onready var volume_slider: HSlider = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer/VolumeContainer/VolumeSlider
 
-
-@onready var invert_camera_zoom_button: CheckButton = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/InvertCameraZoomCheckButton
-@onready var toggle_camera_zoom_button: CheckButton = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ToggleCameraZoomCheckButton
+@onready var invert_camera_zoom_button: CheckButton = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer/HBoxContainer/InvertCameraZoomCheckButton
+@onready var toggle_camera_zoom_button: CheckButton = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer/HBoxContainer/ToggleCameraZoomCheckButton
 
 @onready var resume_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ResumeButton
+
+@onready var settings_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsButton
+
+@onready var settings_container: VBoxContainer = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsContainer
+
+@onready var stats_button: Button = $CenterContainer/PanelContainer/MarginContainer/VBoxContainer/StatsButton
 
 var is_closing := false
 var color_dropdown_open := false
@@ -162,6 +169,11 @@ func _ready() -> void:
 	update_inventory_display()
 
 	cosmetic_dropdown_button.grab_focus()
+
+	settings_button.pressed.connect(_on_settings_button_pressed)
+	stats_button.pressed.connect(_on_stats_button_pressed)
+
+	settings_container.hide()
 
 	is_initializing_ui = false
 
@@ -425,3 +437,34 @@ func _on_return_to_title_button_pressed() -> void:
 	menu_closed.emit()
 
 	get_tree().change_scene_to_file("res://scenes/ui/title_screen.tscn")
+
+
+func _on_settings_button_pressed() -> void:
+
+	settings_container.visible = !settings_container.visible
+
+	if settings_container.visible:
+		fullscreen_button.grab_focus()
+	else:
+		settings_button.grab_focus()
+
+
+func _on_stats_button_pressed() -> void:
+
+	if stats_overlay_scene == null:
+		return
+
+	var overlay = stats_overlay_scene.instantiate()
+
+	get_tree().root.add_child(overlay)
+
+	overlay.stats_closed.connect(_on_stats_closed)
+
+
+func _on_stats_closed() -> void:
+	call_deferred("restore_stats_focus")
+
+
+func restore_stats_focus() -> void:
+	if is_instance_valid(stats_button):
+		stats_button.grab_focus()

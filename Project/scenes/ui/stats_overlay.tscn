@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://cfwipg0r2nloh"]
+
+[ext_resource type="Script" uid="uid://d3wrf2c43ao2l" path="res://scripts/ui/stats_overlay.gd" id="1_pi67m"]
+
+[node name="StatsOverlay" type="CanvasLayer" unique_id=1708259444]
+script = ExtResource("1_pi67m")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=726251050]
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -143.0
+offset_right = 200.0
+offset_bottom = 143.0
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=1649062996]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=1554014617]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer" unique_id=528450337]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1354557740]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Stats"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlaytimeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1608271894]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="JumpsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1417081871]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="HighestHeightLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1449660517]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="TotalHeightLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1254453739]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="FallsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1312770413]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="FallDistanceLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1119278497]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="ComebacksLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=508699070]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="ReturnsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=336133017]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="CloseButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=130455350]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Close"
+
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

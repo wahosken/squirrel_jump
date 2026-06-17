@@ -129,8 +129,13 @@ var movement_locked := false
 func _ready():
 	add_to_group("player")
 
-	global_position = SaveManager.save_data.player_position
-	velocity = Vector2.ZERO
+	global_position = SaveManager.dict_to_vector2(
+		SaveManager.save_data.player_position
+	)
+
+	velocity = SaveManager.dict_to_vector2(
+		SaveManager.save_data.player_velocity
+	)
 
 	resumed_in_air = !SaveManager.save_data.player_grounded
 
@@ -268,6 +273,9 @@ func check_wall_cling(input_dir: float, delta: float) -> void:
 # --- PLAYER JUMP FUNCTION ---
 # ======================================================
 func player_jump():
+
+	StatsManager.record_jump()
+
 	jump_cooldown = 0.25
 	just_jumped = true
 
@@ -352,6 +360,11 @@ func _physics_process(delta: float) -> void:
 	if physics_locked:
 		return
 
+	StatsManager.record_playtime(delta)
+	StatsManager.record_airborne(delta,is_on_floor())
+	StatsManager.record_idle_time(delta,is_on_floor(),abs(velocity.x))
+	StatsManager.record_height(global_position.y)
+
 	var menu_input_locked := movement_locked
 	
 	# --- Get Horizontal Input ---
@@ -411,6 +424,11 @@ func _physics_process(delta: float) -> void:
 # ======================================================
 	var on_floor = is_on_floor()
 	var just_landed = on_floor and not was_on_floor
+
+	var just_left_ground = !on_floor and was_on_floor
+
+	if just_left_ground and velocity.y > 0:
+		StatsManager.start_fall(global_position.y)
 
 	# --- Fall tracking ---
 	if on_floor:
@@ -670,15 +688,22 @@ func _physics_process(delta: float) -> void:
 				break
 
 	if landed_this_frame:
-		SaveManager.save_data.player_position = global_position
+
+		StatsManager.record_landing(global_position.y)
+
+		SaveManager.save_data.player_position = (SaveManager.vector2_to_dict(global_position))
+
+		SaveManager.save_data.player_velocity = (SaveManager.vector2_to_dict(Vector2.ZERO))
+
 		SaveManager.save_data.player_grounded = true
+
 		SaveManager.mark_dirty()
 
 		was_on_floor = is_on_floor()
 
 	if velocity.y > 1000 and !fall_save_triggered:
-		SaveManager.save_data.player_position = global_position
-		SaveManager.save_data.player_velocity = velocity
+		SaveManager.save_data.player_position = (SaveManager.vector2_to_dict(global_position))
+		SaveManager.save_data.player_velocity = (SaveManager.vector2_to_dict(velocity))
 		SaveManager.save_data.player_grounded = false
 
 		SaveManager.mark_dirty()

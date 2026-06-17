@@ -33,8 +33,8 @@ func has_save() -> bool:
 
 
 func save_player(player) -> void:
-	save_data.player_position = player.global_position
-	save_data.player_velocity = player.velocity
+	save_data.player_position = vector2_to_dict(player.global_position)
+	save_data.player_velocity = vector2_to_dict(player.velocity)
 	save_data.player_grounded = player.is_on_floor()
 
 	save_game()
@@ -46,8 +46,8 @@ func save_current_player() -> void:
 	if player == null:
 		return
 
-	save_data.player_position = player.global_position
-	save_data.player_velocity = player.velocity
+	save_data.player_position = vector2_to_dict(player.global_position)
+	save_data.player_velocity = vector2_to_dict(player.velocity)
 	save_data.player_grounded = player.is_on_floor()
 
 	save_game()
@@ -62,9 +62,12 @@ func save_game() -> void:
 		push_error("Failed to save game.")
 		return
 
-	save_data["last_played"] = Time.get_unix_time_from_system()
+	save_data["last_played"] = int(Time.get_unix_time_from_system())
 
-	file.store_var(save_data)
+	file.store_string(
+		JSON.stringify(save_data, "\t")
+	)
+
 	file.close()
 
 	print("GAME SAVED")
@@ -83,7 +86,16 @@ func load_game() -> void:
 		save_data = get_default_save()
 		return
 
-	save_data = file.get_var()
+	var text := file.get_as_text()
+
+	var parsed = JSON.parse_string(text)
+
+	if parsed == null:
+		push_error("Failed to parse save file.")
+		save_data = get_default_save()
+		return
+
+	save_data = parsed
 	file.close()
 
 	GameState.load_from_save()
@@ -110,7 +122,8 @@ func backup_current_save() -> void:
 	if source == null:
 		return
 
-	var data = source.get_var()
+	var data := source.get_as_text()
+
 	source.close()
 
 	var backup := FileAccess.open(
@@ -121,20 +134,22 @@ func backup_current_save() -> void:
 	if backup == null:
 		return
 
-	backup.store_var(data)
+	backup.store_string(data)
+
 	backup.close()
 
 
 func get_default_save() -> Dictionary:
 	return {
-		"version": 1,
+		"save_version": 1,
+		"version": 0.3,
 
-		"created_at": Time.get_unix_time_from_system(),
-		"last_played": Time.get_unix_time_from_system(),
+		"created_at": int(Time.get_unix_time_from_system()),
+		"last_played": int(Time.get_unix_time_from_system()),
 
 		# Current climb state
-		"player_position": DEFAULT_SPAWN,
-		"player_velocity": Vector2.ZERO,
+		"player_position": vector2_to_dict(DEFAULT_SPAWN),
+		"player_velocity": vector2_to_dict(Vector2.ZERO),
 		"player_grounded": true,
 
 		# Progress
@@ -170,8 +185,6 @@ func get_default_save() -> Dictionary:
 		"summit_reaches": 0,
 		"major_comebacks": 0,
 
-		"longest_session_seconds": 0.0,
-
 		# Settings
 		"difficulty": "normal"
 	}
@@ -191,3 +204,34 @@ func collect_collectible(id: String) -> void:
 
 	save_data.collectibles.append(id)
 	save_game()
+
+
+func vector2_to_dict(v: Vector2) -> Dictionary:
+	return {
+		"x": roundi(v.x),
+		"y": roundi(v.y)
+	}
+
+
+func dict_to_vector2(data: Dictionary) -> Vector2:
+	return Vector2(
+		data.get("x", 0),
+		data.get("y", 0)
+	)
+
+
+func add_stat(stat_name: String, amount) -> void:
+	if not save_data.has(stat_name):
+		return
+
+	save_data[stat_name] += amount
+	mark_dirty()
+
+
+func set_stat_if_higher(stat_name: String, value) -> void:
+	if not save_data.has(stat_name):
+		return
+
+	if value > save_data[stat_name]:
+		save_data[stat_name] = value
+		mark_dirty()

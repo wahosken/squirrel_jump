@@ -27,6 +27,7 @@ SaveManager="*uid://d1bikja7hi7s1"
 ResumeManager="*uid://oh8x208qjav8"
 AppearanceDatabase="*uid://bqopc60am8h3j"
 ApparelDatabase="*uid://b2yy3r50kd8xu"
+StatsManager="*uid://3l7uvi64yabh"
 
 [display]
 
