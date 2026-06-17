@@ -233,6 +233,48 @@ func find_platform_cluster(
 			):
 				continue
 
+			var platform_distance = abs(
+				neighbor_pos.x - cell.x
+			)
+
+			#
+			# Always merge directly adjacent
+			# platform tiles.
+			#
+			if platform_distance <= 1:
+				open.append(
+					lookup[neighbor_pos]
+				)
+				continue
+
+			var current_trunk_distance = INF
+			var neighbor_trunk_distance = INF
+
+			if trunks.has(cell.y):
+
+				for trunk_x in trunks[cell.y]:
+
+					current_trunk_distance = min(
+						current_trunk_distance,
+						abs(trunk_x - cell.x)
+					)
+
+					neighbor_trunk_distance = min(
+						neighbor_trunk_distance,
+						abs(trunk_x - neighbor_pos.x)
+					)
+
+			var trunk_distance = min(
+				current_trunk_distance,
+				neighbor_trunk_distance
+			)
+
+			#
+			# Trunks win ties.
+			#
+			if trunk_distance <= platform_distance:
+				continue
+
 			open.append(
 				lookup[neighbor_pos]
 			)
@@ -366,12 +408,22 @@ func draw_cluster_support(
 				atlas
 			)
 
-		set_cell(
-			branch_layer,
-			Vector2i(right_x + 1, row_y),
-			TILESET_SOURCE_ID,
-			end_cap
+		var endcap_pos = Vector2i(
+			right_x + 1,
+			row_y
 		)
+
+		if get_cell_source_id(
+			branch_layer,
+			endcap_pos
+		) == -1:
+
+			set_cell(
+				branch_layer,
+				endcap_pos,
+				TILESET_SOURCE_ID,
+				end_cap
+			)
 
 	else:
 
@@ -392,12 +444,22 @@ func draw_cluster_support(
 				TileSetAtlasSource.TRANSFORM_FLIP_H
 			)
 
-		set_cell(
+		var endcap_pos = Vector2i(
+			left_x - 1,
+			row_y
+		)
+
+		if get_cell_source_id(
 			branch_layer,
-			Vector2i(left_x - 1, row_y),
-			TILESET_SOURCE_ID,
-			end_cap,
-			TileSetAtlasSource.TRANSFORM_FLIP_H
+			endcap_pos
+		) == -1:
+
+			set_cell(
+				branch_layer,
+				endcap_pos,
+				TILESET_SOURCE_ID,
+				end_cap,
+				TileSetAtlasSource.TRANSFORM_FLIP_H
 			)
 
 
