@@ -31,7 +31,6 @@ extends Node2D
 # ======================================================
 @onready var player: CharacterBody2D = $"../player"
 @onready var camera: Camera2D = $"../player/Camera2D"
-@onready var nut_counter_label: Label = $"../Overlay/NutCounterLabel"
 
 # ======================================================
 # --- STATE ---
@@ -57,10 +56,6 @@ func _ready() -> void:
 		camera_original_smoothing_enabled = camera.position_smoothing_enabled
 		camera_original_smoothing_speed = camera.position_smoothing_speed
 
-	if not GameState.nuts_changed.is_connected(_on_nuts_changed):
-		GameState.nuts_changed.connect(_on_nuts_changed)
-
-	_on_nuts_changed(GameState.nuts)
 	update_entity_activation()
 
 
@@ -93,10 +88,6 @@ func _connect_nuts() -> void:
 
 func _on_nut_collected(nut) -> void:
 	GameState.add_nuts(nut.nut_value)
-
-
-func _on_nuts_changed(new_amount: int) -> void:
-	nut_counter_label.text = "Nuts: %d" % new_amount
 
 
 # ======================================================

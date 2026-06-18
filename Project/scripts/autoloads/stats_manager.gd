@@ -17,6 +17,8 @@ var airborne_time := 0.0
 
 var idle_accumulator := 0.0
 
+var in_interior := false
+
 const COMEBACK_FALL_DISTANCE := 2000.0
 
 const GROUND_Y := -1740.0

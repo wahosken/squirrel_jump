@@ -46,6 +46,7 @@ leaf=""
 managed_entities=""
 parallax_layers=""
 swing_branch=""
+spawn_points=""
 
 [input]
 

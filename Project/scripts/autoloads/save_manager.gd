@@ -12,8 +12,12 @@ var save_dirty := false
 
 var autosave_timer := 0.0
 
+var scene_spawn_override: Vector2 = Vector2.ZERO
+var use_scene_spawn := false
+
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
+
 	load_game()
 
 
@@ -96,6 +100,7 @@ func load_game() -> void:
 		return
 
 	save_data = parsed
+	print("LOADED POSITION: ", save_data.player_position)
 	file.close()
 
 	GameState.load_from_save()
@@ -141,6 +146,8 @@ func backup_current_save() -> void:
 
 func get_default_save() -> Dictionary:
 	return {
+		"exit_spawn_id": "",
+
 		"save_version": 1,
 		"version": 0.3,
 
@@ -235,3 +242,13 @@ func set_stat_if_higher(stat_name: String, value) -> void:
 	if value > save_data[stat_name]:
 		save_data[stat_name] = value
 		mark_dirty()
+
+
+func set_exit_spawn(spawn_id: String) -> void:
+	save_data.exit_spawn_id = spawn_id
+	save_game()
+
+
+func clear_exit_spawn() -> void:
+	save_data.exit_spawn_id = ""
+	save_game()

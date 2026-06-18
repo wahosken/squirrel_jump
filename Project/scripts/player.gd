@@ -129,24 +129,51 @@ var movement_locked := false
 func _ready():
 	add_to_group("player")
 
-	global_position = SaveManager.dict_to_vector2(
-		SaveManager.save_data.player_position
-	)
+	var spawned_from_override := SaveManager.use_scene_spawn
 
-	velocity = SaveManager.dict_to_vector2(
-		SaveManager.save_data.player_velocity
-	)
+	if SaveManager.use_scene_spawn:
+		global_position = SaveManager.scene_spawn_override
+		SaveManager.use_scene_spawn = false
+
+	else:
+
+		if SaveManager.save_data.exit_spawn_id != "":
+
+			var spawn = find_exit_spawn(
+				SaveManager.save_data.exit_spawn_id
+			)
+
+			if spawn:
+
+				global_position = spawn.global_position
+
+				SaveManager.clear_exit_spawn()
+
+			else:
+				global_position = SaveManager.dict_to_vector2(
+					SaveManager.save_data.player_position
+				)
+
+		else:
+
+			global_position = SaveManager.dict_to_vector2(
+				SaveManager.save_data.player_position
+			)
 
 	resumed_in_air = !SaveManager.save_data.player_grounded
 
-	physics_locked = true
-	set_input_enabled(false)
+	if spawned_from_override:
 
-	if resumed_in_air:
-		change_state(PlayerState.FALL)
+		physics_locked = false
+		set_input_enabled(true)
 
-	if not ResumeManager.resume_finished.is_connected(_on_resume_finished):
-		ResumeManager.resume_finished.connect(_on_resume_finished)
+	else:
+
+		physics_locked = true
+		set_input_enabled(false)
+
+		if not ResumeManager.resume_finished.is_connected(_on_resume_finished):
+			ResumeManager.resume_finished.connect(_on_resume_finished)
 	
 	swing.grab_point = grab_point
 	visuals_normal_position = visuals.position
@@ -799,4 +826,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 		GameState.equip_squirrel_color(random_id)
 
-		print("Random Squirrel: ", random_id)
+
+func find_exit_spawn(spawn_id: String) -> Node:
+
+	for node in get_tree().get_nodes_in_group("spawn_points"):
+
+		if node.has_meta("spawn_id"):
+
+			if node.get_meta("spawn_id") == spawn_id:
+				return node
+
+	return null

@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://cmgqbj6ffxsdo"]
+
+[ext_resource type="Script" uid="uid://cdnjk0mnyg28e" path="res://scripts/shop.gd" id="1_8r1wq"]
+[ext_resource type="Texture2D" uid="uid://cu2ibdepn84bo" path="res://assets/world/shop_background.png" id="1_lx5au"]
+[ext_resource type="PackedScene" uid="uid://bbj1v36uoifdr" path="res://scenes/npc.tscn" id="3_1l46r"]
+[ext_resource type="Script" uid="uid://drgjpklnkrnal" path="res://scripts/door_area_exit.gd" id="3_m4ofw"]
+[ext_resource type="PackedScene" uid="uid://dlcdc4mkobg10" path="res://scenes/player.tscn" id="4_032fp"]
+[ext_resource type="Script" uid="uid://11sjb73liy2a" path="res://scripts/player_camera_controller.gd" id="5_8r1wq"]
+[ext_resource type="PackedScene" uid="uid://otjpeqr4gr44" path="res://scenes/overlay.tscn" id="7_m4ofw"]
+[ext_resource type="Script" uid="uid://bc0d2lrn8kr6w" path="res://scripts/pause_manager.gd" id="8_heatd"]
+[ext_resource type="PackedScene" uid="uid://d2trsyeyglxos" path="res://scenes/pause_menu.tscn" id="9_1v8qu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lx5au"]
+size = Vector2(33, 79)
+
+[node name="Shop" type="Area2D" unique_id=973379687]
+script = ExtResource("1_8r1wq")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=180764649]
+position = Vector2(0, -190)
+texture = ExtResource("1_lx5au")
+
+[node name="NutShopLabel" type="Label" parent="." unique_id=871071629]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -36.0
+offset_top = -345.0
+offset_right = 36.0
+offset_bottom = -322.0
+grow_horizontal = 2
+text = "Nut Shop"
+
+[node name="Floor" type="StaticBody2D" parent="." unique_id=4045725]
+position = Vector2(0, -190)
+collision_mask = 16
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Floor" unique_id=629479775]
+position = Vector2(0.5, 146)
+polygon = PackedVector2Array(319.5, 45, 319.5, -336, -320.5, -336, -320.5, 44, 319.5, 45, 266.5, -10, -266.5, -10, -266.5, -284, 266.5, -284, 266.5, -10)
+
+[node name="ExitDoorArea" type="Area2D" parent="." unique_id=613542903]
+position = Vector2(0, -190)
+collision_mask = 16
+script = ExtResource("3_m4ofw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitDoorArea" unique_id=1414293312]
+position = Vector2(-247.5, 95)
+shape = SubResource("RectangleShape2D_lx5au")
+
+[node name="npc" parent="." unique_id=1870510558 instance=ExtResource("3_1l46r")]
+position = Vector2(0, -54)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1796648906]
+position = Vector2(0, -190)
+process_callback = 0
+
+[node name="PlayerSpawn" type="Marker2D" parent="." unique_id=585117758]
+position = Vector2(-210, -54)
+
+[node name="SecretSpawn" type="Marker2D" parent="." unique_id=1774611316]
+position = Vector2(-27, -309)
+
+[node name="player" parent="." unique_id=131994215 instance=ExtResource("4_032fp")]
+
+[node name="PlayerCameraController" type="Node" parent="player" unique_id=944219299]
+script = ExtResource("5_8r1wq")
+
+[node name="PauseManager" type="Node" parent="." unique_id=1090839270]
+script = ExtResource("8_heatd")
+pause_menu_scene = ExtResource("9_1v8qu")
+
+[node name="Overlay" parent="." unique_id=183187612 instance=ExtResource("7_m4ofw")]

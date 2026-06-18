@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://bf2ffsripsini"]
+
+[ext_resource type="Texture2D" uid="uid://d0vqytp3wjd0i" path="res://assets/world/building1.png" id="1_8kne3"]
+[ext_resource type="Script" uid="uid://il4uxalamql6" path="res://scripts/door_area.gd" id="2_gqmnm"]
+[ext_resource type="Script" uid="uid://on8axdoegjvu" path="res://scripts/secret_door.gd" id="3_yvtlk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yvtlk"]
+size = Vector2(48, 78)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2ulf"]
+size = Vector2(94, 4)
+
+[node name="building1" type="Node2D" unique_id=332907481]
+z_index = -1
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1974099377]
+position = Vector2(0, -128)
+texture = ExtResource("1_8kne3")
+
+[node name="DoorArea" type="Area2D" parent="." unique_id=1760804213]
+collision_mask = 16
+script = ExtResource("2_gqmnm")
+exit_spawn_id = "shop_1"
+spawn_position = Vector2(-211, -64)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorArea" unique_id=136072222]
+position = Vector2(0, -39)
+shape = SubResource("RectangleShape2D_yvtlk")
+
+[node name="ExteriorSpawn" type="Marker2D" parent="." unique_id=785645910 groups=["spawn_points"]]
+position = Vector2(-40, 0)
+metadata/spawn_id = "shop_1"
+
+[node name="SecretDoor" type="Area2D" parent="." unique_id=1497310638]
+collision_mask = 16
+script = ExtResource("3_yvtlk")
+spawn_position = Vector2(-27, -309)
+exit_spawn_id = "shop_1"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecretDoor" unique_id=1943940027]
+position = Vector2(0, -187)
+shape = SubResource("RectangleShape2D_a2ulf")

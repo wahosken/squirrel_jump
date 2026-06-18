@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://otjpeqr4gr44"]
 
+[ext_resource type="Script" uid="uid://cbbycsp0lw7i3" path="res://scripts/ui/overlay.gd" id="1_4jgic"]
 [ext_resource type="Script" uid="uid://08mgvb70q0gv" path="res://scripts/ui.gd" id="1_rqwgw"]
 [ext_resource type="Texture2D" uid="uid://bnk8dpmypg40b" path="res://assets/ui/buttons7.png" id="2_lot3u"]
 [ext_resource type="Texture2D" uid="uid://2mmxoiadfchi" path="res://assets/ui/buttons8.png" id="3_ubex6"]
@@ -18,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://dised0650v2xm" path="res://assets/ui/button_cycle_pressed.png" id="15_4jgic"]
 
 [node name="Overlay" type="CanvasLayer" unique_id=183187612]
+script = ExtResource("1_4jgic")
 
 [node name="UI" type="Control" parent="." unique_id=402755030]
 z_index = 1
