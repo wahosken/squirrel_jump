@@ -6,7 +6,8 @@ extends CanvasLayer
 
 
 func _ready():
-	visible = true
+
+	visible = false
 
 	# Start transparent
 	var color := color_rect.modulate
@@ -21,13 +22,21 @@ func _ready():
 
 
 func _on_resume_started():
+
+	visible = true
+	label.visible = true
+
 	animation_player.play("resume_fade")
 
 
 func _on_resume_finished():
-	pass
+
+	visible = false
 
 
 func _on_animation_player_animation_finished(anim_name):
+
 	if anim_name == "resume_fade":
-		label.visible = false
+
+		if not ResumeManager.is_resuming:
+			visible = false

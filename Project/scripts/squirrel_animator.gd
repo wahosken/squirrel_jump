@@ -77,7 +77,7 @@ var animations := {
 
 	"crouch": {
 		"row": 6,
-		"frames": [0, 1, 2],
+		"frames": [0, 0, 0, 1, 2],
 		"fps": 10.0
 	},
 

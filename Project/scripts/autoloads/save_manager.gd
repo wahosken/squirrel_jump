@@ -5,7 +5,7 @@ const PREVIOUS_SAVE_PATH := "user://previous_save.json"
 
 const DEFAULT_SPAWN := Vector2(-432, -1728)
 
-const SAVE_TIMER = 0.25
+const SAVE_TIMER = 5.0
 
 var save_data: Dictionary = {}
 var save_dirty := false

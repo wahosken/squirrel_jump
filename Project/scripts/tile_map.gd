@@ -15,16 +15,16 @@ const MIN_BRANCH_ROW := -55
 func run_branch_generation() -> void:
 	print("Generating branches...")
 
-	var mid_layer = get_layer_index_by_name("Mid")
+	var platforms_layer = get_layer_index_by_name("Platforms")
 	var branch_layer = get_layer_index_by_name("Branches")
-	var bkg_layer = get_layer_index_by_name("Bkg")
+	var trees_layer = get_layer_index_by_name("Trees")
 
 	clear_layer(branch_layer)
 
 	var platforms = []
 
 	platforms.append_array(
-		get_platform_tiles(mid_layer)
+		get_platform_tiles(platforms_layer)
 	)
 
 	platforms.append_array(
@@ -39,8 +39,8 @@ func run_branch_generation() -> void:
 		get_swing_branches()
 	)
 
-	var trunks = get_trunk_edges(bkg_layer)
-	var trunk_tiles = get_trunk_tiles(bkg_layer)
+	var trunks = get_trunk_edges(trees_layer)
+	var trunk_tiles = get_trunk_tiles(trees_layer)
 
 	var lookup = get_platform_lookup(platforms)
 
@@ -66,17 +66,17 @@ func get_layer_index_by_name(layer_name: String) -> int:
 	return -1
 
 
-func get_platform_tiles(mid_layer: int) -> Array:
+func get_platform_tiles(platforms_layer: int) -> Array:
 
 	var platforms := []
 
-	for cell in get_used_cells(mid_layer):
+	for cell in get_used_cells(platforms_layer):
 
 		if cell.y > MIN_BRANCH_ROW:
 			continue
 
 		var atlas = get_cell_atlas_coords(
-			mid_layer,
+			platforms_layer,
 			cell
 		)
 
@@ -95,11 +95,11 @@ func get_platform_tiles(mid_layer: int) -> Array:
 	return platforms
 
 
-func get_trunk_edges(bkg_layer: int) -> Dictionary:
+func get_trunk_edges(trees_layer: int) -> Dictionary:
 	var rows := {}
 
-	for cell in get_used_cells(bkg_layer):
-		var atlas = get_cell_atlas_coords(bkg_layer, cell)
+	for cell in get_used_cells(trees_layer):
+		var atlas = get_cell_atlas_coords(trees_layer, cell)
 
 		var is_left_edge = atlas.x == 15 and atlas.y >= 0 and atlas.y <= 5
 		var is_right_edge = atlas.x == 17 and atlas.y >= 0 and atlas.y <= 5
@@ -114,11 +114,11 @@ func get_trunk_edges(bkg_layer: int) -> Dictionary:
 
 
 
-func get_trunk_tiles(bkg_layer: int) -> Dictionary:
+func get_trunk_tiles(trees_layer: int) -> Dictionary:
 	var rows := {}
 
-	for cell in get_used_cells(bkg_layer):
-		var atlas = get_cell_atlas_coords(bkg_layer, cell)
+	for cell in get_used_cells(trees_layer):
+		var atlas = get_cell_atlas_coords(trees_layer, cell)
 
 		var is_trunk = (
 			atlas.x >= 15
@@ -182,7 +182,7 @@ func find_platform_cluster(
 	var visited := {}
 
 	var trunks = get_trunk_edges(
-		get_layer_index_by_name("Bkg")
+		get_layer_index_by_name("Trees")
 	)
 
 	while open.size() > 0:

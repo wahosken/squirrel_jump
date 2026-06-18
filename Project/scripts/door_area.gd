@@ -26,6 +26,8 @@ func _process(_delta):
 		SaveManager.scene_spawn_override = spawn_position
 		SaveManager.use_scene_spawn = true
 
+		ResumeManager.clear_resume()
+
 		get_tree().change_scene_to_file(target_scene)
 
 func _on_body_entered(body):

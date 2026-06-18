@@ -87,6 +87,16 @@ var fast_fall_through_timer := 0.0
 var input_enabled := true
 var movement_locked := false
 
+# Saves
+var save_anchor_position := Vector2.ZERO
+
+const SAVE_DISTANCE := 300.0
+const FALL_SAVE_DROP := 300.0
+
+var highest_point_since_save := 0.0
+
+var just_resumed := false
+
 # ======================================================
 # --- EXPORT VARIABLES ---
 # ======================================================
@@ -129,8 +139,6 @@ var movement_locked := false
 func _ready():
 	add_to_group("player")
 
-	var spawned_from_override := SaveManager.use_scene_spawn
-
 	if SaveManager.use_scene_spawn:
 		global_position = SaveManager.scene_spawn_override
 		SaveManager.use_scene_spawn = false
@@ -162,21 +170,32 @@ func _ready():
 
 	resumed_in_air = !SaveManager.save_data.player_grounded
 
-	if spawned_from_override:
-
-		physics_locked = false
-		set_input_enabled(true)
-
+	if resumed_in_air:
+		change_state(PlayerState.FALL)
 	else:
+		change_state(PlayerState.IDLE)
+
+	if ResumeManager.should_resume:
 
 		physics_locked = true
 		set_input_enabled(false)
 
-		if not ResumeManager.resume_finished.is_connected(_on_resume_finished):
-			ResumeManager.resume_finished.connect(_on_resume_finished)
+		if not ResumeManager.resume_finished.is_connected(
+			_on_resume_finished
+		):
+			ResumeManager.resume_finished.connect(
+				_on_resume_finished
+			)
+
+	else:
+
+		physics_locked = false
+		set_input_enabled(true)
 	
 	swing.grab_point = grab_point
 	visuals_normal_position = visuals.position
+	save_anchor_position = global_position
+	highest_point_since_save = global_position.y
 
 	if not GameState.cosmetic_equipped.is_connected(_on_cosmetic_equipped):
 		GameState.cosmetic_equipped.connect(_on_cosmetic_equipped)
@@ -188,8 +207,15 @@ func _ready():
 
 
 func _on_resume_finished():
+
 	physics_locked = false
 	set_input_enabled(true)
+
+	just_resumed = true
+
+	await get_tree().create_timer(0.05).timeout
+
+	just_resumed = false
 
 
 func _on_cosmetic_equipped(_item_id: String) -> void:
@@ -237,6 +263,10 @@ func _apply_equipped_appearance() -> void:
 # --- ANIMATION HELPERS ---
 # ======================================================
 func change_state(new_state):
+
+	if just_resumed:
+		return
+
 	if state == new_state:
 		return
 
@@ -451,11 +481,6 @@ func _physics_process(delta: float) -> void:
 # ======================================================
 	var on_floor = is_on_floor()
 	var just_landed = on_floor and not was_on_floor
-
-	var just_left_ground = !on_floor and was_on_floor
-
-	if just_left_ground and velocity.y > 0:
-		StatsManager.start_fall(global_position.y)
 
 	# --- Fall tracking ---
 	if on_floor:
@@ -714,28 +739,62 @@ func _physics_process(delta: float) -> void:
 					collider.play_squash()
 				break
 
+	var traveled_since_save := global_position.distance_to(
+		save_anchor_position
+	)
+
+	# Save when landing after meaningful movement
 	if landed_this_frame:
 
-		StatsManager.record_landing(global_position.y)
+		if traveled_since_save >= SAVE_DISTANCE:
 
-		SaveManager.save_data.player_position = (SaveManager.vector2_to_dict(global_position))
+			save_anchor_position = global_position
 
-		SaveManager.save_data.player_velocity = (SaveManager.vector2_to_dict(Vector2.ZERO))
+			highest_point_since_save = global_position.y
 
-		SaveManager.save_data.player_grounded = true
+			SaveManager.save_data.player_position = (
+				SaveManager.vector2_to_dict(global_position)
+			)
 
-		SaveManager.mark_dirty()
+			SaveManager.save_data.player_velocity = (
+				SaveManager.vector2_to_dict(Vector2.ZERO)
+			)
 
-		was_on_floor = is_on_floor()
+			SaveManager.save_data.player_grounded = true
 
-	if velocity.y > 1000 and !fall_save_triggered:
-		SaveManager.save_data.player_position = (SaveManager.vector2_to_dict(global_position))
-		SaveManager.save_data.player_velocity = (SaveManager.vector2_to_dict(velocity))
-		SaveManager.save_data.player_grounded = false
+			SaveManager.save_game()
 
-		SaveManager.mark_dirty()
+			print("SAFE SAVE")
 
-		fall_save_triggered = true
+	# Emergency save when meaningful progress has been lost
+	var lost_height := global_position.y - highest_point_since_save
+
+	if not fall_save_triggered:
+
+		if traveled_since_save >= SAVE_DISTANCE:
+
+			if lost_height >= FALL_SAVE_DROP:
+
+				save_anchor_position = global_position
+
+				SaveManager.save_data.player_position = (
+					SaveManager.vector2_to_dict(global_position)
+				)
+
+				SaveManager.save_data.player_velocity = (
+					SaveManager.vector2_to_dict(velocity)
+				)
+
+				SaveManager.save_data.player_grounded = false
+
+				SaveManager.save_game()
+
+				fall_save_triggered = true
+
+				print("EMERGENCY SAVE")
+
+	if global_position.y < highest_point_since_save:
+		highest_point_since_save = global_position.y
 
 	if is_on_floor():
 		fall_save_triggered = false

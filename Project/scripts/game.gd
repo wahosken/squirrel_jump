@@ -8,16 +8,27 @@ enum GameState {
 	PLAYING
 }
 
-var current_state := GameState.RESUMING
+var current_state := GameState.PLAYING
 
 var resume_progress := 0.0
 
 
 func _ready():
-	ResumeManager.resume_started.connect(_on_resume_started)
-	ResumeManager.resume_finished.connect(_on_resume_finished)
 
-	ResumeManager.start_resume_sequence()
+	print("GAME READY")
+	print("SHOULD RESUME:",
+		ResumeManager.should_resume)
+
+	ResumeManager.resume_started.connect(
+		_on_resume_started
+	)
+
+	ResumeManager.resume_finished.connect(
+		_on_resume_finished
+	)
+
+	if ResumeManager.should_resume:
+		ResumeManager.start_resume_sequence()
 
 
 func _on_resume_started():

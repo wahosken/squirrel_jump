@@ -16,6 +16,8 @@ func grab_default_focus() -> void:
 
 
 func _on_play_button_pressed() -> void:
+	ResumeManager.should_resume = true
+
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
 
 

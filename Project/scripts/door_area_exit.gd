@@ -12,6 +12,11 @@ func _process(_delta):
 
 	if player_in_range and Input.is_action_just_pressed("interact"):
 
+		ResumeManager.clear_resume()
+
+		print("DOOR CLEARED RESUME:",
+			ResumeManager.should_resume)
+
 		get_tree().change_scene_to_file(target_scene)
 
 func _on_body_entered(body):
