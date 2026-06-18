@@ -271,7 +271,7 @@ func open_color_dropdown() -> void:
 
 	update_inventory_display()
 
-	await get_tree().process_frame
+	await Engine.get_main_loop().process_frame
 
 	if color_buttons.has(GameState.equipped_squirrel_color):
 		color_buttons[GameState.equipped_squirrel_color].grab_focus()
@@ -306,7 +306,7 @@ func open_cosmetic_dropdown() -> void:
 
 	update_inventory_display()
 
-	await get_tree().process_frame
+	await Engine.get_main_loop().process_frame
 
 	if cosmetic_buttons.has(GameState.equipped_cosmetic):
 		cosmetic_buttons[GameState.equipped_cosmetic].grab_focus()

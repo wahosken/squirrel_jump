@@ -73,7 +73,15 @@ func shake_phase() -> void:
 	var t = shake_time
 
 	while t > 0:
-		await get_tree().process_frame
+
+		if !is_instance_valid(self):
+			return
+
+		if !is_inside_tree():
+			return
+
+		await Engine.get_main_loop().process_frame
+
 		t -= get_process_delta_time()
 
 		var offset = sin(Time.get_ticks_msec() * 0.05) * shake_intensity
@@ -99,7 +107,15 @@ func fall_phase() -> void:
 	var t = fall_time
 
 	while t > 0:
-		await get_tree().process_frame
+
+		if !is_instance_valid(self):
+			return
+
+		if !is_inside_tree():
+			return
+
+		await Engine.get_main_loop().process_frame
+
 		t -= get_process_delta_time()
 
 	velocity = Vector2.ZERO
@@ -121,7 +137,7 @@ func respawn_phase() -> void:
 	visuals.position = Vector2.ZERO
 	visuals.rotation_degrees = 0
 
-	await get_tree().process_frame
+	await Engine.get_main_loop().process_frame
 
 	collision_layer = original_collision_layer
 	collision_mask = original_collision_mask
