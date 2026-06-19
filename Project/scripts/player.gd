@@ -97,6 +97,12 @@ var highest_point_since_save := 0.0
 
 var just_resumed := false
 
+# Slow Motion
+var target_time_scale := 1.0
+const SLOW_MO_SCALE := 0.3
+const SLOW_MO_RAMP_SPEED := 4.0
+
+
 # ======================================================
 # --- EXPORT VARIABLES ---
 # ======================================================
@@ -139,6 +145,8 @@ var just_resumed := false
 func _ready():
 	add_to_group("player")
 
+	Engine.time_scale = 1.0
+
 	if SaveManager.use_scene_spawn:
 		global_position = SaveManager.scene_spawn_override
 		SaveManager.use_scene_spawn = false
@@ -175,23 +183,6 @@ func _ready():
 	else:
 		change_state(PlayerState.IDLE)
 
-	if ResumeManager.should_resume:
-
-		physics_locked = true
-		set_input_enabled(false)
-
-		if not ResumeManager.resume_finished.is_connected(
-			_on_resume_finished
-		):
-			ResumeManager.resume_finished.connect(
-				_on_resume_finished
-			)
-
-	else:
-
-		physics_locked = false
-		set_input_enabled(true)
-	
 	swing.grab_point = grab_point
 	visuals_normal_position = visuals.position
 	save_anchor_position = global_position
@@ -205,17 +196,8 @@ func _ready():
 
 	_apply_equipped_appearance()
 
-
-func _on_resume_finished():
-
-	physics_locked = false
-	set_input_enabled(true)
-
-	just_resumed = true
-
-	await get_tree().create_timer(0.05).timeout
-
-	just_resumed = false
+	if camera_controller:
+		await camera_controller.snap_to_player()
 
 
 func _on_cosmetic_equipped(_item_id: String) -> void:
@@ -467,13 +449,18 @@ func _physics_process(delta: float) -> void:
 	
 	# --- If swinging, skip normal movement ---
 	if swing.is_swinging:
-		velocity.y = 0                 # reset vertical momentum
-		last_fall_speed = 0.0          # reset fall tracking
+
+		target_time_scale = 1.0
+		Engine.time_scale = 1.0
+
+		velocity.y = 0
+		last_fall_speed = 0.0
 		visuals.rotation_degrees = 0
 		visuals.position = visuals_normal_position
 		visuals.scale.y = 1
 		visuals.scale.x = 1 if facing_right else -1
 		change_state(PlayerState.SWING)
+
 		return
 
 # ======================================================
@@ -481,6 +468,23 @@ func _physics_process(delta: float) -> void:
 # ======================================================
 	var on_floor = is_on_floor()
 	var just_landed = on_floor and not was_on_floor
+
+	# --- SLOW MOTION ---
+	if (
+		not on_floor
+		and not swing.is_swinging
+		and not is_wall_clinging
+		and gameplay_action_pressed("slow_mo")
+	):
+		target_time_scale = SLOW_MO_SCALE
+	else:
+		target_time_scale = 1.0
+
+	Engine.time_scale = move_toward(
+		Engine.time_scale,
+		target_time_scale,
+		SLOW_MO_RAMP_SPEED * delta
+	)
 
 	# --- Fall tracking ---
 	if on_floor:
@@ -586,8 +590,13 @@ func _physics_process(delta: float) -> void:
 
 	# Horizontal movement while clinging
 	if is_wall_clinging:
+
+		Engine.time_scale = 1.0
+		target_time_scale = 1.0
+
 		change_state(PlayerState.WALL_CLING)
 		velocity.x = wall_dir * 1.0
+
 		if gameplay_action_pressed("move_down"):
 			velocity.y = min(velocity.y, wall_cling_slide_speed)
 		else:
@@ -830,6 +839,9 @@ func stop_player_control() -> void:
 	run_sound.stop()
 	run_sound_timer.stop()
 
+	Engine.time_scale = 1.0
+	target_time_scale = 1.0
+
 	var actions := [
 		"move_left",
 		"move_right",
@@ -884,6 +896,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		)
 
 		GameState.equip_squirrel_color(random_id)
+
+	if Input.is_action_just_pressed("debug_teleport_up"):
+		debug_teleport_up()
+
+
+func debug_teleport_up(distance := 500.0) -> void:
+
+	global_position.y -= distance
+
+	save_anchor_position = global_position
+
+	print("DEBUG TELEPORT UP: ",
+		global_position)
 
 
 func find_exit_spawn(spawn_id: String) -> Node:

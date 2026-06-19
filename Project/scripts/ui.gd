@@ -120,3 +120,11 @@ func _on_cycle_button_pressed() -> void:
 
 func _on_cycle_button_released() -> void:
 	release_action("debug_random_squirrel")
+
+
+func _on_slow_mo_button_pressed() -> void:
+	press_action("slow_mo")
+
+
+func _on_slow_mo_button_released() -> void:
+	release_action("slow_mo")

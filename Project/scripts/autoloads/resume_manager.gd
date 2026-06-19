@@ -11,6 +11,9 @@ var world_frozen := false
 
 var resume_duration := 1.5
 
+const RESUME_TIME_SCALE := 0.15
+const FREEZE_TIME := 0.25
+
 
 func start_resume_sequence() -> void:
 
@@ -27,19 +30,55 @@ func start_resume_sequence() -> void:
 
 	is_resuming = true
 
+	# Completely freeze world
 	world_frozen = true
 	world_frozen_changed.emit(true)
+
+	Engine.time_scale = 0.0
 
 	print("Resume Started")
 
 	resume_started.emit()
 
-	await get_tree().create_timer(resume_duration).timeout
+	# Brief frozen moment
+	await get_tree().create_timer(
+		FREEZE_TIME,
+		true,
+		false,
+		true
+	).timeout
 
-	is_resuming = false
-
+	# World wakes up in slow motion
 	world_frozen = false
 	world_frozen_changed.emit(false)
+
+	Engine.time_scale = RESUME_TIME_SCALE
+
+	# Ramp to normal speed
+
+	var ramp_duration := resume_duration - FREEZE_TIME
+	var steps := 30
+
+	for i in range(steps):
+
+		var t := float(i + 1) / float(steps)
+
+		Engine.time_scale = lerp(
+			RESUME_TIME_SCALE,
+			1.0,
+			t
+		)
+
+		await get_tree().create_timer(
+			ramp_duration / steps,
+			true,
+			false,
+			true
+		).timeout
+
+	Engine.time_scale = 1.0
+
+	is_resuming = false
 
 	should_resume = false
 

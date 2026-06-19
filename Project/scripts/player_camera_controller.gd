@@ -133,3 +133,20 @@ func snap_after_world_wrap() -> void:
 	camera.force_update_scroll()
 
 	smoothing_restore_next_frame = true
+
+
+func snap_to_player() -> void:
+
+	if camera == null:
+		return
+
+	var previous := camera.position_smoothing_enabled
+
+	camera.position_smoothing_enabled = false
+
+	camera.reset_smoothing()
+	camera.force_update_scroll()
+
+	await get_tree().process_frame
+
+	camera.position_smoothing_enabled = previous
