@@ -4,8 +4,8 @@ class_name SquirrelAnimator
 @export var sprite: Sprite2D
 @export var apparel_sprite: Sprite2D
 
-const FRAME_SIZE := Vector2i(64, 48)
-const SPRITE_OFFSET := Vector2(-11, -8)
+const FRAME_SIZE := Vector2i(96, 64)
+const SPRITE_OFFSET := Vector2(3, -16)
 
 const SOURCE_PALETTE := {
 	"body": Color("bd967e"),
@@ -41,7 +41,7 @@ var skin_offset := 0
 var animations := {
 	"idle": {
 		"row": 0,
-		"frames": [0, 0, 0, 1, 2, 1],
+		"frames": [0, 1, 2, 3, 4, 5, 6],
 		"fps": 10.0
 	},
 
