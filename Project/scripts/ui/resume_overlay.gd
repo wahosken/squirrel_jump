@@ -2,7 +2,6 @@ extends CanvasLayer
 
 @onready var color_rect: ColorRect = $CenterContainer/ColorRect
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var label: Label = $CenterContainer/Label
 
 
 func _ready():
@@ -24,7 +23,6 @@ func _ready():
 func _on_resume_started():
 
 	visible = true
-	label.visible = true
 
 	animation_player.play("resume_fade")
 

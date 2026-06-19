@@ -6,7 +6,7 @@ var input_mode_change_locked := false
 const INPUT_MODE_CHANGE_DELAY := 0.15
 
 func _ready() -> void:
-	show()
+	hide()
 
 func _input(event: InputEvent) -> void:
 	if input_mode_change_locked:
@@ -120,11 +120,3 @@ func _on_cycle_button_pressed() -> void:
 
 func _on_cycle_button_released() -> void:
 	release_action("debug_random_squirrel")
-
-
-func _on_slow_mo_button_pressed() -> void:
-	press_action("slow_mo")
-
-
-func _on_slow_mo_button_released() -> void:
-	release_action("slow_mo")

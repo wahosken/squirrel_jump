@@ -17,8 +17,6 @@
 [ext_resource type="Texture2D" uid="uid://bwicchmnge8fi" path="res://assets/ui/fullscreen_button.png" id="14_u7l8p"]
 [ext_resource type="Texture2D" uid="uid://dwf3o33ixatqr" path="res://assets/ui/button_cycle.png" id="14_ubex6"]
 [ext_resource type="Texture2D" uid="uid://dised0650v2xm" path="res://assets/ui/button_cycle_pressed.png" id="15_4jgic"]
-[ext_resource type="Texture2D" uid="uid://btty18evvxucs" path="res://assets/ui/slow_mo_button.png" id="18_8rtgm"]
-[ext_resource type="Texture2D" uid="uid://cjowrroclvnn1" path="res://assets/ui/slow_mo_button_pressed.png" id="19_p5rgw"]
 
 [node name="Overlay" type="CanvasLayer" unique_id=183187612]
 script = ExtResource("1_4jgic")
@@ -146,25 +144,6 @@ grow_vertical = 0
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("14_u7l8p")
 
-[node name="HBoxContainer6" type="HBoxContainer" parent="UI" unique_id=509935158]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -62.0
-offset_right = 60.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="SlowMoButton" type="TouchScreenButton" parent="UI/HBoxContainer6" unique_id=1404689799]
-modulate = Color(1, 1, 1, 0.8)
-position = Vector2(24, 0)
-texture_normal = ExtResource("18_8rtgm")
-texture_pressed = ExtResource("19_p5rgw")
-
 [node name="NutCounterLabel" type="Label" parent="." unique_id=513977676]
 unique_name_in_owner = true
 anchors_preset = -1
@@ -193,5 +172,3 @@ metadata/_edit_use_anchors_ = true
 [connection signal="released" from="UI/HBoxContainer4/CycleButton" to="UI" method="_on_cycle_button_released"]
 [connection signal="pressed" from="UI/HBoxContainer5/ZoomButton" to="UI" method="_on_zoom_button_pressed"]
 [connection signal="released" from="UI/HBoxContainer5/ZoomButton" to="UI" method="_on_zoom_button_released"]
-[connection signal="pressed" from="UI/HBoxContainer6/SlowMoButton" to="UI" method="_on_slow_mo_button_pressed"]
-[connection signal="released" from="UI/HBoxContainer6/SlowMoButton" to="UI" method="_on_slow_mo_button_released"]
