@@ -33,7 +33,7 @@ var appearances: Dictionary = AppearanceDatabase.APPEARANCES
 
 var skin_offsets := {
 	"squirrel": 0,
-	"squirrel_skeleton": 9
+	"squirrel_skeleton": 1
 }
 
 var skin_offset := 0
@@ -41,62 +41,108 @@ var skin_offset := 0
 var animations := {
 	"idle": {
 		"row": 0,
-		"frames": [0, 1, 2, 3, 4, 5, 6],
+		"apparel_row": 0,
+		"frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+		"fps": 10.0
+	},
+
+	"idle_tail": {
+		"row": 2,
+		"apparel_row": 1,
+		"frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+		"fps": 10.0
+	},
+
+	"idle_scratch": {
+		"row": 4,
+		"apparel_row": 2,
+		"frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+		"fps": 10.0
+	},
+
+	"idle_sniff": {
+		"row": 6,
+		"apparel_row": 3,
+		"frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 		"fps": 10.0
 	},
 
 	"run": {
-		"row": 1,
+		"row": 8,
+		"apparel_row": 4,
 		"frames": [0, 1, 2],
 		"fps": 10.0
 	},
 
 	"jump": {
-		"row": 2,
+		"row": 10,
+		"apparel_row": 5,
 		"frames": [0],
 		"fps": 1.0
 	},
 
 	"fall": {
-		"row": 3,
+		"row": 12,
+		"apparel_row": 6,
 		"frames": [0],
 		"fps": 1.0
 	},
 
 	"glide": {
-		"row": 4,
+		"row": 14,
+		"apparel_row": 7,
 		"frames": [0],
 		"fps": 1.0
 	},
 
 	"glide_low": {
-		"row": 5,
+		"row": 16,
+		"apparel_row": 8,
 		"frames": [0],
 		"fps": 1.0
 	},
 
 	"crouch": {
-		"row": 6,
+		"row": 18,
+		"apparel_row": 9,
 		"frames": [0, 0, 0, 1, 2],
 		"fps": 10.0
 	},
 
 	"swing": {
-		"row": 7,
+		"row": 20,
+		"apparel_row": 10,
 		"frames": [0],
 		"fps": 1.0
 	},
 
 	"wall_cling": {
-		"row": 8,
+		"row": 22,
+		"apparel_row": 11,
 		"frames": [0],
 		"fps": 1.0
 	}
 }
 
 
+var idle_timer := 0.0
+var next_idle_variation := randf_range(1.0, 3.5)
+
+var idle_variations := [
+	"idle_tail",
+	"idle_tail",
+	"idle_scratch",
+	"idle_scratch",
+	"idle_sniff"
+]
+
+var playing_idle_variation := false
+var last_idle_variation := ""
+
+
 func _ready() -> void:
 
+	randomize()
 	setup_visual_layers()
 	setup_shader()
 	apply_appearance("squirrel")
@@ -115,13 +161,24 @@ func _process(delta: float) -> void:
 		current_frame_index += 1
 
 		if current_frame_index >= anim.frames.size():
-			current_frame_index = 0
+
+			if playing_idle_variation and current_animation in idle_variations:
+				playing_idle_variation = false
+				play("idle")
+			else:
+				current_frame_index = 0
 
 	if sprite:
 		sprite.region_rect = get_region_rect()
 
 	if apparel_sprite and apparel_sprite.visible:
 		apparel_sprite.region_rect = get_apparel_region_rect()
+
+	if current_animation == "idle":
+		idle_timer += delta
+
+		if idle_timer >= next_idle_variation:
+			play_idle_variation()
 
 
 func setup_visual_layers() -> void:
@@ -152,6 +209,9 @@ func play(anim_name: String) -> void:
 	if current_animation == anim_name:
 		return
 
+	if anim_name != "idle" and not anim_name.begins_with("idle_"):
+		playing_idle_variation = false
+
 	current_animation = anim_name
 	current_frame_index = 0
 	frame_timer = 0.0
@@ -165,6 +225,15 @@ func get_current_frame() -> int:
 func get_current_row() -> int:
 	var anim = animations[current_animation]
 	return anim.row + skin_offset
+
+
+func get_current_apparel_row() -> int:
+	var anim = animations[current_animation]
+
+	if anim.has("apparel_row"):
+		return anim.apparel_row
+
+	return anim.row
 
 
 func get_region_rect() -> Rect2:
@@ -181,7 +250,7 @@ func get_region_rect() -> Rect2:
 
 func get_apparel_region_rect() -> Rect2:
 	var frame = get_current_frame()
-	var row = animations[current_animation].row
+	var row = get_current_apparel_row()
 
 	return Rect2(
 		frame * FRAME_SIZE.x,
@@ -233,3 +302,23 @@ func get_appearance_display_name(id: String) -> String:
 		return id
 
 	return appearances[id].get("display_name", id)
+
+
+func play_idle_variation() -> void:
+	if idle_variations.is_empty():
+		return
+
+	var random_anim = idle_variations.pick_random()
+
+	play(random_anim)
+	playing_idle_variation = true
+
+	idle_timer = 0.0
+	if random_anim == "idle_tail":
+		next_idle_variation = randf_range(1.0, 5.0)
+
+	elif random_anim == "idle_scratch":
+		next_idle_variation = randf_range(1.0, 5.0)
+
+	elif random_anim == "idle_sniff":
+		next_idle_variation = randf_range(1.0, 5.0)
