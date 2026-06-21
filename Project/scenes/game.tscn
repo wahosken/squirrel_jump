@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dlcdc4mkobg10" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="Texture2D" uid="uid://cl4j8xvunyxmq" path="res://assets/world/parralax_section1_layer3.png" id="2_264po"]
 [ext_resource type="Texture2D" uid="uid://dqv62q20bym4j" path="res://assets/world/parralax_section1_layer4.png" id="2_bt5mj"]
-[ext_resource type="Texture2D" uid="uid://b05o3arti5po" path="res://assets/world/parralax_section1_sun.png" id="2_pl11u"]
+[ext_resource type="Texture2D" uid="uid://di6t0m0d30cnq" path="res://assets/world/parralax_section1_sun.png" id="2_pl11u"]
 [ext_resource type="Texture2D" uid="uid://dhkbos5ovhajh" path="res://assets/world/parralax_section1_layer1.png" id="2_rysoc"]
 [ext_resource type="Texture2D" uid="uid://dvtoklg1jjw52" path="res://assets/world/parralax_section1_layer2.png" id="3_1kice"]
 [ext_resource type="Script" uid="uid://ckak7d1vlsnuk" path="res://scripts/edge_projection_manager.gd" id="3_bhx41"]
@@ -224,18 +224,20 @@ position = Vector2(0, -2028)
 
 [node name="Parallax2D5" type="Parallax2D" parent="Background" unique_id=1075660895 groups=["parallax_layers"]]
 z_index = -10
-repeat_size = Vector2(5120, 0)
-repeat_times = 3
+scroll_scale = Vector2(0.23, 0.05)
+scroll_offset = Vector2(-326, 4212)
+repeat_size = Vector2(1177, 0)
+repeat_times = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="Background/Parallax2D5" unique_id=1478655435]
 texture = ExtResource("2_pl11u")
 
 [node name="Parallax2D4" type="Parallax2D" parent="Background" unique_id=1829152342 groups=["parallax_layers"]]
 z_index = -10
-scroll_scale = Vector2(0.98, 0.95)
-scroll_offset = Vector2(0, 250)
-repeat_size = Vector2(5120, 0)
-repeat_times = 3
+scroll_scale = Vector2(0.25, 0.1)
+scroll_offset = Vector2(0, 2200)
+repeat_size = Vector2(1280, 0)
+repeat_times = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="Background/Parallax2D4" unique_id=1264094105]
 position = Vector2(0, -125)
@@ -243,10 +245,10 @@ texture = ExtResource("2_bt5mj")
 
 [node name="Parallax2D3" type="Parallax2D" parent="Background" unique_id=44301742 groups=["parallax_layers"]]
 z_index = -10
-scroll_scale = Vector2(0.96, 0.9)
-scroll_offset = Vector2(0, 125)
-repeat_size = Vector2(5120, 0)
-repeat_times = 3
+scroll_scale = Vector2(0.4, 0.15)
+scroll_offset = Vector2(0, 1800)
+repeat_size = Vector2(1920, 0)
+repeat_times = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="Background/Parallax2D3" unique_id=2087081855]
 position = Vector2(0, 100)
@@ -254,10 +256,10 @@ texture = ExtResource("2_264po")
 
 [node name="Parallax2D2" type="Parallax2D" parent="Background" unique_id=506644025 groups=["parallax_layers"]]
 z_index = -10
-scroll_scale = Vector2(0.93, 0.85)
-scroll_offset = Vector2(0, 450)
-repeat_size = Vector2(5120, 0)
-repeat_times = 3
+scroll_scale = Vector2(0.5, 0.25)
+scroll_offset = Vector2(0, 1800)
+repeat_size = Vector2(2560, 0)
+repeat_times = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="Background/Parallax2D2" unique_id=915033098]
 position = Vector2(0, -100)
@@ -268,7 +270,7 @@ z_index = -10
 scroll_scale = Vector2(0.9, 0.8)
 scroll_offset = Vector2(0, 325)
 repeat_size = Vector2(5120, 0)
-repeat_times = 3
+repeat_times = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="Background/Parallax2D" unique_id=1733107402]
 position = Vector2(0, 125)
