@@ -6,7 +6,7 @@ var input_mode_change_locked := false
 const INPUT_MODE_CHANGE_DELAY := 0.15
 
 func _ready() -> void:
-	hide()
+	show()
 
 func _input(event: InputEvent) -> void:
 	if input_mode_change_locked:
