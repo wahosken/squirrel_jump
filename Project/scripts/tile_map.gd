@@ -546,7 +546,7 @@ func get_falling_platforms() -> Array:
 		if child.name != "DynamicObjects":
 			continue
 
-		for node in child.get_children():
+		for node in get_dynamic_objects():
 
 			if (
 				node.name.begins_with("falling_platform")
@@ -580,7 +580,10 @@ func get_bouncy_platforms() -> Array:
 	if level == null:
 		return result
 
-	for node in level.get_tree().get_nodes_in_group("bouncy"):
+	for node in get_dynamic_objects():
+
+		if not node.is_in_group("bouncy"):
+			continue
 
 		var tile_pos = local_to_map(
 			to_local(node.global_position)
@@ -636,7 +639,10 @@ func get_swing_branches() -> Array:
 	if level == null:
 		return result
 
-	for node in level.get_tree().get_nodes_in_group("swing_branch"):
+	for node in get_dynamic_objects():
+
+		if not node.is_in_group("swing_branch"):
+			continue
 
 		var tile_pos = local_to_map(
 			to_local(node.global_position)
@@ -653,5 +659,36 @@ func get_swing_branches() -> Array:
 			"is_swing_branch": true,
 			"node": node
 		})
+
+	return result
+
+
+func get_dynamic_objects() -> Array:
+
+	var result := []
+
+	var level = get_parent().get_parent()
+
+	if level == null:
+		return result
+
+	var dynamic_objects = level.get_node_or_null(
+		"DynamicObjects"
+	)
+
+	if dynamic_objects == null:
+		return result
+
+	var stack = [dynamic_objects]
+
+	while stack.size() > 0:
+
+		var current = stack.pop_back()
+
+		for child in current.get_children():
+
+			result.append(child)
+
+			stack.append(child)
 
 	return result

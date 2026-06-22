@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bf2ffsripsini"]
 
-[ext_resource type="Texture2D" uid="uid://d0vqytp3wjd0i" path="res://assets/world/building1.png" id="1_8kne3"]
+[ext_resource type="TileSet" uid="uid://qnt5df2a5y41" path="res://tileset1_trees.tres" id="1_a2ulf"]
+[ext_resource type="Texture2D" uid="uid://cspyj3fq7m11l" path="res://assets/world/doorway1.png" id="2_4v0nk"]
 [ext_resource type="Script" uid="uid://il4uxalamql6" path="res://scripts/door_area.gd" id="2_gqmnm"]
 [ext_resource type="Script" uid="uid://on8axdoegjvu" path="res://scripts/secret_door.gd" id="3_yvtlk"]
 
@@ -12,9 +13,15 @@ size = Vector2(94, 4)
 
 [node name="building1" type="Node2D" unique_id=332907481]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1974099377]
-position = Vector2(0, -128)
-texture = ExtResource("1_8kne3")
+[node name="TileMap" type="TileMap" parent="." unique_id=43161955]
+position = Vector2(16, 0)
+tile_set = ExtResource("1_a2ulf")
+format = 2
+layer_0/tile_data = PackedInt32Array(-3, 983041, 13, -65535, 589825, 268435469, -65537, 917505, 10, -1, 917505, 14, -131074, 983041, 1, -196610, 983041, 5, -262146, 983041, 2, -327682, 983041, 2, -196608, 1114113, 4, -262144, 1114113, 2, -327680, 1114113, 4, -393216, 1114113, 5, -131073, 1048577, 5, -196609, 1048577, 3, -262145, 1048577, 2, -327681, 1048577, 5, -393218, 983041, 6, -393217, 1048577, 6, -458752, 1114113, 6)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2080195429]
+position = Vector2(0, -40)
+texture = ExtResource("2_4v0nk")
 
 [node name="DoorArea" type="Area2D" parent="." unique_id=1760804213]
 collision_mask = 16
