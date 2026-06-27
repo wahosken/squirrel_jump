@@ -236,7 +236,7 @@ position = Vector2(0, -2028)
 [node name="Parallax2D5" type="Parallax2D" parent="Background/Mountains" unique_id=1075660895 groups=["parallax_layers"]]
 z_index = -10
 scroll_scale = Vector2(0.23, 0.05)
-scroll_offset = Vector2(-370, 2230)
+scroll_offset = Vector2(0, 2230)
 repeat_size = Vector2(1177, 0)
 repeat_times = 5
 
